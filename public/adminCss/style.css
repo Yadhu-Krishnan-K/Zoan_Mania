@@ -1,0 +1,67 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.main-body{
+    height: 100vh;
+    /* background-color: black; */
+    background-color: #f4f5fa;
+}
+
+.adminLogin-body{
+    height: 75%;
+    width: 90%;
+    background: #ffffff;
+    border-radius: 15px;
+}
+
+.logo-section{
+    height: 40%;
+    width: 100%;
+    /* background-color: aqua; */
+}
+
+.form-section{
+    height: 60%;
+    width: 100%;
+    /* background-color: blue; */
+}
+
+.logo-on{
+    height: 50%;
+    width: 100%;
+    /* background-color: green; */
+}
+
+.welcoming{
+    height: 50%;
+    width: 100%;
+    /* background-color:red; */
+}
+
+.form-details{
+    height: 50px;
+    width: 300px;
+    background-color: #f6f7fb;
+    border: 0;
+    border-radius: 8px;
+}
+
+.login-btn{
+    height: 58px;
+    width: 173px; 
+    border-radius: 12px;
+    border: 0;
+    background-color: #5570F1;
+    color: #fff;
+    font-size: 20px;
+}
+
+
+
+@media screen and (max-width:495px){
+    .form-details{
+        width: 200px;
+    }
+}
