@@ -1,3 +1,26 @@
 <%-include('header');-%>
 
+<section class="main-body">
+    <div class="left-section d-flex justify-content-center align-items-center">
+            <div class="login d-flex justify-content-center align-items-center">
+                <div class="inner">
+                    <div class="logo">
+                        
+                    </div>
+                    <p class="text">Come clean us out!!!</p>
+                    <h4>Sign up</h4>
+                    <form action="/otp" method="post" class="">
+                        <label class="texx mt-2" for="">Email</label><br>
+                        <input type="email" class=" box" name="email" id="email" placeholder="Email" required><br>
+                        <input type="password" class="mt-3 box" name="password" id="password" placeholder="Password" required><br>
+                        <input type="password" class="mt-3 box" name="password" id="password" placeholder="Confirm Password" required><br>
+                        <div style="width: 100%; display: flex; justify-content: center;"><input type="submit" class="mt-2 btn" value="Sign up" id="submit"></div>
+                    </form>
+                </div>
+
+            </div>
+    </div>
+    <div class="right-section"></div>
+</section>
+
 <%-include('footer');-%>
