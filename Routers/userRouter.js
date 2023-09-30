@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
+const us = require('../controllers/user-side')
 
-router.get('/',(req,res)=>{
-    res.render('user/userLogin')
-})
+router.get('/',us.userLogin)
 router.get('/signup',(req,res)=>{
     res.render('user/userSignUp')
 })
@@ -11,7 +10,7 @@ router.get('/otpsend',(req,res)=>{
     res.render('user/otpRegister')
 })
 router.get('/userHome',(req,res)=>{
-
+    res.render('user/userHome')
 })
 
 

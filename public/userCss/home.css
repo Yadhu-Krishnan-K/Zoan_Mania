@@ -1,0 +1,25 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+body{
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.middle-menu{ 
+    margin-left: -120px;
+}
+.lfimg{
+   width: 50%;
+   height: 100vh;
+   float: left;
+   background-repeat: no-repeat;
+
+}
+.image-section1{
+    display: flex;
+    width: 100%;
+}
+
