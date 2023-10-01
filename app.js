@@ -1,11 +1,18 @@
-// require('dotenv').config()
+require('dotenv').config()
 const express = require("express")
 const path = require("path")
+
 const user = require('./Routers/userRouter')
 const admin = require('./Routers/supAdminRoute')
 const mongoose = require('mongoose')
 const app = express()
-// mongoose.connect("mongodb://127.0.0.1:27017/Zoan",{
+const session = require('express-session')
+const {v4:uuidv4} = require('uuid')
+
+
+app.use(express.json())
+app.use(express.urlencoded({extended:true}))
+// mongoose.connect(process.env.DB_URI,{
 //     useNewUrlParser:true,useUnifiedTopology:true
 // },(err)=>{
 //     if(err){
@@ -20,8 +27,8 @@ const app = express()
 //     email:String,
 //     id:Number
 // }
-// const monmodel = mongoose.model("user",sch);
-// app.post("/post",async(req,res)=>{
+// 
+// app.post('/pos',async(req,res)=>{
 //     const data = new monmodel({
 //         name:req.body.name,
 //         email:req.body.email,
@@ -29,7 +36,12 @@ const app = express()
 //     })
 //     const val = await data.save()
 //     res.json(val)
+//     console.log(val);
 // })
+
+
+
+
 
 
 
@@ -41,6 +53,10 @@ app.set('view engine','ejs')
 app.use(express.static(path.join(__dirname,'public')));
 const port = process.env.port || 8080
 
-app.listen(port,()=>{
-    console.log(`http://localhost:${port}`)
+mongoose.connect(process.env.DB_URI).then(()=>{
+    app.listen(port, () => {
+        console.log(`http://localhost:${port}`)
+    })
+}).catch((error)=>{
+    console.log('DB not connected....',error);
 })
