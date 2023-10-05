@@ -19,21 +19,15 @@ router.get('/userHome',(req,res)=>{
 
 
 router.post('/otp',async(req,res)=>{
-    // res.redirect('/otpsend')
-    // const data = new monmodel({
-    //              name:req.body.name,
-    //              email:req.body.email,
-    //              id:req.body.id
-    //          })
-    // const val = await data.save()
+    
     const {name,email,password}=req.body;
     const logged=await monmodel.create({name,email,password});
     if (logged) {
-        // res.send('ok')
+        
         
     console.log(logged)
     res.redirect('/otpsend')
-    // console.log(logged)}
+    
 
     }else{
         console.log("something went wron");
