@@ -46,7 +46,7 @@ app.use(express.urlencoded({extended:true}))
 
 
 app.use('/',user)
-app.use('/admin-login',admin)
+app.use('/admin',admin)
 
 
 app.set('view engine','ejs')

@@ -1,0 +1,29 @@
+body{
+    background: #eee;
+    min-height:100vh;
+    width: 100vw;
+}
+
+.content{
+    min-height: 100vh;
+    width: 100%;
+}
+
+.link{
+    list-style-type: none;
+}
+
+.side{
+    height: 45px;
+    width: 100%;
+    background-color: aqua;
+    display: flex;
+    /* justify-content: center; */
+    /* align-items: start; */
+}
+
+.header{
+    height: 71px;
+    width: 100%;
+    background-color: #f8f9fa;
+}
