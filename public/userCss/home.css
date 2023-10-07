@@ -36,3 +36,38 @@ body{
 .siz{
     width:230px
 }
+
+
+.inner{
+width: 200px;
+height: 550px;
+}
+.border{
+    border: none;
+}
+
+
+.pro-img{
+    width: 200px;
+    height: 380px;
+}
+
+.card{
+    transition: all 0.3s;
+}
+.card:hover{
+    transform: scale(1.05);
+}
+.card-body{
+    text-align: center;
+}
+
+
+
+.innnn{
+    padding: 30p;
+}
+
+.footer-head{
+    color: #fff;
+}
