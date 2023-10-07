@@ -1,5 +1,8 @@
 require('dotenv').config()
 const express = require("express")
+// const passport = require('passport')
+require('./auth/authentication')
+
 const path = require("path")
 
 const user = require('./Routers/userRouter')
@@ -8,6 +11,7 @@ const mongoose = require('mongoose')
 const app = express()
 const session = require('express-session')
 const {v4:uuidv4} = require('uuid')
+const passport = require('passport')
 
 
 app.use(express.json())
@@ -39,14 +43,54 @@ app.use(express.urlencoded({extended:true}))
 //     console.log(val);
 // })
 
+app.use(session({
+    resave: false,
+    saveUninitialized: true,
+    secret: 'SECRET' ,
+    cookie:{secure:false}
+  }));
 
-
-
-
-
+  app.use(passport.initialize());
 
 app.use('/',user)
 app.use('/admin',admin)
+
+
+
+
+
+
+
+
+
+
+
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['email','profile'] }));
+
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/userHome');
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.set('view engine','ejs')
