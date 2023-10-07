@@ -191,24 +191,18 @@
 
     <div class="container">
       <div class="row">
-        <div class="card col-md-3 d-flex align-items-center border-0">
-          <div class="inner d-flex flex-column align-items-center">
-            <img class="card-img-top pro-img" src="/product_pics/picc1.png" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="font-weight-bold">Jumper With Decorative Detailing</h5>
-            <p class="card-text">UP TO 38% OFF</p>
+        <% productInHome.forEach((product) => { %>
+          <div class="card col-md-3 d-flex align-items-center border-0">
+            <div class="inner d-flex flex-column align-items-center">
+              <img class="card-img-top pro-img" src="<%= product.pic %>" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="font-weight-bold"><%= product.heading %></h5>
+              <p class="card-text"><%= product.offer%></p>
+            </div>
+            </div>
           </div>
-          </div>
-        </div>
-        <div class="card col-md-3 d-flex align-items-center border-0">
-          <div class="inner d-flex flex-column align-items-center">
-            <img class="card-img-top pro-img" src="/product_pics/picc1.png" alt="Card image cap">
-          <div class="card-body">
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          </div>
-          </div>
-        </div>
-        <div class="card col-md-3 d-flex align-items-center border-0">
+          <% }) %>
+        <!-- <div class="card col-md-3 d-flex align-items-center border-0">
           <div class="inner d-flex flex-column align-items-center">
             <img class="card-img-top pro-img" src="/product_pics/picc1.png" alt="Card image cap">
           <div class="card-body">
@@ -224,27 +218,43 @@
           </div>
           </div>
         </div>
+        <div class="card col-md-3 d-flex align-items-center border-0">
+          <div class="inner d-flex flex-column align-items-center">
+            <img class="card-img-top pro-img" src="/product_pics/picc1.png" alt="Card image cap">
+          <div class="card-body">
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          </div>
+          </div>
+        </div> -->
       </div>
     </div>
     <footer class="container mt-5" style="height: 300px;background: #000;">
             <div class="row">
               <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
-                <h4 class="footer-head">Get In Touch</h4>
-                Life is too short to wear boring clothes
+                <h4 class="footer-head ">Get In Touch</h4>
+                <p class="tefo">Life is too short to wear boring clothes</p>
+                <div class="social-media">
+                  <a href=""><img src="/icons/facebook.png" alt=""></a>
+                  <a href=""><img src="/icons/instagram.png" alt=""></a>
+                  <a href=""><img src="/icons/twitter.png" alt=""></a>
+                </div>
+
               </div>
 
-              <div class="col-md-4">
-                ljfkjdflkjflkfjdslfj<br>
-                djfkjdf<br>
-                kjfjf<br>
-                flkdj
+              <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
+                <h4 class="footer-head">Company info</h4>
+                <p><a href=""class="tefo">About us</a></p>
+                <p><a href="" class="tefo">Carrier</a></p>
+                <p><a href=""class="tefo">We are hiring</a></p>
+                <p><a href=""class="tefo">Blog</a></p>
               </div>
 
-              <div class="col-md-4">
-                lsdjfj<br>
-                fdjfj<br>
-                fijwepofj<br>
-                jdpofjp
+              <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
+                <h4 class="footer-head">Features</h4>
+                <p><a href=""class="tefo">Business Marketing</a></p>
+                <p><a href=""class="tefo">User Analystic</a></p>
+                <p><a href=""class="tefo">Live Chat</a></p>
+                
               </div>
             </div>
     </footer>

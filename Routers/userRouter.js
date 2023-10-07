@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const us = require('../controllers/user-side')
 const userModel = require('../models/user')
+const productInHome = require('../controllers/home-page-products')
 
 
 const controller = require('../controllers/for-otp')
@@ -17,7 +18,7 @@ router.get('/otpsen',(req,res)=>{
 })
 
 router.get('/userHome',(req,res)=>{
-    res.render('user/userHome')
+    res.render('user/userHome',{productInHome})
 })
 
 
