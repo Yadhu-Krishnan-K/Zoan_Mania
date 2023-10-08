@@ -25,7 +25,7 @@ router.get('/userHome',(req,res)=>{
 
 
 router.post('/otpsend',controller.otp);
-
+ 
 router.post('/home',(req,res)=>{
     let userOtp=req.body.number1
     // console.log(controller.vaotp)
