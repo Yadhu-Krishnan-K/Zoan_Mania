@@ -11,9 +11,10 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
 
 // console.log(vaotp)
 // sent mail with real email account
+
  const otp = async(req,res)=>{
 
-    
+   
   const {name,email,password}=req.body;
   const logged=await monmodel.create({name,email,password});
   if (logged) {
@@ -69,8 +70,8 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
 
 }
 
-
+ 
     // res.status(201).json("getBill Successfully....!")
 
 
-module.exports = {otp,vaotp}
+module.exports = {otp,vaotp,}
