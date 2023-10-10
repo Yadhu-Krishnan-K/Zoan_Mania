@@ -1,7 +1,6 @@
 require('dotenv').config()
 const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
-const monmodel= require('../models/user')
 
 
 //otp generator
@@ -16,8 +15,9 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
 
    
   const {name,email,password}=req.body;
-  const logged=await monmodel.create({name,email,password});
-  if (logged) {
+  const data = {name,email,password}
+  // const logged=await monmodel.create({name,email,password});
+  req.session.data = data
       let config = {
         service : 'gmail',
         auth : {
@@ -63,15 +63,14 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
     res.redirect('/otpsen')
   
 
-  }else{
-      console.log("something went wrong");
   }
 
 
-}
+
+
 
  
     // res.status(201).json("getBill Successfully....!")
 
 
-module.exports = {otp,vaotp,}
+module.exports = {otp,vaotp}
