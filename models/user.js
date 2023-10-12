@@ -14,6 +14,10 @@ const sch = mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+    access:{
+        type:Boolean, 
+        default:true
     }
 })
 const monmodel = mongoose.model("user",sch);

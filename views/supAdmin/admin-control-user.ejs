@@ -1,12 +1,17 @@
 <%- include('../layouts/admin/header'); -%>
 <div class="col-md-12">
-                <table class="table table-striped table-bordered">
+    <div class="bg-success d-flex justify-content-end align-items-center" style="height: 50px;">
+        <input type="search" name="" id="search">
+        <button for="search">search</button>
+    </div>
+                <table class="mt-5 table table-striped table-bordered">
                     <thead>
                         <tr> 
                             <th class="thed" scope="col">No.</th>
                             <th class="thed" scope="col">Name</th>
                             <th class="thed" scope="col">Email</th>
                             <th class="thed" scope="col">Status</th>
+                            <th class="thed" scope="col">Options</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -15,10 +20,21 @@
                                 <td><i><%=++i%></i></td>
                                 <td><i><%=x.name%></i></td>
                                 <td><i><%=x.email%></i></td>
-                                <td><i>Active</i></td>
+                                <td><i><a href="#"><button onclick="blo()" class="togg">active</button></a></i></td>
+                                <td><i style="display: block;"><a href="#"><i class="fa-regular fa-pen-to-square fa-bounce"></i></a><a href="#"><i class="fa-solid fa-trash fa-bounce"></i></a></i></td>
                             </tr>
                         <%}) %>
                     </tbody>
                 </table>
 </div>
+<script>
+    // function blo(){
+    //     var x = document.getElementsByClassName('togg');
+    //     if(x.innerHTML==='blocked'){
+    //         x.innerHTML='active'
+    //     }else{
+    //         x.innerHTML= 'blocked'
+    //     }
+    // }
+</script>
 <%- include('../layouts/admin/footer'); -%>

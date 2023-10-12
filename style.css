@@ -12,7 +12,10 @@ body{
 .sidebar{
     /* width: 227px; */
     height: 100%;
-    background: #ffffff;    
+    background: #ffffff;   
+    position: sticky;
+    top: 0;
+     
 
 }
 .logo{

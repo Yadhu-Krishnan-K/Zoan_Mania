@@ -15,7 +15,10 @@ const passport = require('passport')
 
 
 app.use(express.json())
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({extended: true}))
+
+app.set('view engine','ejs')
+app.use(express.static(path.join(__dirname,'public')));
 // mongoose.connect(process.env.DB_URI,{
 //     useNewUrlParser:true,useUnifiedTopology:true
 // },(err)=>{
@@ -79,6 +82,7 @@ app.get('/auth/google/callback',
 
 
 
+  
 
 
 
@@ -93,8 +97,6 @@ app.get('/auth/google/callback',
 
 
 
-app.set('view engine','ejs')
-app.use(express.static(path.join(__dirname,'public')));
 const port = process.env.port || 8080
 
 mongoose.connect(process.env.DB_URI).then(()=>{
