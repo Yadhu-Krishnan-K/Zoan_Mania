@@ -11,8 +11,10 @@ body{
 }
 .sidebar{
     /* width: 227px; */
-    height: 100%;
-    background: #ffffff;    
+    height: 100vh;
+    background: #ffffff;   
+    position: sticky;
+    top: 0; 
 
 }
 .logo{
