@@ -15,6 +15,7 @@ const imageSchema = new mongoose.Schema({
 const sch = new mongoose.Schema({
   Description: { type: String},
   Name: { type: String },
+  Sname:{ type: String},
   Image: [imageSchema],
   Rating: {type: String},
   // Specification: [{ type: String, required: true,  }],

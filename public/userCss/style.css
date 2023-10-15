@@ -8,12 +8,16 @@ body{
     height: 100vh;
     justify-content: center;
     align-items: center;
-}
+} 
 .main-body{
     width: 90vw;
     height: 96vh;
-    background-color: aqua;
+    background-image: url('../pics/loginSideImage.jpg');
     border-radius: 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
 }
 .left-section{
     width: 65%;
@@ -27,7 +31,7 @@ body{
     float: left;
     width: 35%;
     height: 100%;
-    background: #ffede1;
+    /* background: #ffede1; */
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
 }
@@ -44,7 +48,7 @@ body{
     width: 75%;
 }
 .logo{
-    height: 10%;
+    height: 15%;
     width: 100%;
 }
 .text{

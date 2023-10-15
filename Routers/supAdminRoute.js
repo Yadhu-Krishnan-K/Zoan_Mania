@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer');
+const category = require('../models/category')
 // const storage = multer.memoryStorage()
 
 // const upload = multer({dest:"uploads/"});
@@ -31,7 +32,7 @@ router.get('/',adminrouter.getAdminLogin)
 //-image upload----------------------------------------------------------------------------------------------------------------///
 
 
-router.post('')
+
 
 
 
@@ -48,9 +49,27 @@ router.get('/inventory',adminrouter.getInventory)
 //Category----------------------------------------
 
 router.get('/Category',(req,res)=>{
+    
     res.render('supAdmin/admin-category')
 })
 
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+//add category
+
+router.get('/addCatgory',(req,res)=>{
+    res.render('supAdmin/admin-category-add')
+})
+
+///add-category
+router.post('/add-category',async(req,res)=>{
+    console.log(req.body.cate)
+    // const categ = await new category({
+        const catName = req.body.cate
+    // })
+    console.log(catName);
+    const colleeeection = await category.create({catName:catName})
+    res.redirect('/admin/Category') 
+})
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 //get add product
@@ -156,8 +175,23 @@ router.get('/logout',(req,res)=>{
 
 //--------------------------------------------------------------------------------------------------------------------------
 
+//user status------
+router.get('/userBUB/:id',async(req,res)=>{
+    const id = req.params.id
+    const foo = await db.findOne({_id : id})
+    if(foo.access){
+        await db.updateOne({_id: id},{$set:{
+            access:false
+        }});
+    }else{
+        await db.updateOne({_id: id},{$set:{
+            access:true
+        }});
+    }
+    const userData = await db.find()
+    let i = 0
+    res.render("supAdmin/admin-control-user", { userData, i })
 
 
-
-
+})
 module.exports = router

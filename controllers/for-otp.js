@@ -1,6 +1,8 @@
 require('dotenv').config()
 const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
+const user = require('../models/user')
+
 
 
 //otp generator
@@ -16,51 +18,58 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
    
   const {name,email,password}=req.body;
   const data = {name,email,password}
-  // const logged=await monmodel.create({name,email,password});
+  // const Demail = await user.
+  // const logged = await monmodel.create({name,email,password});
   req.session.data = data
-      let config = {
-        service : 'gmail',
-        auth : {
-          user:process.env.EMAIL,
-          pass:process.env.PASSWORD
+  const exist = await user.findOne({email})
+      if(!exist){
+        let config = {
+          service : 'gmail',
+          auth : {
+            user:process.env.EMAIL,
+            pass:process.env.PASSWORD
+          }
         }
-      }
-      
-      let transporter = nodemailer.createTransport(config)
-
-      let MailGenerator =new Mailgen({
-        theme:"default",
-        product:{
-          name:"Mailgen",
-          link:'https://mailgen.js/'
-        }
-      })
-      let response = {
-        body:{
-          name:name,
-          intro:`YOUR OTP FOR ZOAN MANiA ${vaotp}`,
-          outro:"Looking forward to do more business"
-        }
-
-      }
-      let mail =MailGenerator.generate(response)
-      let message = {
-        from:process.env.email,
-        to:email,
-        subject:'OTP VARIFICATION',
-        html:mail
-      }
-
-      
-      transporter.sendMail(message).then(()=>{
-        return res.status(201).json({
-          msg:"you should receive an email"
+        
+        let transporter = nodemailer.createTransport(config)
+  
+        let MailGenerator =new Mailgen({
+          theme:"default",
+          product:{
+            name:"Mailgen",
+            link:'https://mailgen.js/'
+          }
         })
-      }).catch(error => {
-        return res.status(500)
-      })
-
-    res.redirect('/otpsen')
+        let response = {
+          body:{
+            name:name,
+            intro:`YOUR OTP FOR ZOAN MANiA ${vaotp}`,
+            outro:"Looking forward to do more business"
+          }
+  
+        }
+        let mail =MailGenerator.generate(response)
+        let message = {
+          from:process.env.email,
+          to:email,
+          subject:'OTP VARIFICATION',
+          html:mail
+        }
+  
+        
+        transporter.sendMail(message).then(()=>{
+          return res.status(201).json({
+            msg:"you should receive an email"
+          })
+        }).catch(error => {
+          return res.status(500)
+        })
+  
+      res.redirect('/otpsen')
+      }else{
+        
+        res.render('user/userSignUp',{title: "SignUp",exist:"The user already exists"})
+      }
   
 
   }

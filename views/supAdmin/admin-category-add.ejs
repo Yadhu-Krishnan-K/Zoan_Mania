@@ -1,5 +1,10 @@
 <%- include('../layouts/admin/header'); -%>
 
-
+    <div class="col-12">
+        <form action="/admin/add-category" method="post">
+            <input type="text" placeholder="Category Name" name="cate">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 
 <%- include('../layouts/admin/footer'); -%>
