@@ -9,7 +9,7 @@ const getAdminLogin = (req,res)=>{
 const getCustomer = async(req,res,next)=>{
     let i = 0;
     const userData = await db.find();
-    res.render('supAdmin/admin-control-user',{userData,i})
+    res.render('supAdmin/admin-control-user',{userData,i,})
     // res.send('oky')
 }
 
@@ -19,7 +19,7 @@ const getInventory = async(req,res)=>{
         const products = await productModel.find({})
         res.render('supAdmin/admin-inventory',{products})
     } catch (error) {
-        
+        console.log(error)
     }
     
     // res.send('hello')

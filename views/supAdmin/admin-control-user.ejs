@@ -20,10 +20,14 @@
                                 <td><i><%=++i%></i></td>
                                 <td><i><%=x.name%></i></td>
                                 <td><i><%=x.email%></i></td>
-                                <td><i><a href="#"><button onclick="blo()" class="togg">active</button></a></i></td>
+                                <% if(x.access){%>
+                                    <td><i><a href="/admin/userBUB/<%- x._id %>"><button onclick="blo()" class="togg">Active</button></a></i></td>
+                                <%}else{%>
+                                    <td><i><a href="/admin/userBUB/<%- x._id %>"><button onclick="blo()" class="togg">Blocked</button></a></i></td>
+                                <% } %> 
                                 <td><i style="display: block;"><a href="#"><i class="fa-regular fa-pen-to-square fa-bounce"></i></a><a href="#"><i class="fa-solid fa-trash fa-bounce"></i></a></i></td>
                             </tr>
-                        <%}) %>
+                        <%}) %> 
                     </tbody>
                 </table>
 </div>
