@@ -13,6 +13,7 @@
                 <table class="mt-5 table table-striped table-bordered">
                     <thead>
                         <tr> 
+                            <th class="thed" scope="col">No.</th>
                             <th class="thed" scope="col">Category</th>
                             <th class="thed" scope="col">Updated On</th>
                             <th class="thed" scope="col">Edit</th>
@@ -20,13 +21,18 @@
                         </tr>
                     </thead>
                     <tbody> 
+                        <%datas.forEach(data=>{ %>
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td><%= ++i %></td>
+                            <td><%= data.catName%></td>
+                            <td>
+                                <%let date=new Date(data.createdAt)%>
+                                <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%>
+                            </td>
+                            <td><i style="display: block;"><a href="/admin/edit-category/<%= data._id %>"><i class="fa-regular fa-pen-to-square "></i></a></i></td>
+                            <td><i style="display: block;"><a href="/admin/delete-category/<%= data._id %>"><i class="fa-solid fa-trash "></i></a></i></td>
                         </tr>
-                        
+                        <%})%>
                     </tbody>
                 </table>
 </div>

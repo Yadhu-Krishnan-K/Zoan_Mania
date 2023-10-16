@@ -11,7 +11,8 @@
                             <th class="thed" scope="col">Name</th>
                             <th class="thed" scope="col">Email</th>
                             <th class="thed" scope="col">Status</th>
-                            <th class="thed" scope="col">Options</th>
+                            <th class="thed" scope="col">Edit</th>
+                            <th class="thed" scope="col">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -25,7 +26,8 @@
                                 <%}else{%>
                                     <td><i><a href="/admin/userBUB/<%- x._id %>"><button onclick="blo()" class="togg">Blocked</button></a></i></td>
                                 <% } %> 
-                                <td><i style="display: block;"><a href="#"><i class="fa-regular fa-pen-to-square fa-bounce"></i></a><a href="#"><i class="fa-solid fa-trash fa-bounce"></i></a></i></td>
+                                <td><i style="display: block;"><a href="/admin/userEdit/<%- x._id %>"><i class="fa-regular fa-pen-to-square "></i></a></i></td>
+                                <td><i style="display: block;"><a href="/admin/userDelete/<%- x._id %>"><i class="fa-solid fa-trash "></i></a></i></td>
                             </tr>
                         <%}) %> 
                     </tbody>

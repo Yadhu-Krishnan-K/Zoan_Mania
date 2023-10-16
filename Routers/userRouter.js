@@ -81,6 +81,7 @@ router.get('/logout',(req,res)=>{
 router.get('/Product-list',async(req,res)=>{
     const products = await productList.find();
     const name = req.session.name
+
     res.render('user/product-list',{name,products});
 })
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -101,13 +102,15 @@ router.route('/productDetail/:id')
       .get(async(req,res)=>{
         const name = req.session.name
         const P_id = req.params.id
-        const P_detail = await productList.find({P_id})
-        console.log(P_id)
+        const P_detail = await productList.findOne({P_id})
+        console.log(P_detail)
+
+
         
-        res.render('user/product -page',{name,title: 'Product Page'})
+        res.render('user/product -page',{P_detail,name,title: 'Product Page'})
 
 
-      })
+    })
 
 
 

@@ -1,0 +1,9 @@
+<%- include('../layouts/admin/header'); -%>
+
+    <form class="mt-5 ms-5" action="/admin/category-update/<%- category._id %>" method="post">
+        <input type="text" name="catName" value="<%- category.catName %>" id="">
+        <button type="submit">Submit</button>
+        
+    </form>
+
+<%- include('../layouts/admin/footer'); -%> 

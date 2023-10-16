@@ -23,7 +23,7 @@ const sch = new mongoose.Schema({
   Stamp: { type: Date },
   Review: { type: String }, 
   BrandId: {type: Schema.Types.ObjectId},
-  CategoryId: {type: Schema.Types.ObjectId},
+  CategoryId: {type: String},
   Price: {type:Number}
 })
 const monmodel = mongoose.model("product",sch);
