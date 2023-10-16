@@ -46,29 +46,45 @@ router.get('/Customers',adminrouter.getCustomer)
 router.get('/inventory',adminrouter.getInventory)
         
 //----------------------------------------------------------------------------------------------
-//Category----------------------------------------
+//Category------------------------<%= ++i %>----------------
 
-router.get('/Category',(req,res)=>{
+router.get('/Category',async(req,res)=>{
     
-    res.render('supAdmin/admin-category')
+    i=0
+    const datas = await Cate.find()
+    // console.log(datas)
+    res.render('supAdmin/admin-category',{datas,i})
+
 })
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 //add category
 
 router.get('/addCatgory',(req,res)=>{
+
     res.render('supAdmin/admin-category-add')
 })
 
 ///add-category
 router.post('/add-category',async(req,res)=>{
-    console.log(req.body.cate)
+    // console.log(req.body.cate)
     // const categ = await new category({
         const catName = req.body.cate
     // })
-    console.log(catName);
-    const colleeeection = await category.create({catName:catName})
+    // console.log(catName);
+    const cat = await category.find({catName:{$regex: "^" + catName, $options: "i"}})
+    console.log(cat)
+    if(cat == "[]"){
+        res.redirect('admin/addCatgory')
+    }
+    else if (cat.length>0) {
+        //    console.log(req.files,'files');
+        res.render('supAdmin/admin-category-add', { error: 'The category already exists' });
+
+    } else {
+        const colleeeection = await category.create({catName:catName})
     res.redirect('/admin/Category') 
+    }
 })
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -96,7 +112,9 @@ router.post('/check',adminrouter.adminNpasswordCheck)
 
 //insert product
 router.get('/inventory/addProduct',(req,res)=>{
-    res.render('supAdmin/admin-addProduct')
+    
+    res.render('supAdmin/admin-addProduct')  
+    // res.send('hei')
 })
 
 
@@ -110,8 +128,8 @@ router.post('/inventory/adding-product',multi.fields([
     { name: 'image3', maxCount: 1 }
 ]),async(req,res)=>{
     // const name = req.body.name
-   console.log(req.body);
-   console.log(req.files,'files');
+//    console.log(req.body);
+//    console.log(req.files,'files');
 
    const image1 = req.files['image1'][0];
    const image2 = req.files['image2'][0];
@@ -134,7 +152,7 @@ router.post('/inventory/adding-product',multi.fields([
             
         })
         const newProduct = await product.save();
-        console.log(newProduct);
+        // console.log(newProduct);
         res.redirect('/admin/inventory')
         // res.send('success')
     // } catch (error) {
@@ -194,4 +212,71 @@ router.get('/userBUB/:id',async(req,res)=>{
 
 
 })
+//====================----------------------------------------------------------------------------------------------------------------
+//user edit
+
+router.get('/userEdit/:id',async(req,res)=>{
+    const id = req.params.id
+    const user_data = await db.findOne({_id : id})
+    res.render('supAdmin/adminUserEdit',{user_data})
+})
+
+router.post('/userUpdate/:id',async(req,res)=>{
+    const id = req.params.id
+    const CName = req.body.Uname;
+    await db.updateOne({_id:id},{$set:{
+        name:CName  
+    }})
+    res.redirect('/admin/Customers')
+
+})
+//--------------------------------------------------------------------------------------------------------------
+//user delete
+router.get('/userDelete/:id',async(req,res)=>{
+    const id = req.params.id;
+    await db.deleteOne({_id:id})
+    res.redirect('/admin/Customers')
+})
+//---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------
+//edit category
+
+router.route('/edit-category/:id')
+    .get(async(req,res)=>{
+        const id = req.params.id;
+        const category = await Cate.findOne({_id:id})
+        res.render('supAdmin/admin-category-edit',{category})
+
+    })
+
+//cat update
+router.route('/category-update/:id')
+    .post(async(req,res)=>{
+        await Cate.updateOne({_id:req.params.id},{
+            catName:req.body.catName
+        })
+        res.redirect('/admin/Category')
+    })
+
+//-------------------------------------------------------------------------------------------------------------------
+//category delete
+
+router.route('/delete-category/:id')
+    .get(async(req,res)=>{
+        const id = req.params.id
+        await Cate.deleteOne({_id:id})
+        res.redirect('/admin/Category')
+    })
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = router

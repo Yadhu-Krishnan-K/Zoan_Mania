@@ -28,7 +28,16 @@
                 </div>
                 <div class="pricing mt-3" style="background: #fff; border: 1px solid black;">
                     <p>Category</p>
-                    <input type="text" name="Category" id="Category">
+                    <!-- <input type="text" name="Category" id="Category"> -->
+                    <select name="category" id="">
+                        <option value="">Select a category</option>
+                        <!-- <option value=""></option> -->
+                        <% if(categorys){ %>
+                            <% categorys.forEach(cat => { %>
+                                <option value="<%= cat.catName %>"><%= cat.catName %></option>
+                            <% }) %>
+                        <% } %>
+                    </select>
                 </div>
                 <div class="stock mt-3 mb-5
                 " style="background: #fff; border: 1px solid black;">

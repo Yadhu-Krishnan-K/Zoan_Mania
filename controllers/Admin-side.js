@@ -1,6 +1,7 @@
 const admin = require('../models/admin')
 const db = require('../models/user')
 const productModel =require('../models/products')
+const Categories = require('../models/category')
 
 const getAdminLogin = (req,res)=>{
     res.render('supAdmin/admin-login')}
@@ -16,8 +17,9 @@ const getCustomer = async(req,res,next)=>{
 
 const getInventory = async(req,res)=>{
     try {
+        i=0
         const products = await productModel.find({})
-        res.render('supAdmin/admin-inventory',{products})
+        res.render('supAdmin/admin-inventory',{products,i})
     } catch (error) {
         console.log(error)
     }
@@ -26,8 +28,10 @@ const getInventory = async(req,res)=>{
 }
 
 
-const getAddProduct = (req,res)=>{
-    res.render('supAdmin/admin-addProduct')
+const getAddProduct = async(req,res)=>{
+    const categorys = await Categories.find({})
+    res.render('supAdmin/admin-addProduct',{categorys})
+
     // res.send('hai')
 }
 
@@ -38,10 +42,10 @@ const adminNpasswordCheck = async(req,res,next)=>{
     // const logged = await admin.create({adminGmail:email,adminPassword:password})
 
     const Demail = await admin.findOne({email})
-    console.log(Demail.adminGmail);
+    // console.log(Demail.adminGmail);
 
     const Dpassword = await admin.findOne({password})
-    console.log(Dpassword.adminPassword);
+    // console.log(Dpassword.adminPassword);
 
     if(req.body.email===Demail.adminGmail && req.body.password==Dpassword.adminPassword){
         res.redirect('/admin/Customers')

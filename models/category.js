@@ -1,13 +1,12 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-const sch = mongoose.Schema({
-    catName:{
-        type:String,
-        required:true
-    },image:{
-        type:String
-    }
-})
-const monmodel = mongoose.model("Category",sch);
+const { Schema, ObjectId } = mongoose;
 
-module.exports = monmodel
+const CategoriesSchema = new Schema({
+  catName: { type: String, required:true},
+
+},{timestamps:true});
+
+const Categories = mongoose.model('Categories', CategoriesSchema);
+
+module.exports=Categories;
