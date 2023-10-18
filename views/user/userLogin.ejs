@@ -9,8 +9,14 @@
                     </div>
                     <p class="text ">Welcome</p>
                     <h4>Sign in</h4>
-                    <form action="/homed" method="post" class="">
+                    <% if(locals.txt){ %>
+                        <div class="alert alert-success text-center" id="disapear">
+                            <%= txt   %>
+                        </div>
+                    <% } %>
+                    <form action="/homed" method="post" class="" id="smt">
                         <!-- <label class="texx mt-2" for="">Email</label><br> -->
+                        
                         <input type="email" class=" box mt-3" name="email" id="email" placeholder="Email" required><br>
                         <div style="width: 100%;height: 45px;display: flex; align-items: end; justify-content: end;"><a href="/forgotPassword">forgot password</a></div>
                         <input type="password" class=" box mt-1" name="password" id="password" placeholder="Password" required><br>
@@ -24,5 +30,10 @@
     </div>
     <div class="right-section"></div>
 </section>
+<script>
+    setTimeout(function () {
+            document.getElementById('disapear').style.display = "none";
+        }, 4000);
 
+</script>
 <%-include('footer');-%>

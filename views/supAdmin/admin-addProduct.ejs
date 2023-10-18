@@ -2,6 +2,7 @@
     <div class="col-md-12">
         <!-- <div class="row gx-0"> -->
             <!-- <h1>Submit Your Information and Images</h1> -->
+            <h1>Add Products</h1>
             <form action="/admin/inventory/adding-product" id="sub" method="post" enctype="multipart/form-data">
                 <div class="details row gx-0" style="background: #fff;">
                     <div class="d-flex justify-content-end" style="width: 100%;">
@@ -30,7 +31,9 @@
                 <div class="pricing mt-3" style="background: #fff; border: 1px solid black;">
                     <p>Category</p>
                     <!-- <input type="text" name="Category" id="Category"> -->
-                    <select name="c" id="category" required>
+                    <div id="caterr" style="display: none;" ></div>
+
+                    <select name="category" id="category" required>
                         <option value="">Select a category</option>
                         <!-- <option value=""></option> -->
                         <% if(categorys){ %>
@@ -59,6 +62,8 @@
                 let price = document.getElementById('price').value;
                 let err = document.getElementById('stocker');
                 let prerr = document.getElementById('priceErr');
+                let cat = document.getElementById('category').textContent
+                let caterr = document.getElementById('caterr')
                 if(stock<0){
                     e.preventDefault();
                     err.style.display='block'
@@ -73,6 +78,14 @@
                     prerr.innerHTML='price should be greater than 0';
                     setTimeout(()=>{
                         prerr.style.display='none'
+                    },4000)
+                }
+                if(category == 'Select a categoryt '){
+                    e.preventDefault();
+                    caterr.style.display='block'
+                    caterr.innerHTML='Select a category';
+                    setTimeout(()=>{
+                        caterr.style.display='none'
                     },4000)
                 }
             })

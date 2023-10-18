@@ -1,5 +1,5 @@
 <%- include('../layouts/admin/header'); -%>
-
+    <h1>Edit Category</h1>
     <form class="mt-5 ms-5" action="/admin/category-update/<%- category._id %>" method="post">
         <input type="text" name="catName" value="<%- category.catName %>" id="">
         <button type="submit">Submit</button>

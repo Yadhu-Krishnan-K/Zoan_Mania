@@ -131,7 +131,7 @@
 
               <div class="row ms-5 me-5">
                 <% products.forEach(product => {  %>
-                  <% if(product.Stock > 0){ %>
+                  <% if(product.Stock > 0 && product.visible === true){ %>
                     <div class="col-md-3 p-4">
                       <div class="card" style="width: 18rem;margin-left: 25px;">
                           <img class="card-img-top" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/<%=product.Image[0].mainimage%>" alt="Card image cap">

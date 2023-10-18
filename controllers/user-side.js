@@ -85,18 +85,22 @@ const userLoginBackend = async(req,res)=>{
     
     const logins = await userModel.findOne({email: email})
     // console.log(logins)
-    console.log(logins.password)
-    let isChecked = await bcrypt.compare(password,logins.password)
-    
-    req.session.name = logins.name
-    // const check = await userModel.findOne({email:email},{access:1})
-    console.log(logins.access)
-    if(isChecked == true && logins.access){
-        req.session.userId = await userModel.findOne({email:email},{_id: 1})
-        console.log('userId='+req.session.userId)
-        res.redirect('/userHome')
+    console.log(logins)
+    if(!logins){
+        res.render('user/userLogin',{txt:"No users found",title: "Login"})
     }else{
-        res.send('something went wrong')
+        let isChecked = await bcrypt.compare(password,logins.password)
+        
+        req.session.name = logins.name
+        // const check = await userModel.findOne({email:email},{access:1})
+        console.log(logins.access)
+        if(isChecked == true && logins.access){
+            req.session.userId = await userModel.findOne({email:email},{_id: 1})
+            console.log('userId='+req.session.userId)
+            res.redirect('/userHome')
+        }else{
+            res.send('something went wrong')
+        }
     }
 }
 

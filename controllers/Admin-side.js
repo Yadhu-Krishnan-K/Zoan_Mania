@@ -50,7 +50,7 @@ const adminNpasswordCheck = async(req,res,next)=>{
     if(req.body.email===Demail.adminGmail && req.body.password==Dpassword.adminPassword){
         res.redirect('/admin/Customers')
     }else{
-        res.send('something went wrong')
+        res.render('supAdmin/admin-login',{error:"Check your email and password"})
     }
 }
 
