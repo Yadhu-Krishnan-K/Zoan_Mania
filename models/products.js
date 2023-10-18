@@ -23,9 +23,9 @@ const sch = new mongoose.Schema({
   Stamp: { type: Date },
   Review: { type: String }, 
   BrandId: {type: Schema.Types.ObjectId},
-  CategoryId: {type: String},
+  Category: {type: String},
   Price: {type:Number}
-})
+},{timestamps:true});
 const monmodel = mongoose.model("product",sch);
 
 module.exports = monmodel

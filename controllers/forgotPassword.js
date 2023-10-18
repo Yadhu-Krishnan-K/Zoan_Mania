@@ -9,22 +9,27 @@ const otpModel = require('../models/otpModel')
 //otp generator
 const otpGenerator = require('otp-generator')
 
-var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCaseAlphabets: false, upperCaseAlphabets: false })
+var vaOtp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCaseAlphabets: false, upperCaseAlphabets: false })
 
 // console.log(vaotp)
 // sent mail with real email account
 
+// router.get('/forgotPasswordOtpGenerate',(req,res)=>{
+    
 
- const otp = async(req,res,)=>{
+ const Otp = async(req,res)=>{
 
   
-   
-  const {name,email,password}=req.body;
-  const data = {name,email,password}
+   const email = req.session.email
+   const datas = await user.findOne({email:email})
+   const name = datas.name
+//    console.log(name)
+//     console.log(email)
+  const data = email
   
   req.session.data = data
-  const exist = await user.findOne({email})
-      if(!exist){
+//   const exist = await user.findOne({email})
+      
         let config = {
           service : 'gmail',
           auth : {
@@ -38,14 +43,15 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
         let MailGenerator =new Mailgen({
           theme:"default",
           product:{
-            name:"Mailgen",
+            name:"ZoanMania",
             link:'https://mailgen.js/'
           }
         })
         let response = {
           body:{
             name:name,
-            intro:`YOUR OTP FOR ZOAN MANiA ${vaotp}`,
+            intro:`Welcome back to ZOAN MANiA
+            Your otp to reset password is "${vaOtp}"`,
             outro:"Looking forward to do more business"
           }
   
@@ -67,14 +73,15 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
           return res.status(500)
         })
   
-      res.redirect('/otpsen')
-      }else{
+      res.redirect('/updatePassword-1')
+    }
+    //   }else{
         
-        res.render('user/userSignUp',{title: "SignUp",exist:"The user already exists"})
-      }
+    //     // res.render('user/userSignUp',{title: "SignUp",exist:"The user already exists"})
+    //   }
   
 
-  }
+  
 
 
 
@@ -84,4 +91,4 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
     // res.status(201).json("getBill Successfully....!")
 
 
-module.exports = {otp,vaotp}
+module.exports = {Otp,vaOtp}

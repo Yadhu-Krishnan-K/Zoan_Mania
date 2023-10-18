@@ -3,7 +3,7 @@
   
     <div class="d-flex mt-3 justify-content-between" style="width: 100%;">
       <div class="search-op">
-        <input type="search" name="search" id="search">
+        <!-- <input type="search" name="search" id="search"> -->
       </div>
       <div class="addProduct">
         <a href="/admin/inventory/addProduct"><button>Add product</button></a>
@@ -49,7 +49,7 @@
                   <img height="100px" style="border-radius: 12px;" width="100px" src="/uploads/<%= product.Image[0].mainimage %>" alt="img">
                 </td>
                 <td>Product.Date</td>
-                <td class="d-flex justify-content-evenly"> <i style="display: block;"><a href="/admin/edit-product"><i class="fa-regular fa-pen-to-square "></i></a></i> <i style="display: block;"><a href="/admin/delete-product"><i class="fa-solid fa-trash "></i></a></i> </td>
+                <td class="d-flex justify-content-evenly"> <i style="display: block;"><a href="/admin/edit-product/<%- product._id%>"><i class="fa-regular fa-pen-to-square "></i></a></i> <i style="display: block;"><a href="/admin/delete-product/<%-product._id%>" onclick="return confirm('Do you want to delete the <%- product.Name %>')"><i class="fa-solid fa-trash "></i></a></i> </td>
               </tr>
             <% }) %>
           </tbody>

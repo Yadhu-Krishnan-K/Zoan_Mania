@@ -2,11 +2,13 @@ const userModel = require('../models/user')
 const productInHome = require('../controllers/home-page-products')
 
 const controller = require('../controllers/for-otp')
+const otpModel = require('../models/otpModel')
+
 
 const bcrypt = require('bcrypt')
 const saltRounds = 10
 
- 
+  
 
 //userlogin
 const userLogin = (req,res)=>{
@@ -38,23 +40,32 @@ const otpForm = (req,res)=>{
 const postEnteringHOme = async(req,res)=>{
     let userOtp=req.body.number1
     console.log(controller.vaotp)
+    console.log(req.session.data)
     const {name,email,password}=req.session.data;
+    
     req.session.name = name
-    console.log(req.body.number1)
-    console.log(controller.vaotp)
+
+    // const Dbzotp = await new otpModel({
+    //     otp:controller.vaotp
+    // })
+    // const newOtp = await Dbzotp.save();
+
     const logins = await userModel.findOne({email:email})
+    // if(newOtp!==undefined){
+    //     setTimeout(async()=>{
+    //         await otpModel.delete({})
+    //         newOtp = undefined
+    //     },60000)
+    // }
     if(!logins){
     if(userOtp==controller.vaotp){
         const hashPass = await bcrypt.hash(req.session.data.password,saltRounds)
-    //    const hashpassword =  bcrypt.genSalt(saltRounds).then(salt => {console.log('Salt: ', salt)
-    //         return bcrypt.hash(req.session.data.password, salt)
-    //     }).then(hash => {
-    //         console.log('Hash: ', hash)
-    //     }).catch(err => console.error(err.message))
         
+        // await otpModel.delete()
 
         const logged=await userModel.create({name,email,password:hashPass});
         console.log(logged)
+
         req.session.userId = await userModel.findOne({email:email},{_id:1})
         res.redirect('/userHome')
     }else{
@@ -70,8 +81,11 @@ const postEnteringHOme = async(req,res)=>{
 
 const userLoginBackend = async(req,res)=>{
     const {email,password} = req.body;
+    // console.log(email);
     
-    const logins = await userModel.findOne({email:email})
+    const logins = await userModel.findOne({email: email})
+    // console.log(logins)
+    console.log(logins.password)
     let isChecked = await bcrypt.compare(password,logins.password)
     
     req.session.name = logins.name
