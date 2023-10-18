@@ -1,23 +1,61 @@
 <%-include('h1');-%>
 
-<section>
+<!-- <section>
     <div class="main">
         <h4 class="mt-5">Verification</h4>
         <p>Enter your 4 digit code that you recieved on your email.</p>
         <div class="otp-section">
             <form action="/home" method="post">
                 <div class="otps">
-                    <input type="number" name="number1" id="number1" class="numb">
+                    <input type="number" name="number1" id="number1" class="numb"> -->
                     <!-- <input type="number" name="number2" id="number2" class="numb">
                     <input type="number" name="number3" id="number3" class="numb">
                     <input type="number" name="number4" id="number4" class="numb"> -->
-                </div>
-                <!-- <div class="time"><p class="mt-3">00:30</p></div> -->
-                <div class="button d-flex justify-content-center mt-5"><input type="submit" value="Verify" class="row "></div>
+                <!-- </div>
+                <div class="timer mt-3" id="timer"></div>
+                <div class="button d-flex justify-content-center mt-5"><input type="submit" onclick="sub()" value="Verify" class="row "></div>
             </form>
+           <a href=""> <button id="resendOtp" class="mt-3" onclick="dis()" style="display: none;">Resend OTP</button>
 
         </div>
     </div>
+</section> -->
+<section>
+    <div class="main">
+        <h4 class="mt-5">Verification</h4>
+        <p>Enter your 4-digit code that you received on your email.</p>
+        <div class="otp-section">
+            <form action="/home" method="post">
+                <div class="otps">
+                    <input type="number" name="number1" id="number1" class="numb">
+                    <!-- You can add similar input fields for number2, number3, and number4 if needed -->
+                </div>
+                <div class="timer mt-3">00:60</div> <!-- This div will display the timer -->
+                <div class="button d-flex justify-content-center mt-3">
+                    <input type="submit" value="Verify" class="row">
+                </div>
+            </form>
+            <a href=""><button style="display: none;" class="vis">Resend Otp</button></a>
+        </div>
+    </div>
 </section>
+<script>
+    
+    // JavaScript code to handle the timer
+    let timer = 60; // 60 seconds
+    const timerElement = document.querySelector('.timer');
+
+    function updateTimer() {
+        timerElement.textContent = `00:${timer < 10 ? '0' : ''}${timer}`;
+        if (timer === 0) {
+            // Timer has reached 0, you can add your actions here
+        } else {
+            timer--;
+            setTimeout(updateTimer, 1000); // Update timer every second
+        }
+    }
+
+    updateTimer(); // Start the timer
+</script>
 
 <%-include('f1');-%>

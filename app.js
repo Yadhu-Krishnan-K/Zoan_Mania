@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require("express")
+const nocache = require("nocache")
 // const passport = require('passport')
 require('./auth/authentication')
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({extended: true}))
 
 app.set('view engine','ejs')
 app.use(express.static(path.join(__dirname,'public')));
+app.use(nocache())
 // mongoose.connect(process.env.DB_URI,{
 //     useNewUrlParser:true,useUnifiedTopology:true
 // },(err)=>{
@@ -59,11 +61,11 @@ app.use(session({
 
 
 
-app.use((req, res, next) => {
-  // Set cache control headers to prevent caching for all routes
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  next();
-});
+// app.use((req, res, next) => {
+//   // Set cache control headers to prevent caching for all routes
+//   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+//   next();
+// });
   
 
 
@@ -120,63 +122,3 @@ mongoose.connect(process.env.DB_URI).then(()=>{
 }).catch((error)=>{
     console.log('DB not connected....',error);
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

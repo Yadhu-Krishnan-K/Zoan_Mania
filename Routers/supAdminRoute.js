@@ -140,14 +140,14 @@ router.post('/inventory/adding-product',multi.fields([
     image1: image2.filename,
     image2: image3.filename,
    };
-   const {Description,Pname,stock,price}=req.body
+   const {Description,Pname,stock,price,category}=req.body
 //     // try {
         const product =await new products({
             Description:Description,
             Name:Pname,
             Image:[imageUrls],
             Stock:stock,
-            // Category:,
+            Category:category,
             Price:price,
             
         })
@@ -267,6 +267,91 @@ router.route('/delete-category/:id')
         await Cate.deleteOne({_id:id})
         res.redirect('/admin/Category')
     })
+
+
+
+
+
+//--------------------------------------------------------------------------------------------------------------------------------
+//product edit
+router.get('/edit-product/:id',async(req,res)=>{
+        const id = req.params.id
+        const P_detail = await products.findOne({_id: id})
+        const cate = await Cate.find()
+        // console.log(P_detail);
+        res.render('supAdmin/admin-edit-product',{P_detail,cate});
+    })
+
+    //updating product
+    router.post('/update-productPage/:id',multi.fields([
+        { name: 'image1', maxCount: 1 },
+        { name: 'image2', maxCount: 1 },
+        { name: 'image3', maxCount: 1 }
+    ]),async(req,res)=>{
+        const image1 = req.files['image1'][0];
+        const image2 = req.files['image2'][0];
+        const image3 = req.files['image3'][0];
+
+        const imageUrls = {
+            mainimage: image1.filename, // Use .path to get the file path
+            image1: image2.filename,
+            image2: image3.filename,
+        };
+
+
+        const P_id = req.params.id
+            // const {Description,ProductName,Category,Stock,Price} = req.body
+
+        const data = {
+            Description:req.body.Description,
+            Name:req.body.ProductName,
+            Category:req.body.Category,
+            Stock:req.body.Stock,
+            Price:req.body.Price,
+            Image:[imageUrls]
+        }
+        const updatedProduct = await products.findByIdAndUpdate(P_id, data);
+        if (!updatedProduct) {
+        return res.status(404).send('Product not found');}
+        res.redirect('/admin/inventory');
+        
+    }
+
+    
+    )
+
+//----------------------------------
+//product delete
+
+router.get('/delete-product/:id',async(req,res)=>{
+    await products.findByIdAndDelete({_id: req.params.id})
+    res.redirect('/admin/inventory');
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
