@@ -1,6 +1,7 @@
 <%- include('../layouts/admin/header'); -%>
 
    <div class="col-md-12 ">
+    <h1>Edit name of the user</h1>
     <form action="/admin/userUpdate/<%- user_data._id %>" method="post" class="ms-5 mt-5">
         <label for="">Change user name</label>
         <input type="text" name="Uname" value="<%- user_data.name %>" id="">Submit</button>

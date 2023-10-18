@@ -2,9 +2,15 @@
 
 <section class="main-body">
    <div class="inner-sec">
+    <h3>Zoan_Mania</h3>
     <div class="logo-sec">
-        <!-- Welcome back!!! -->
+        
     </div>
+    <% if(locals.error){ %>
+        <div class="alert alert-success text-center" id="disapear">
+            <%= error   %>
+        </div>
+    <% } %>
     <form action="/admin/check" method="post" style="width: 100%;" class="mt-5">
         <input type="email" name="email" class="box" id="email" placeholder="Email" required><br>
         <input type="password" name="password" id="password" class="box mt-4" placeholder="password" required> <br>
@@ -15,5 +21,11 @@
     </form> 
    </div>
 </section>
+<script>
+     setTimeout(function () {
+            document.getElementById('disapear').style.display = "none";
+        }, 4000);
+
+</script>
 
 <%-include('footer');-%>

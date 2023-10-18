@@ -324,7 +324,13 @@ router.get('/edit-product/:id',async(req,res)=>{
 //product delete
 
 router.get('/delete-product/:id',async(req,res)=>{
-    await products.findByIdAndDelete({_id: req.params.id})
+    const data = await products.findOne({_id: req.params.id})
+    if(data.visible===true){
+        await products.updateOne({_id: req.params.id},{$set:{visible:false}})
+    }else{
+        await products.updateOne({_id: req.params.id},{$set:{visible:true}})
+    }
+    // await products.findByIdAndDelete({_id: req.params.id})
     res.redirect('/admin/inventory');
 
 })
@@ -361,7 +367,4 @@ router.get('/delete-product/:id',async(req,res)=>{
 
 
 
-
-
-
-module.exports = router
+module.exports = router 

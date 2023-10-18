@@ -15,6 +15,9 @@ const imageSchema = new mongoose.Schema({
 const sch = new mongoose.Schema({
   Description: { type: String},
   Name: { type: String },
+  Spec1: {type: String},
+  Spec2: {type: String},
+  Spec3: {type: String},
   Sname:{ type: String},
   Image: [imageSchema],
   Rating: {type: String},
@@ -24,8 +27,12 @@ const sch = new mongoose.Schema({
   Review: { type: String }, 
   BrandId: {type: Schema.Types.ObjectId},
   Category: {type: String},
-  Price: {type:Number}
-},{timestamps:true});
+  Price: {type:Number},
+  visible:{
+    type:Boolean,
+    default:true
+ }
+},{timestamps:true}); 
 const monmodel = mongoose.model("product",sch);
 
 module.exports = monmodel
