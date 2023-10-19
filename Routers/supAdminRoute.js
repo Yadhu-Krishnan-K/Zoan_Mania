@@ -1,33 +1,21 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer');
+
+
 const category = require('../models/category')
-// const storage = multer.memoryStorage()
-
-// const upload = multer({dest:"uploads/"});
-
-// const storage = multer.diskStorage({
-//     destination:(req,file,cb)=>{
-//         return cb(null,'./uploads')
-//     },
-//     filename: (req,file,cb)=>{
-//         return cb(null,`${Date.now()}-${file.originalname}`)
-//     }
-// });
-// const upload = multer({storage})
-
 const db = require('../models/user')
 const products = require('../models/products')
 const Cate = require('../models/category')
 const admin = require('../models/admin')
-
 const multi = require('../middlewares/multiImage')
 const adminrouter = require('../controllers/Admin-side');
+const adminauth = require('../middlewares/admin-Auth')
 const { fileLoader } = require('ejs');
 
 
 
-router.get('/',adminrouter.getAdminLogin)
+router.get('/',adminauth.adminLoginAuthguard,adminrouter.getAdminLogin)
 // router.get('',)
 //-image upload----------------------------------------------------------------------------------------------------------------///
 
@@ -36,34 +24,24 @@ router.get('/',adminrouter.getAdminLogin)
 
 
 
-//---------------------------------------------------------------------------------4
+//----------------------------------------------------------------------------------
 //customer
 
-router.get('/Customers',adminrouter.getCustomer)
+router.get('/Customers',adminauth.adminLoggedinAuthguard,adminrouter.getCustomer)
  
 // -----------------------------------------------------------------------------------------------------//
 //inventory
-router.get('/inventory',adminrouter.getInventory)
+router.get('/inventory',adminauth.adminLoggedinAuthguard,adminrouter.getInventory)
         
 //----------------------------------------------------------------------------------------------
 //Category------------------------<%= ++i %>----------------
 
-router.get('/Category',async(req,res)=>{
-    
-    i=0
-    const datas = await Cate.find()
-    // console.log(datas)
-    res.render('supAdmin/admin-category',{datas,i})
-
-})
+router.get('/Category',adminauth.adminLoggedinAuthguard,adminrouter.getCategory)
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 //add category
 
-router.get('/addCatgory',(req,res)=>{
-
-    res.render('supAdmin/admin-category-add')
-})
+router.get('/addCatgory',adminauth.adminLoggedinAuthguard,adminrouter.addCategory)
 
 ///add-category
 router.post('/add-category',async(req,res)=>{
@@ -90,7 +68,7 @@ router.post('/add-category',async(req,res)=>{
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 //get add product
 
-router.get('/inventory/addProduct',adminrouter.getAddProduct)
+router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,adminrouter.getAddProduct)
 
 
 //users-------------------------------------------------------------------------------------------------------------------------------//
@@ -111,7 +89,7 @@ router.post('/check',adminrouter.adminNpasswordCheck)
 // ------------------------------------------------------------------------------------------------------------//
 
 //insert product
-router.get('/inventory/addProduct',(req,res)=>{
+router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,(req,res)=>{
     
     res.render('supAdmin/admin-addProduct')  
     // res.send('hei')
@@ -140,7 +118,7 @@ router.post('/inventory/adding-product',multi.fields([
     image1: image2.filename,
     image2: image3.filename,
    };
-   const {Description,Pname,stock,price,category}=req.body
+   const {Description,Pname,stock,price,category,Specification1,Specification2,Specification3,Suffix}=req.body
 //     // try {
         const product =await new products({
             Description:Description,
@@ -149,7 +127,10 @@ router.post('/inventory/adding-product',multi.fields([
             Stock:stock,
             Category:category,
             Price:price,
-            
+            Spec1:Specification1,
+            Spec2:Specification2,
+            Spec3:Specification3,
+            Suffix:Suffix
         })
         const newProduct = await product.save();
         // console.log(newProduct);
@@ -166,7 +147,12 @@ router.post('/inventory/adding-product',multi.fields([
 //logout
 
 router.get('/logout',(req,res)=>{
+    console.log('Before---');
+    console.log("logged =",req.session.logged)
+    console.log("adminAuth = ",req.session.adminAuth);
+
     req.session.destroy((err)=>{
+        console.log(err)
         res.redirect('/admin'); 
     })
     
@@ -303,12 +289,16 @@ router.get('/edit-product/:id',async(req,res)=>{
             // const {Description,ProductName,Category,Stock,Price} = req.body
 
         const data = {
-            Description:req.body.Description,
             Name:req.body.ProductName,
+            Description:req.body.Description,
             Category:req.body.Category,
             Stock:req.body.Stock,
             Price:req.body.Price,
-            Image:[imageUrls]
+            Image:[imageUrls],
+            Spec1:req.body.Spec1,
+            Spec2:req.body.Spec2,
+            Spec3:req.body.Spec3
+
         }
         const updatedProduct = await products.findByIdAndUpdate(P_id, data);
         if (!updatedProduct) {

@@ -13,13 +13,13 @@ const imageSchema = new mongoose.Schema({
   }
 })
 const sch = new mongoose.Schema({
-  Description: { type: String},
   Name: { type: String },
+  Suffix:{ type: String},
   Spec1: {type: String},
   Spec2: {type: String},
   Spec3: {type: String},
-  Sname:{ type: String},
   Image: [imageSchema],
+  Description: { type: String},
   Rating: {type: String},
   // Specification: [{ type: String, required: true,  }],
   Stock: { type: Number},

@@ -12,23 +12,23 @@ const productList = require('../models/products')
 const Fotp = require('../controllers/forgotPassword')
 
 
-router.get('/',(req,res)=>{
+router.get('/',authGuard.userLoggedinAuthGuard,(req,res)=>{
 
     res.render('user/anonymous',{productInHome})
 })
 
 
 //user login-------------------------------------------------------------------------
-router.get('/login',us.userLogin);
+router.get('/login',authGuard.userLoggedinAuthGuard,us.userLogin);
 
 //user signup----------------------------------------------------------------------------------
-router.get('/signup',us.userSignup)
+router.get('/signup',authGuard.userLoggedinAuthGuard,us.userSignup)
 
 //--------------------------------------------------------------------------------------------------------------------------//
 //userHome
 
 
-router.get('/userHome',authGuard,us.getHome)
+router.get('/userHome',authGuard.userLoginAuthGuard,us.getHome)
 
 //-----------------------------------------------------------------------------------------
 //checking for already existing user while registering
@@ -46,7 +46,7 @@ router.post('/otpsend',controller.otp);
 //=----------==-----------------------=-------------------------------------=---------------
 //otp form--------
 
-router.get('/otpsen',us.otpForm)
+router.get('/otpsen',authGuard.userLoggedinAuthGuard,us.otpForm)
  
 //--------------------------------------------------------------------------------------------------
 //entering to home route --------------------===------------------=--------
@@ -71,7 +71,7 @@ router.get('/logout',(req,res)=>{
         if (err) {
             console.log(err)
         } else {
-            res.setHeader('Cache-Control','no-store')
+            // res.setHeader('Cache-Control','no-store')
             res.redirect('/')
         }
     })
@@ -82,7 +82,7 @@ router.get('/logout',(req,res)=>{
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //product-list userside---------------------------------------------------------------------------------
 
-router.get('/Product-list',async(req,res)=>{
+router.get('/Product-list',authGuard.userLoginAuthGuard,async(req,res)=>{
     const products = await productList.find();
     const name = req.session.name
 
@@ -96,7 +96,7 @@ router.get('/Product-list',async(req,res)=>{
 
 //product detail page
 
-router.route('/productDetail/:id')
+router.route('/productDetail/:id',authGuard.userLoginAuthGuard)
 .get(async(req,res)=>{
         const name = req.session.name
         const P_id = req.params.id
@@ -114,7 +114,7 @@ router.route('/productDetail/:id')
   
   
     //user forgot password
-router.route('/forgotPassword')
+router.route('/forgotPassword',authGuard.userLoggedinAuthGuard)
     .get((req,res)=>{
         res.render('user/forgotten_pass',{title:'forgotten password'})
     })
