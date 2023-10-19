@@ -16,13 +16,14 @@ const userLogin = (req,res)=>{
     // res.send("done")
 }
 
-
+ 
 const userSignup = (req,res)=>{
     res.render('user/userSignUp',{title:"SignuUp"})  
 }
 
 
 const getHome = (req,res)=>{
+    req.session.loggedIn = true;
     const name = req.session.name
     console.log(name)
     
@@ -60,6 +61,7 @@ const postEnteringHOme = async(req,res)=>{
     if(!logins){
     if(userOtp==controller.vaotp){
         const hashPass = await bcrypt.hash(req.session.data.password,saltRounds)
+        req.session.userAuth = true;
         
         // await otpModel.delete()
 
@@ -95,6 +97,7 @@ const userLoginBackend = async(req,res)=>{
         // const check = await userModel.findOne({email:email},{access:1})
         console.log(logins.access)
         if(isChecked == true && logins.access){
+            req.session.userAuth = true;
             req.session.userId = await userModel.findOne({email:email},{_id: 1})
             console.log('userId='+req.session.userId)
             res.redirect('/userHome')

@@ -8,6 +8,7 @@ const getAdminLogin = (req,res)=>{
 
 
 const getCustomer = async(req,res,next)=>{
+    req.session.logged = true
     let i = 0;
     const userData = await db.find();
     res.render('supAdmin/admin-control-user',{userData,i,})
@@ -48,10 +49,26 @@ const adminNpasswordCheck = async(req,res,next)=>{
     // console.log(Dpassword.adminPassword);
 
     if(req.body.email===Demail.adminGmail && req.body.password==Dpassword.adminPassword){
+        req.session.adminAuth = true;
         res.redirect('/admin/Customers')
     }else{
         res.render('supAdmin/admin-login',{error:"Check your email and password"})
     }
+}
+//================================================================================================================
+//admin-category---------------------------
+const getCategory = async(req,res)=>{
+    
+    i=0
+    const datas = await Categories.find()
+    // console.log(datas)
+    res.render('supAdmin/admin-category',{datas,i})
+
+}
+//===============================================================================================================
+//----const add-category
+const addCategory = (req,res)=>{
+    res.render('supAdmin/admin-category-add')
 }
 
 
@@ -62,5 +79,6 @@ module.exports = {
     getInventory,
     getAddProduct,
     adminNpasswordCheck,
-
+    getCategory,
+    addCategory
 }

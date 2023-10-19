@@ -21,7 +21,14 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
    
   const {name,email,password}=req.body;
   const data = {name,email,password}
-  
+
+  const uname = await user.findOne({name: name})
+  if(uname){
+    res.render('user/userSignUp',{title: "SignUp",exist:"The username already exists"})
+
+  }
+
+
   req.session.data = data
   const exist = await user.findOne({email})
       if(!exist){
@@ -70,7 +77,7 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
       res.redirect('/otpsen')
       }else{
         
-        res.render('user/userSignUp',{title: "SignUp",exist:"The user already exists"})
+        res.render('user/userSignUp',{title: "SignUp",exist:"The email already exists"})
       }
   
 

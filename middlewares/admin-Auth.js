@@ -1,4 +1,18 @@
-const adminAuthguard = (req,res,next)=>{
-    
+const adminLoggedinAuthguard = (req,res,next)=>{
+    if(req.session.adminAuth) {
+        next()
+    }else{
+        res.redirect('/admin')
+    }
 }
-module.exports = adminAuthguard;
+
+const adminLoginAuthguard  = (req,res,next) => {
+    if(!req.session.logged){
+        next()
+    }else{
+        res.redirect('/admin/Customers')
+    }
+}
+
+
+module.exports = {adminLoginAuthguard,adminLoggedinAuthguard};
