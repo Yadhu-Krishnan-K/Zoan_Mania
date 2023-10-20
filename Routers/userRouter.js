@@ -1,8 +1,10 @@
 const express = require('express')
 const router = express.Router()
-
-
 const bcrypt = require('bcrypt')
+const otpGenerator = require('otp-generator')
+const nodemailer = require('nodemailer')
+const Mailgen = require('mailgen')
+
 const us = require('../controllers/user-side')
 const userModel = require('../models/user')
 const authGuard = require('../middlewares/authGuard')
@@ -10,6 +12,7 @@ const productInHome = require('../controllers/home-page-products')
 const controller = require('../controllers/for-otp')
 const productList = require('../models/products')
 const Fotp = require('../controllers/forgotPassword')
+const userAccess = require('../middlewares/userSession')
 
 
 router.get('/',authGuard.userLoggedinAuthGuard,(req,res)=>{
@@ -28,7 +31,7 @@ router.get('/signup',authGuard.userLoggedinAuthGuard,us.userSignup)
 //userHome
 
 
-router.get('/userHome',authGuard.userLoginAuthGuard,us.getHome)
+router.get('/userHome',authGuard.userLoginAuthGuard,userAccess,us.getHome)
 
 //-----------------------------------------------------------------------------------------
 //checking for already existing user while registering
@@ -82,7 +85,7 @@ router.get('/logout',(req,res)=>{
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //product-list userside---------------------------------------------------------------------------------
 
-router.get('/Product-list',authGuard.userLoginAuthGuard,async(req,res)=>{
+router.get('/Product-list',authGuard.userLoginAuthGuard,userAccess,async(req,res)=>{
     const products = await productList.find();
     const name = req.session.name
 
@@ -96,7 +99,7 @@ router.get('/Product-list',authGuard.userLoginAuthGuard,async(req,res)=>{
 
 //product detail page
 
-router.route('/productDetail/:id',authGuard.userLoginAuthGuard)
+router.route('/productDetail/:id',authGuard.userLoginAuthGuard,userAccess)
 .get(async(req,res)=>{
         const name = req.session.name
         const P_id = req.params.id
@@ -172,8 +175,72 @@ const hashPass = await bcrypt.hash(req.body.password,10)
 await userModel.updateOne({email: req.session.email},{password: hashPass})
 res.redirect('\login')
 })
+//===================================================================================================================
+//resend otp
+router.get('/resendOtp',async(req,res)=>{
 
+const reOtp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCaseAlphabets: false, upperCaseAlphabets: false })
+req.session.Pw = reOtp
+console.log(reOtp)
+const password = req.session.password
+const email = req.session.email
 
+// const datas = await userModel.findOne({email:email})
+const name = req.session.name;
+
+//    console.log(name)
+//     console.log(email)
+const data = {name,email,password}
+
+req.session.data = data
+//   const exist = await user.findOne({email})
+   
+     let config = {
+       service : 'gmail',
+       auth : {
+         user:process.env.EMAIL,
+         pass:process.env.PASSWORD
+       }
+     }
+     
+     let transporter = nodemailer.createTransport(config)
+
+     let MailGenerator =new Mailgen({
+       theme:"default",
+       product:{
+         name:"ZoanMania",
+         link:'https://mailgen.js/'
+       }
+     })
+     let response = {
+       body:{
+         name:name,
+         intro:`Welcome back to ZOAN MANiA
+         Password to enter Zoan_mania "${reOtp}"`,
+         outro:"Looking forward to do more business"
+       }
+
+     }
+     let mail =MailGenerator.generate(response)
+     let message = {
+       from:process.env.email,
+       to:email,
+       subject:'OTP VARIFICATION',
+       html:mail
+     }
+
+     
+     transporter.sendMail(message).then(()=>{
+       return res.status(201).json({
+         msg:"you should receive an email"
+       })
+     }).catch(error => {
+       return res.status(500)
+     })
+
+   res.redirect('/otpsen')
+
+})
 
 
 

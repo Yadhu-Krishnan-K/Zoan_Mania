@@ -1,25 +1,5 @@
-<%-include('h1');-%>
+<%- include('h1'); -%>
 
-<!-- <section>
-    <div class="main">
-        <h4 class="mt-5">Verification</h4>
-        <p>Enter your 4 digit code that you recieved on your email.</p>
-        <div class="otp-section">
-            <form action="/home" method="post">
-                <div class="otps">
-                    <input type="number" name="number1" id="number1" class="numb"> -->
-                    <!-- <input type="number" name="number2" id="number2" class="numb">
-                    <input type="number" name="number3" id="number3" class="numb">
-                    <input type="number" name="number4" id="number4" class="numb"> -->
-                <!-- </div>
-                <div class="timer mt-3" id="timer"></div>
-                <div class="button d-flex justify-content-center mt-5"><input type="submit" onclick="sub()" value="Verify" class="row "></div>
-            </form>
-           <a href=""> <button id="resendOtp" class="mt-3" onclick="dis()" style="display: none;">Resend OTP</button>
-
-        </div>
-    </div>
-</section> -->
 <section>
     <div class="main">
         <h4 class="mt-5">Verification</h4>
@@ -30,32 +10,52 @@
                     <input type="number" name="number1" id="number1" class="numb">
                     <!-- You can add similar input fields for number2, number3, and number4 if needed -->
                 </div>
-                <div class="timer mt-3">00:60</div> <!-- This div will display the timer -->
+                <div class="timer mt-1" style="text-align: center;">00:60</div>
                 <div class="button d-flex justify-content-center mt-3">
                     <input type="submit" value="Verify" class="row">
                 </div>
             </form>
-            <a href=""><button style="display: none;" class="vis">Resend Otp</button></a>
+
+            <div class="resend-otp" style="display: none; text-align: center;">
+                <a href="/resendOtp" style="text-decoration: none; display: inline-block; vertical-align: middle;">
+                    <button id="resendButton" class="row" onclick="resendOTP()" style="vertical-align: middle;">Resend OTP</button>
+                </a>
+            </div>
         </div>
     </div>
 </section>
+
 <script>
-    
-    // JavaScript code to handle the timer
-    let timer = 60; // 60 seconds
-    const timerElement = document.querySelector('.timer');
+
+    let timeInSeconds = 60;
 
     function updateTimer() {
-        timerElement.textContent = `00:${timer < 10 ? '0' : ''}${timer}`;
-        if (timer === 0) {
-            // Timer has reached 0, you can add your actions here
-        } else {
-            timer--;
-            setTimeout(updateTimer, 1000); // Update timer every second
+        const timerElement = document.querySelector('.timer');
+        timerElement.textContent = `00:${timeInSeconds.toString().padStart(2, '0')}`;
+        timeInSeconds--;
+
+        if (timeInSeconds < 0) {
+            clearInterval(timerInterval);
+            displayResendButton();
         }
     }
 
-    updateTimer(); // Start the timer
+    function displayResendButton() {
+        const resendButton = document.querySelector('.resend-otp');
+        resendButton.style.display = 'block';
+    }
+
+    function resendOTP() {
+        // Handle the logic to resend the OTP here
+        // You can make an API request to send a new OTP, for example
+        // After sending, you can reset the timer and hide the resend button
+        timeInSeconds = 60;
+        document.querySelector('.timer').textContent = '00:60';
+        document.querySelector('.resend-otp').style.display = 'none';
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    const timerInterval = setInterval(updateTimer, 1000);
 </script>
 
-<%-include('f1');-%>
+<%- include('f1'); -%>

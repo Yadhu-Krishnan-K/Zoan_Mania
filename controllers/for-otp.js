@@ -5,26 +5,30 @@ const user = require('../models/user')
 const otpModel = require('../models/otpModel')
 
 
-
 //otp generator
+
 const otpGenerator = require('otp-generator')
 
 var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCaseAlphabets: false, upperCaseAlphabets: false })
 
-// console.log(vaotp)
+console.log(vaotp)
 // sent mail with real email account
 
 
- const otp = async(req,res,)=>{
+ const otp = async(req,res)=>{
 
-  
+  const test = 24
    
   const {name,email,password}=req.body;
   const data = {name,email,password}
-
+  req.session.email = email;
+  req.session.password = password;
+  req.session.name = name;
   const uname = await user.findOne({name: name})
   if(uname){
-    res.render('user/userSignUp',{title: "SignUp",exist:"The username already exists"})
+    // res.render('user/userSignUp',{title: "SignUp",exist:"The username already exists"})
+    req.session.exist = "The username already exists"
+    res.redirect('/signup')
 
   }
 
@@ -73,6 +77,7 @@ var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCas
         }).catch(error => {
           return res.status(500)
         })
+        
   
       res.redirect('/otpsen')
       }else{
