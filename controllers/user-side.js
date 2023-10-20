@@ -12,13 +12,15 @@ const saltRounds = 10
 
 //userlogin
 const userLogin = (req,res)=>{
-    res.render('user/userLogin',{title:"login"})
+    const txt = req.session.txt
+    res.render('user/userLogin',{title:"login",txt})
     // res.send("done")
 }
 
  
 const userSignup = (req,res)=>{
-    res.render('user/userSignUp',{title:"SignuUp"})  
+    const exist = req.session.exist
+    res.render('user/userSignUp',{title:"SignuUp",exist})  
 }
 
 
@@ -33,7 +35,16 @@ const getHome = (req,res)=>{
 
 
 const otpForm = (req,res)=>{
-    console.log(controller.vaotp)
+    // otp timer-----------------
+    const timer =  setTimeout(() => {
+        controller.vaotp = null
+        req.session.Pw = null
+        console.log("time up")
+    }, 60000);
+
+    // clearTimeout(timer)
+    //------------------
+    // console.log(controller.vaotp)
     res.render('user/otpRegister',{title:"Register"})
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,15 +52,12 @@ const otpForm = (req,res)=>{
 const postEnteringHOme = async(req,res)=>{
     let userOtp=req.body.number1
     console.log(controller.vaotp)
+    console.log(controller.otp)
     console.log(req.session.data)
     const {name,email,password}=req.session.data;
     
     req.session.name = name
 
-    // const Dbzotp = await new otpModel({
-    //     otp:controller.vaotp
-    // })
-    // const newOtp = await Dbzotp.save();
 
     const logins = await userModel.findOne({email:email})
     // if(newOtp!==undefined){
@@ -59,10 +67,10 @@ const postEnteringHOme = async(req,res)=>{
     //     },60000)
     // }
     if(!logins){
-    if(userOtp==controller.vaotp){
-        const hashPass = await bcrypt.hash(req.session.data.password,saltRounds)
+    if(userOtp==controller.vaotp||userOtp == req.session.Pw){
+        const hashPass = await bcrypt.hash(req.session.password,saltRounds)
         req.session.userAuth = true;
-        
+
         // await otpModel.delete()
 
         const logged=await userModel.create({name,email,password:hashPass});
@@ -89,7 +97,9 @@ const userLoginBackend = async(req,res)=>{
     // console.log(logins)
     console.log(logins)
     if(!logins){
-        res.render('user/userLogin',{txt:"No users found",title: "Login"})
+        const txt ="No users found"
+        res.redirect('/login')
+        // res.render('user/userLogin',{txt:"No users found",title: "Login"})
     }else{
         let isChecked = await bcrypt.compare(password,logins.password)
         
@@ -102,7 +112,9 @@ const userLoginBackend = async(req,res)=>{
             console.log('userId='+req.session.userId)
             res.redirect('/userHome')
         }else{
-            res.send('something went wrong')
+            req.session.txt = "User is blocked"
+            res.redirect('/login')
+            // res.render('user/userLogin',{txt:"User not found",title:"login"})
         }
     }
 }

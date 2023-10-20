@@ -114,7 +114,7 @@
 
                 <div class="row">
                     <div class="col-md-5 d-flex flex-column align-items-center">
-                        <div class="mt-4" style=" width: 350px;"><img src="/uploads/<%=P_detail.Image[0].mainimage%>" class="img-fluid rounded-top" alt="" id="img-container"  height="300px"></div>
+                        <div class="mt-4" style=" width: 350px; z-index: 1;" id="img-container"><img src="/uploads/<%=P_detail.Image[0].mainimage%>" class="img-fluid rounded-top" alt=""  height="300px"></div>
                         <div class="mt-5 d-flex justify-content-evenly" style="width: 100%;">
                           <div style="height: 100px; width: 100px; border-radius: 12px; background: rgb(27, 187, 73);"><img src="/uploads/<%=P_detail.Image[0].mainimage%>" height="100px" width="100px" alt=""></div>
                           <div style="height: 100px; width: 100px; border-radius: 12px; background: cadetblue;"><img src="/uploads/<%=P_detail.Image[0].image1%>" height="100px" width="100px" alt=""></div>
@@ -154,6 +154,36 @@
 
                     </div>
                 </div>
+                <footer class="container mt-5" style="height: 300px;background: #000;">
+                  <div class="row">
+                    <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
+                      <h4 class="footer-head ">Get In Touch</h4>
+                      <p class="tefo">Life is too short to wear boring clothes</p>
+                      <div class="social-media">
+                        <a href=""><img src="/icons/facebook.png" alt=""></a>
+                        <a href=""><img src="/icons/instagram.png" alt=""></a>
+                        <a href=""><img src="/icons/twitter.png" alt=""></a>
+                      </div>
+            
+                    </div>
+            
+                    <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
+                      <h4 class="footer-head">Company info</h4>
+                      <p><a href=""class="tefo">About us</a></p>
+                      <p><a href="" class="tefo">Carrier</a></p>
+                      <p><a href=""class="tefo">We are hiring</a></p>
+                      <p><a href=""class="tefo">Blog</a></p>
+                    </div>
+            
+                    <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
+                      <h4 class="footer-head">Features</h4>
+                      <p><a href=""class="tefo">Business Marketing</a></p>
+                      <p><a href=""class="tefo">User Analystic</a></p>
+                      <p><a href=""class="tefo">Live Chat</a></p>
+                      
+                    </div>
+                  </div>
+            </footer>
 
               
 
@@ -167,15 +197,15 @@
     
     </div>
     <script>
-     document.addEventListener("DOMContentLoaded", function () {
+    
     // Your code here
     var options = {
-        width: 400,
-        zoomWidth: 500,
+        width: 300,
+        zoomWidth: 200,
         offset: { vertical: 0, horizontal: 10 }
     };
     new ImageZoom(document.getElementById("img-container"), options);
-});
+
        
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
