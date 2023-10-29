@@ -35,9 +35,12 @@
                         </div>
                         <br>
                         <div class="border p-3 mb-3">
-                            <input type="file" name="image1" accept="image/*" style="width: 188px; height:188px;" >
+                            <input type="file" name="mainimage" accept="image/*" style="width: 188px; height:188px;" onchange="Cimg(e)">
+                            <img src="/uploads/<%=P_detail.Image[0].mainimage %>" alt="" width="80px" id="mainImage">
                             <input type="file" name="image2" accept="image/*" style="width: 188px; height:188px;" >
+                            <img src="/uploads/<%= P_detail.Image[0].image1 %>" alt="" width="80px">
                             <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;" >
+                            <img src="/uploads/<%= P_detail.Image[0].image2 %>" alt="" width="80px">
                             <!-- <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;"> -->
                         </div>
         
@@ -79,7 +82,7 @@
                             <br>
                             <label>Category:</label>
                             <select class="form-select bg-light" id="category" name="Category" required>
-                                <option value="" selected disabled>Select a category</option>
+                                <option value="<%=P_detail.Category %>" selected disabled></option>
                                     <%if(cate){%>
                                         <%cate.forEach((data)=>{%>
                                             <option value="<%=data.catName%>">
@@ -121,6 +124,9 @@
                     },4000)
                 }
             })
+        }
+        function Cimg(e){
+            document.getElementById('mainImage').src=URL.createObjectURL(e.target.result)
         }
     </script>
 <%- include('../layouts/admin/footer'); -%>

@@ -19,6 +19,7 @@ const sch = new mongoose.Schema({
   Spec2: {type: String},
   Spec3: {type: String},
   Image: [imageSchema],
+  Size : {type: String},
   Description: { type: String},
   Rating: {type: String},
   // Specification: [{ type: String, required: true,  }],
@@ -33,6 +34,6 @@ const sch = new mongoose.Schema({
     default:true
  }
 },{timestamps:true}); 
-const monmodel = mongoose.model("product",sch);
+const products = mongoose.model("products",sch);
 
-module.exports = monmodel
+module.exports = products

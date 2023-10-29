@@ -9,9 +9,12 @@ const products = require('../models/products')
 const Cate = require('../models/category')
 const admin = require('../models/admin')
 const multi = require('../middlewares/multiImage')
-const adminrouter = require('../controllers/Admin-side');
+const adminrouter = require('../controllers/AdminControll/Admin-side');
 const adminauth = require('../middlewares/admin-Auth')
 const { fileLoader } = require('ejs');
+const catController = require('../controllers/AdminControll/adminCategoryController')
+const adminUserControl = require('../controllers/AdminControll/adminUserControl')
+const adminProductControl = require('../controllers/AdminControll/adminProductControl')
 
 
 
@@ -44,26 +47,7 @@ router.get('/Category',adminauth.adminLoggedinAuthguard,adminrouter.getCategory)
 router.get('/addCatgory',adminauth.adminLoggedinAuthguard,adminrouter.addCategory)
 
 ///add-category
-router.post('/add-category',async(req,res)=>{
-    // console.log(req.body.cate)
-    // const categ = await new category({
-        const catName = req.body.cate
-    // })
-    // console.log(catName);
-    const cat = await category.find({catName:{$regex: "^" + catName, $options: "i"}})
-    console.log(cat)
-    if(cat == "[]"){
-        res.redirect('admin/addCatgory')
-    }
-    else if (cat.length>0) {
-        //    console.log(req.files,'files');
-        res.render('supAdmin/admin-category-add', { error: 'The category already exists' });
-
-    } else {
-        const colleeeection = await category.create({catName:catName})
-    res.redirect('/admin/Category') 
-    }
-})
+router.post('/add-category',catController.addCategory)
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 //get add product
@@ -89,11 +73,7 @@ router.post('/check',adminrouter.adminNpasswordCheck)
 // ------------------------------------------------------------------------------------------------------------//
 
 //insert product
-router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,(req,res)=>{
-    
-    res.render('supAdmin/admin-addProduct')  
-    // res.send('hei')
-})
+router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,adminProductControl.getAdminAddProduct)
 
 
 
@@ -147,13 +127,13 @@ router.post('/inventory/adding-product',multi.fields([
 //logout
 
 router.get('/logout',(req,res)=>{
-    console.log('Before---');
-    console.log("logged =",req.session.logged)
-    console.log("adminAuth = ",req.session.adminAuth);
+    // console.log('Before---');
+    // console.log("logged =",req.session.logged)
+    // console.log("adminAuth = ",req.session.adminAuth);
 
     req.session.destroy((err)=>{
         console.log(err)
-        res.redirect('/admin'); 
+        res.redirect('/admin');
     })
     
 })
@@ -180,79 +160,32 @@ router.get('/logout',(req,res)=>{
 //--------------------------------------------------------------------------------------------------------------------------
 
 //user status------
-router.get('/userBUB/:id',async(req,res)=>{
-    const id = req.params.id
-    const foo = await db.findOne({_id : id})
-    if(foo.access){
-        await db.updateOne({_id: id},{$set:{
-            access:false
-        }});
-    }else{
-        await db.updateOne({_id: id},{$set:{
-            access:true
-        }});
-    }
-    const userData = await db.find()
-    let i = 0
-    res.render("supAdmin/admin-control-user", { userData, i })
-
-
-})
+router.get('/userBUB/:id',adminUserControl.userStatus)
 //====================----------------------------------------------------------------------------------------------------------------
 //user edit
 
-router.get('/userEdit/:id',async(req,res)=>{
-    const id = req.params.id
-    const user_data = await db.findOne({_id : id})
-    res.render('supAdmin/adminUserEdit',{user_data})
-})
+router.get('/userEdit/:id',adminUserControl.userEdit)
 
-router.post('/userUpdate/:id',async(req,res)=>{
-    const id = req.params.id
-    const CName = req.body.Uname;
-    await db.updateOne({_id:id},{$set:{
-        name:CName  
-    }})
-    res.redirect('/admin/Customers')
-
-})
+router.post('/userUpdate/:id',adminUserControl.userUpdate)
 //--------------------------------------------------------------------------------------------------------------
 //user delete
-router.get('/userDelete/:id',async(req,res)=>{
-    const id = req.params.id;
-    await db.deleteOne({_id:id})
-    res.redirect('/admin/Customers')
-})
+router.get('/userDelete/:id',adminUserControl.userDelete)
 //---------------------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------------
 //edit category
 
 router.route('/edit-category/:id')
-    .get(async(req,res)=>{
-        const id = req.params.id;
-        const category = await Cate.findOne({_id:id})
-        res.render('supAdmin/admin-category-edit',{category})
-
-    })
+    .get(catController.editCategory)
 
 //cat update
 router.route('/category-update/:id')
-    .post(async(req,res)=>{
-        await Cate.updateOne({_id:req.params.id},{
-            catName:req.body.catName
-        })
-        res.redirect('/admin/Category')
-    })
+    .post(catController.categoryUpdate)
 
 //-------------------------------------------------------------------------------------------------------------------
 //category delete
 
 router.route('/delete-category/:id')
-    .get(async(req,res)=>{
-        const id = req.params.id
-        await Cate.deleteOne({_id:id})
-        res.redirect('/admin/Category')
-    })
+    .get(catController.categoryDelete)
 
 
 
@@ -313,20 +246,13 @@ router.get('/edit-product/:id',async(req,res)=>{
 //----------------------------------
 //product delete
 
-router.get('/delete-product/:id',async(req,res)=>{
-    const data = await products.findOne({_id: req.params.id})
-    if(data.visible===true){
-        await products.updateOne({_id: req.params.id},{$set:{visible:false}})
-    }else{
-        await products.updateOne({_id: req.params.id},{$set:{visible:true}})
-    }
-    // await products.findByIdAndDelete({_id: req.params.id})
-    res.redirect('/admin/inventory');
-
-})
+router.get('/delete-product/:id',adminProductControl.deleteProduct)
 
 
 
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+//============================================================================================================================================================
 
 
 

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%=title%></title>
+
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="userCss/userstyle.css">
+    <link rel="stylesheet" href="userCss/home.css">
+    <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body style="overflow-x: hidden;">
+
+    <div class="main-navbar shadow-sm sticky-top" style="background-color: #fff;">
+        <div class="top-navbar">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2 my-auto d-none d-sm-none d-md-block d-lg-block">
+                       <h4>ZOAN MANiA</h4>
+                    </div>
+                    <div class="col-md-4 my-auto rounded">
+                        <form role="search" action="/search" method="post">
+                            <div class="input-group">
+                                <input name="value" type="search" placeholder="Search product" class="form-control" />
+                                <button class="btn bg-white border" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-6 my-auto">
+                        <ul class="nav justify-content-end">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/userHome" style="color: #92bfda;">
+                                    <i class="fa-solid fa-house-chimney" style="color: #23a6f0;"></i> Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Product-list" style="color: #92bfda;">
+                                    <i class="fa fa-shopping-cart" style="color: #23a6f0;"></i> Shop
+                                </a>
+                            </li>
+                            <li class="nav-item d-flex justify-content-center align-items-center me-1">
+                                <a class="nav-link" href="/cart" style="color: #92bfda; padding-right: 0px;">
+                                    <i class="fa fa-shopping-cart" style="color: #23a6f0;"></i> Cart
+                                </a>
+                                <!-- <%if(name){%>
+                                    <span class="badge badge-success" style="background: greenyellow">No</span>
+                                    <%}%> -->
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/wishlist" style="color: #92bfda;">
+                                    <i class="fa fa-heart" style="color: #23a6f0;"></i> Wishlist
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="color: #92bfda;">
+                                    <i class="fa fa-user" style="color: #23a6f0;"></i>
+                                    <%= name %>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li ><a class="dropdown-item" href="/profile" style="color: #92bfda;"><i class="fa fa-user" style="color: #23a6f0;"></i> Profile</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="/productorders" style="color: #92bfda;"><i class="fa fa-list" style="color: #23a6f0;"></i> My Orders</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="/logout" style="color: #92bfda;"><i class="fa fa-sign-out" style="color: #23a6f0;"></i>
+                                            Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
