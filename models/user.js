@@ -11,10 +11,24 @@ const sch = mongoose.Schema({
         unique:true,
         required:true
     },
+    Gender: {
+        type:String
+    },
     password:{
         type:String,
         required:true
     },
+    address:[
+        {
+            userName: {type: String},
+            AddressLane: { type: String },
+            City: { type: String },
+            Pincode: { type: Number },
+            State: { type: String },
+            Mobile: { type: Number },
+        }
+        ],
+    MobileNumber:{type:Number},
     access:{
         type:Boolean, 
         default:true

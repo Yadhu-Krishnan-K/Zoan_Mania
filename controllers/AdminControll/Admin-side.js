@@ -1,7 +1,7 @@
-const admin = require('../models/admin')
-const db = require('../models/user')
-const productModel =require('../models/products')
-const Categories = require('../models/category')
+const admin = require('../../models/admin')
+const db = require('../../models/user')
+const productModel =require('../../models/products')
+const Categories = require('../../models/category')
 
 const getAdminLogin = (req,res)=>{
     res.render('supAdmin/admin-login')}

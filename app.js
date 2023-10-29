@@ -1,10 +1,12 @@
 require('dotenv').config()
 const express = require("express")
 const nocache = require("nocache")
+const morgan = require('morgan')
 // const passport = require('passport')
 require('./auth/authentication')
 
 const path = require("path")
+
 
 const user = require('./Routers/userRouter')
 const admin = require('./Routers/supAdminRoute')
@@ -13,13 +15,16 @@ const app = express()
 const session = require('express-session')
 const {v4:uuidv4} = require('uuid')
 const passport = require('passport')
-
+const sessionSecret = uuidv4();
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 app.set('view engine','ejs')
 app.use(express.static(path.join(__dirname,'public')));
+// app.use(express.static(path.join(__dirname,'models')));
+
+app.use(morgan('tiny'))
 app.use(nocache())
 // mongoose.connect(process.env.DB_URI,{
 //     useNewUrlParser:true,useUnifiedTopology:true
@@ -51,8 +56,11 @@ app.use(nocache())
 app.use(session({
     resave: false,
     saveUninitialized: true,
-    secret: 'SECRET' ,
-    cookie:{secure:false}
+    secret: sessionSecret ,
+    cookie:{
+      secure:false,
+      maxAge: 3600000
+    }
   }));
 
   app.use(passport.initialize());

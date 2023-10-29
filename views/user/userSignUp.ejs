@@ -14,15 +14,15 @@
                             </div>
                             <% if(locals.exist){ %>
                                 <div class="alert alert-success text-center" id="disapear">
-                                    <%= exist   %>
+                                    <%= exist %>
                                 </div>
                             <% } %>
 
                     <form id="for-password"  action="/otpsend" method="post" >
-                        <input type="text" class=" box" name="name" id="name" placeholder="Name" required><br>
-                        <input type="email" class="mt-3 box" name="email" id="email" placeholder="Email" required><br>
-                        <input type="password" class="mt-3 box" name="password" id="password" placeholder="Password" required><br>
-                        <input type="password" class="mt-3 box" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required><br>
+                        <input type="text" class=" box p-3" name="name" id="name" placeholder="Name" required><br>
+                        <input type="email" class="mt-3 p-3 box" name="email" id="email" placeholder="Email" required><br>
+                        <input type="password" class="mt-3 p-3 box" name="password" id="password" placeholder="Password" required><br>
+                        <input type="password" class="mt-3 p-3 box" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required><br>
                         <div style="width: 100%; display: flex; justify-content: center;"><input type="submit" class="mt-5 btn" value="Sign up" onclick="checkPass()" id="submit"></div>
                         <!-- <div class="mt-3" style="width: 100%; display: flex; justify-content: center;"><a href="/auth/google">Login with google</a></div> -->
                     </form>

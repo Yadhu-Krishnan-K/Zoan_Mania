@@ -4,15 +4,17 @@ const bcrypt = require('bcrypt')
 const otpGenerator = require('otp-generator')
 const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
-
-const us = require('../controllers/user-side')
+const mongoose  = require('mongoose')
+const us = require('../controllers/UserControll/user-side')
 const userModel = require('../models/user')
 const authGuard = require('../middlewares/authGuard')
-const productInHome = require('../controllers/home-page-products')
-const controller = require('../controllers/for-otp')
-const productList = require('../models/products')
-const Fotp = require('../controllers/forgotPassword')
+const productInHome = require('../controllers/UserControll/home-page-products')
+const controller = require('../util/for-otp')
+const products = require('../models/products')
+const Fotp = require('../util/forgotPassword')
 const userAccess = require('../middlewares/userSession')
+const cartModel = require('../models/cartModel')
+const pValidator = require('../util/passwordValidator')
 
 
 router.get('/',authGuard.userLoggedinAuthGuard,(req,res)=>{
@@ -33,7 +35,7 @@ router.get('/signup',authGuard.userLoggedinAuthGuard,us.userSignup)
 
 router.get('/userHome',authGuard.userLoginAuthGuard,userAccess,us.getHome)
 
-//-----------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------
 //checking for already existing user while registering
 // router.post ('/checkUser',(req,res)=>{
 
@@ -41,12 +43,12 @@ router.get('/userHome',authGuard.userLoginAuthGuard,userAccess,us.getHome)
 
 //     res.redirect('/otpsend')
 // })
-//--------------------------------------------------------------------------------------------------------------
-//otp control------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------------
+//otp control---------------------------------------------------------
 
 router.post('/otpsend',controller.otp);
 
-//=----------==-----------------------=-------------------------------------=---------------
+//=----------==-----------------------=-------------------------------------=--------------------------------------------------------------------
 //otp form--------
 
 router.get('/otpsen',authGuard.userLoggedinAuthGuard,us.otpForm)
@@ -85,11 +87,11 @@ router.get('/logout',(req,res)=>{
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //product-list userside---------------------------------------------------------------------------------
 
-router.get('/Product-list',authGuard.userLoginAuthGuard,userAccess,async(req,res)=>{
-    const products = await productList.find();
+router.get('/Product-list',authGuard.userLoginAuthGuard, userAccess, async(req,res)=>{
+    const productsList = await products.find();
     const name = req.session.name
 
-    res.render('user/product-list',{name,products});
+    res.render('user/product-list',{name,productsList,title:"Zoan List" });
 })
 //------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -104,7 +106,7 @@ router.route('/productDetail/:id',authGuard.userLoginAuthGuard,userAccess)
         const name = req.session.name
         const P_id = req.params.id
         console.log("Product id=",P_id)
-        const P_detail = await productList.findOne({_id: P_id})
+        const P_detail = await products.findOne({_id: P_id})
         console.log(P_detail)
 
 
@@ -142,7 +144,7 @@ router.get('/forgotPasswordOtpGenerate',Fotp.Otp)
 
 //otpForm
 router.get('/updatePassword-1',(req,res)=>{
-
+    console.log(Fotp.vaOtp)
     res.render('user/otpFormForPC')
 })
 
@@ -216,7 +218,7 @@ req.session.data = data
        body:{
          name:name,
          intro:`Welcome back to ZOAN MANiA
-         Password to enter Zoan_mania "${reOtp}"`,
+         Password to enter Zoan_mania  "${reOtp}"`,
          outro:"Looking forward to do more business"
        }
 
@@ -242,6 +244,180 @@ req.session.data = data
 
 })
 
+//==================================================================================================================================
+//===========================================================================================================================
+//add to cart
+router.get('/addToCart/:id', async (req, res) => {
+  try {
+    const userData = await userModel.findOne({ name: req.session.name });
+    const productId = req.params.id;
+    const userId = userData._id;
+    console.log("lefcjpifcjpifjpifjepi",userId)
+    const userExist = await cartModel.findOne({ userId: userId });
+const ProductId = new mongoose.Types.ObjectId(productId)
+    if (!userExist) {
+      // Create a new cart and associate it with the user
+      const cart = await cartModel.create({
+        userId: userId,
+        Items: [{ ProductId: ProductId }]
+      });
+
+    } else {
+      const product = await cartModel.findOne({userId: userId,'Items.ProductId':ProductId})
+
+      console.log("foooooooo product check",product)
+      // console.log(productId)
+
+      if(!product){
+
+        await cartModel.findByIdAndUpdate(userExist._id, {
+          $push: {
+            Items: { ProductId: ProductId }
+          }
+        });
+
+      }else{
+
+        await cartModel.findByIdAndUpdate({userId: userId,'Items.ProductId':ProductId},{$inc:{'Items.Quantity': 1}})
+        .then(()=>{console.log('success')})
+        .catch((err)=>{console.log(err)})
+      }
+    }
+
+    res.redirect('/Product-list');
+  } catch (error) {
+    console.error("error=",error);
+  }
+});
+
+
+
+
+
+
+
+
+
+
+//============================================
+//user cart
+
+router.get('/cart',authGuard.userLoginAuthGuard,async(req,res)=>{
+  try {
+
+    const name = req.session.name
+    // console.log("username====",req.session.name);
+    // console.log("session.userId====",req.session.userId);
+    // console.log("heleleleooeloeo");
+    const userId=new mongoose.Types.ObjectId(req.session.userId)
+    // console.log("oiwejofj=====",userId);
+    const cartDetail = await cartModel.findOne({userId: userId })
+    .populate('Items.ProductId')
+    // console.log("cart.Detail===",cartDetail);
+
+
+    if(cartDetail){
+
+      const carts=cartDetail.Items
+      console.log("carts = ",carts)   
+      console.log("carts.ProductId from /cart",carts.ProductId); 
+      // let i=-1
+      let sum=0
+
+        carts.forEach(cart => {
+          sum+=(cart.Quantity * cart.ProductId.Price)
+        });
+
+        const totalPrice = await  cartModel.updateOne({userId: userId}, {$set:{totalAmount: sum}})
+
+      res.render('user/cart-page',{title:'My cart',name,cartDetail,sum})
+
+    }else{
+        res.render('user/no-cart',{title:'No item found',name})
+    }
+  } catch (error) {
+
+    console.error(error);
+
+  }
+})
+//====================================================
+//=========================================================
+//cart quandity updation
+
+  router.post('/updateCartValue',async(req,res)=>{
+  console.log(req.body);
+  const {number,productId} = req.body
+
+  // console.log("reached server updating.....")
+  // console.log("server side number ==",number)
+  // console.log("server side productId ==",productId)
+
+  //product detail
+  const product = await products.findOne({_id: productId})
+  const userId=new mongoose.Types.ObjectId(req.session.userId)
+  const productItem = new mongoose.Types.ObjectId(product._id)
+  const cartDetail = await cartModel.findOne({userId: userId})
+
+  //cart detail
+  const cartItem = cartDetail.Items.find((item)=>{
+    return item.ProductId.equals(productItem)
+  })
+
+  //total amount
+  cartDetail.totalAmount += number*product.Price
+  // console.log("cartItem===",cartItem)
+
+  //newQuandity
+  const newQuantity = cartItem.Quantity+Number(number)
+
+  //cart Items price
+  if(newQuantity>=1 && newQuantity <= product.Stock){
+    cartItem.Price = newQuantity * product.Price
+  
+  //
+  cartItem.Quantity = newQuantity
+  cartDetail.save()
+  }
+  
+
+  
+
+
+  res.json(
+    {
+      success:true,
+      Quantity:newQuantity,
+      Stock:product.Stock,
+      price:cartItem.Price,
+      totalPrice: cartDetail.totalAmount
+      
+    }
+    )
+
+})
+
+
+//cart item deletion
+
+
+router.put('/deleteCartItem/:cartId',async(req,res)=>{
+  try {
+    const ParentId = req.body.ParentId
+    const cartId = req.params.cartId
+    console.log("ParentId====",ParentId);
+    console.log("cartId=====",cartId)
+    // await cartModel.updateOne({_id:ParentId},{Items: {$pull: {_id:cartId}}})
+
+    res.json({
+      success:true
+    })
+
+
+  } catch (error) {
+    
+  }
+})
 
 
 
@@ -261,4 +437,126 @@ req.session.data = data
 
 
 
-module.exports = router
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//=============================================================================================================
+//user profile========================================
+
+router.get('/profile',async(req,res)=>{
+  const name=req.session.name
+  const userData = await userModel.findOne({name:name})
+  console.log("email==="+userData.email);
+  // console.log("name===",name)
+  res.render('user/userProfile',{name,userData,title:"Zoan | profile"})
+})
+
+
+//user profile update=================================
+
+router.post('/updateInfo',async(req,res)=>{
+  const userId = req.session.userId
+  const {name, email, phoneNumber} = req.body
+  const item = await userModel.findOne({_id:userId})
+  let flag = 0
+  if(!name){
+    name = item.name
+  }
+  if(!email){
+    email=item.email
+  }
+  if(!phoneNumber){
+    if(!item.MobileNumber){
+      await userModel.updateOne({_id:userId},{$set:{name:name,email:email}})
+       flag = 1
+
+    }else{
+      phoneNumber = item.MobileNumber
+    }
+  }
+  if(flag == 0){
+    req.session.name = name
+    req.session.email = email
+  await userModel.updateOne({_id:userId},{$set:{name:name,email:email,MobileNumber:phoneNumber}})
+  }
+  res.redirect('/profile')
+})
+//=============================================================================================
+//password change
+router.get('/changePassword',(req,res)=>{
+  const name = req.session.name
+  res.render('user/userPasswordChenge',{title:"Zoan | Change Password",name})
+})
+
+//password Check
+router.post('/checkPasswords',async(req,res)=>{
+
+
+
+//checking validator
+  // const Pass = req.body.Pass
+  // const ar = []
+  // await pValidator.validate(Pass,{details:true}).forEach((x)=>{
+  //    ar[x]=x.message
+  //    console.log(x.message)
+  // })
+  // console.log("ar.length===",ar.length);
+  
+  
+  
+  
+  
+  
+  res.json({
+  success:true
+  })
+  
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = router 

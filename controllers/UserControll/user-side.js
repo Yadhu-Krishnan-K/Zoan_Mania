@@ -1,8 +1,8 @@
-const userModel = require('../models/user')
-const productInHome = require('../controllers/home-page-products')
+const userModel = require('../../models/user')
+const productInHome = require('./home-page-products')
 
-const controller = require('../controllers/for-otp')
-const otpModel = require('../models/otpModel')
+const controller = require('/home/berthold/Desktop/brototype/week_8/Zoan_proto/util/for-otp')
+// const otpModel = require('../models/otpModel')
 
 
 const bcrypt = require('bcrypt')
@@ -11,10 +11,16 @@ const saltRounds = 10
   
 
 //userlogin
-const userLogin = (req,res)=>{
-    const txt = req.session.txt
-    res.render('user/userLogin',{title:"login",txt})
-    // res.send("done")
+const userLogin = (req, res) => {
+    let txt = req.session.txt;
+    if (req.session.err) {
+        res.render('user/userLogin', { title: 'login', txt });
+        console.log("Rendering with 'txt'");
+        req.session.err = false; 
+    } else {
+        console.log("Rendering without 'txt'");
+        res.render('user/userLogin', { title: 'login' });
+    }
 }
 
  
@@ -24,10 +30,15 @@ const userSignup = (req,res)=>{
 }
 
 
-const getHome = (req,res)=>{
+const getHome = async(req,res)=>{
+    
     req.session.loggedIn = true;
     const name = req.session.name
     console.log(name)
+    const loger = await userModel.find({name:name})
+    console.log("loger=====",loger)
+    req.session.userId = loger[0]._id
+    console.log("req.session.userId=====",req.session.userId)
     
     res.render('user/userHome',{title:"Zoan Home",productInHome,name})
     
@@ -97,7 +108,7 @@ const userLoginBackend = async(req,res)=>{
     // console.log(logins)
     console.log(logins)
     if(!logins){
-        const txt ="No users found"
+        req.session.txt ="No users found"
         res.redirect('/login')
         // res.render('user/userLogin',{txt:"No users found",title: "Login"})
     }else{
@@ -111,13 +122,21 @@ const userLoginBackend = async(req,res)=>{
             req.session.userId = await userModel.findOne({email:email},{_id: 1})
             console.log('userId='+req.session.userId)
             res.redirect('/userHome')
-        }else{
+        }else if(logins.access == false){
             req.session.txt = "User is blocked"
+            req.session.err = true
             res.redirect('/login')
             // res.render('user/userLogin',{txt:"User not found",title:"login"})
+        }else if(isChecked == false){
+            req.session.txt = "Check your password"
+            req.session.err = true
+            res.redirect('/login')
         }
     }
 }
+
+
+
 
 
 

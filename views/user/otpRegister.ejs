@@ -29,12 +29,12 @@
 
     let timeInSeconds = 60;
 
-    function updateTimer() {
+    function updateTimer(){
         const timerElement = document.querySelector('.timer');
         timerElement.textContent = `00:${timeInSeconds.toString().padStart(2, '0')}`;
         timeInSeconds--;
 
-        if (timeInSeconds < 0) {
+        if (timeInSeconds < 0){
             clearInterval(timerInterval);
             displayResendButton();
         }

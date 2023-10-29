@@ -1,0 +1,31 @@
+<%- include('../layouts/user/header') -%>
+
+    <div class="container-fluid gx-0">
+        <div class="row gx-0">
+        <%- include('../layouts/user/profileSidbar') -%><!--col-md-12 sidebar -->
+
+
+            <div class="col-md-10 d-flex justify-content-center align-items-center">
+               <div class="main shadow rounded mt-5 mb-5 p-3" style="width: 90%;">
+                <form action="/updateInfo" method="post">
+                <h1>Personal Info</h1><br>
+                <h4>Name</h4>
+                <input type="text" name="name" placeholder="Name" value="<%= name %>"><br><br>
+                <h4>Gender</h4>
+                <input id="male" type="radio" name="male" style="cursor: pointer;"><label for="male">Male</label>
+                <input id="female" name="female" style="margin-left: 10px; cursor: pointer;" type="radio" name="" id=""><label for="female">female</label><br><br>
+                <h4>Email Address</h4>
+                <input type="email" name="email" id="email" placeholder="Enter email" value="<%= userData.email%>"><br><br>
+                <h4>Mobile Number</h4>
+                
+                <input type="number" name="phoneNumber" id="PNumber" value="<%= userData.MobileNumber %>" placeholder="number"><br><br>
+                
+                <button class="btn btn-success" type="submit">Save</button>
+                </form>
+               </div>
+            </div>
+            
+        </div>
+    </div>
+
+<%- include('../layouts/user/footer') -%>
