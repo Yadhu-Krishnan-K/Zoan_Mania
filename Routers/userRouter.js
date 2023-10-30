@@ -35,14 +35,6 @@ router.get('/signup',authGuard.userLoggedinAuthGuard,us.userSignup)
 
 router.get('/userHome',authGuard.userLoginAuthGuard,userAccess,us.getHome)
 
-//-------------------------------------------------------------------------------------------------------------------------------------
-//checking for already existing user while registering
-// router.post ('/checkUser',(req,res)=>{
-
-
-
-//     res.redirect('/otpsend')
-// })
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //otp control---------------------------------------------------------
 
@@ -70,29 +62,14 @@ router.post('/homed',us.userLoginBackend)
 
 
 
-router.get('/logout',(req,res)=>{
+router.get('/logout',us.logout)
     
-    req.session.destroy((err)=>{
-        if (err) {
-            console.log(err)
-        } else {
-            // res.setHeader('Cache-Control','no-store')
-            res.redirect('/')
-        }
-    })
-    
-})
 // res.redirect('/');
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //product-list userside---------------------------------------------------------------------------------
 
-router.get('/Product-list',authGuard.userLoginAuthGuard, userAccess, async(req,res)=>{
-    const productsList = await products.find();
-    const name = req.session.name
-
-    res.render('user/product-list',{name,productsList,title:"Zoan List" });
-})
+router.get('/Product-list',authGuard.userLoginAuthGuard, userAccess, us.productList1)
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -102,41 +79,16 @@ router.get('/Product-list',authGuard.userLoginAuthGuard, userAccess, async(req,r
 //product detail page
 
 router.route('/productDetail/:id',authGuard.userLoginAuthGuard,userAccess)
-.get(async(req,res)=>{
-        const name = req.session.name
-        const P_id = req.params.id
-        console.log("Product id=",P_id)
-        const P_detail = await products.findOne({_id: P_id})
-        console.log(P_detail)
-
-
-        
-        res.render('user/product -page',{P_detail,name,title: 'Product Page'})
-        
-        
-    })
+.get(us.producDetail)
 //------------------------------------------------------------------------------------------------------------------------
   
   
     //user forgot password
 router.route('/forgotPassword',authGuard.userLoggedinAuthGuard)
-    .get((req,res)=>{
-        res.render('user/forgotten_pass',{title:'forgotten password'})
-    })
+    .get(us.forgotPass)
     //forgotten otp================
     
-router.post('/forgottenOtp',async(req,res)=>{
-    const email = req.body.email
-    const user = await userModel.findOne({email: email})
-    req.session.email=email
-    if(user==null){
-        res.render('user/forgotten_pass',{title:'forgotten password',err:'user does not exist'})
-    }else{
-        res.redirect('/forgotPasswordOtpGenerate')
-    }
-    
-    console.log(user);
-})
+router.post('/forgottenOtp',us.forgotOtp)
 
 //---------------------------------------------------------------------------------------------------------------------------------
 //otpGenerate
@@ -170,13 +122,7 @@ router.get('/pwConfirm',(req,res)=>{
     res.render('user/ConfirmPassword',{title:"Confirm Password"});
 })
 
-router.post('/confirmation-pass',async(req,res)=>{
-// console.log("your email is = ",req.session.email)
-const data = await userModel.findOne({email: req.session.email})
-const hashPass = await bcrypt.hash(req.body.password,10)
-await userModel.updateOne({email: req.session.email},{password: hashPass})
-res.redirect('\login')
-})
+router.post('/confirmation-pass',us.getConfirmPass)
 //===================================================================================================================
 //resend otp
 router.get('/resendOtp',async(req,res)=>{
@@ -247,48 +193,7 @@ req.session.data = data
 //==================================================================================================================================
 //===========================================================================================================================
 //add to cart
-router.get('/addToCart/:id', async (req, res) => {
-  try {
-    const userData = await userModel.findOne({ name: req.session.name });
-    const productId = req.params.id;
-    const userId = userData._id;
-    console.log("lefcjpifcjpifjpifjepi",userId)
-    const userExist = await cartModel.findOne({ userId: userId });
-const ProductId = new mongoose.Types.ObjectId(productId)
-    if (!userExist) {
-      // Create a new cart and associate it with the user
-      const cart = await cartModel.create({
-        userId: userId,
-        Items: [{ ProductId: ProductId }]
-      });
-
-    } else {
-      const product = await cartModel.findOne({userId: userId,'Items.ProductId':ProductId})
-
-      console.log("foooooooo product check",product)
-      // console.log(productId)
-
-      if(!product){
-
-        await cartModel.findByIdAndUpdate(userExist._id, {
-          $push: {
-            Items: { ProductId: ProductId }
-          }
-        });
-
-      }else{
-
-        await cartModel.findByIdAndUpdate({userId: userId,'Items.ProductId':ProductId},{$inc:{'Items.Quantity': 1}})
-        .then(()=>{console.log('success')})
-        .catch((err)=>{console.log(err)})
-      }
-    }
-
-    res.redirect('/Product-list');
-  } catch (error) {
-    console.error("error=",error);
-  }
-});
+router.get('/addToCart/:id',us.userAddtoCart);
 
 
 
@@ -302,154 +207,18 @@ const ProductId = new mongoose.Types.ObjectId(productId)
 //============================================
 //user cart
 
-router.get('/cart',authGuard.userLoginAuthGuard,async(req,res)=>{
-  try {
-
-    const name = req.session.name
-    // console.log("username====",req.session.name);
-    // console.log("session.userId====",req.session.userId);
-    // console.log("heleleleooeloeo");
-    const userId=new mongoose.Types.ObjectId(req.session.userId)
-    // console.log("oiwejofj=====",userId);
-    const cartDetail = await cartModel.findOne({userId: userId })
-    .populate('Items.ProductId')
-    // console.log("cart.Detail===",cartDetail);
-
-
-    if(cartDetail){
-
-      const carts=cartDetail.Items
-      console.log("carts = ",carts)   
-      console.log("carts.ProductId from /cart",carts.ProductId); 
-      // let i=-1
-      let sum=0
-
-        carts.forEach(cart => {
-          sum+=(cart.Quantity * cart.ProductId.Price)
-        });
-
-        const totalPrice = await  cartModel.updateOne({userId: userId}, {$set:{totalAmount: sum}})
-
-      res.render('user/cart-page',{title:'My cart',name,cartDetail,sum})
-
-    }else{
-        res.render('user/no-cart',{title:'No item found',name})
-    }
-  } catch (error) {
-
-    console.error(error);
-
-  }
-})
+router.get('/cart',authGuard.userLoginAuthGuard,us.userGetCart)
 //====================================================
 //=========================================================
 //cart quandity updation
 
-  router.post('/updateCartValue',async(req,res)=>{
-  console.log(req.body);
-  const {number,productId} = req.body
-
-  // console.log("reached server updating.....")
-  // console.log("server side number ==",number)
-  // console.log("server side productId ==",productId)
-
-  //product detail
-  const product = await products.findOne({_id: productId})
-  const userId=new mongoose.Types.ObjectId(req.session.userId)
-  const productItem = new mongoose.Types.ObjectId(product._id)
-  const cartDetail = await cartModel.findOne({userId: userId})
-
-  //cart detail
-  const cartItem = cartDetail.Items.find((item)=>{
-    return item.ProductId.equals(productItem)
-  })
-
-  //total amount
-  cartDetail.totalAmount += number*product.Price
-  // console.log("cartItem===",cartItem)
-
-  //newQuandity
-  const newQuantity = cartItem.Quantity+Number(number)
-
-  //cart Items price
-  if(newQuantity>=1 && newQuantity <= product.Stock){
-    cartItem.Price = newQuantity * product.Price
-  
-  //
-  cartItem.Quantity = newQuantity
-  cartDetail.save()
-  }
-  
-
-  
-
-
-  res.json(
-    {
-      success:true,
-      Quantity:newQuantity,
-      Stock:product.Stock,
-      price:cartItem.Price,
-      totalPrice: cartDetail.totalAmount
-      
-    }
-    )
-
-})
+  router.post('/updateCartValue',us.cartQuantityUpdate)
 
 
 //cart item deletion
 
 
-router.put('/deleteCartItem/:cartId',async(req,res)=>{
-  try {
-    const ParentId = req.body.ParentId
-    const cartId = req.params.cartId
-    console.log("ParentId====",ParentId);
-    console.log("cartId=====",cartId)
-    // await cartModel.updateOne({_id:ParentId},{Items: {$pull: {_id:cartId}}})
-
-    res.json({
-      success:true
-    })
-
-
-  } catch (error) {
-    
-  }
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+router.put('/deleteCartItem/:cartId',us.cartItemDeletion)
 
 
 
@@ -460,73 +229,60 @@ router.put('/deleteCartItem/:cartId',async(req,res)=>{
 //=============================================================================================================
 //user profile========================================
 
-router.get('/profile',async(req,res)=>{
-  const name=req.session.name
-  const userData = await userModel.findOne({name:name})
-  console.log("email==="+userData.email);
-  // console.log("name===",name)
-  res.render('user/userProfile',{name,userData,title:"Zoan | profile"})
-})
+router.get('/profile',us.getUserProfile)
 
 
 //user profile update=================================
 
-router.post('/updateInfo',async(req,res)=>{
-  const userId = req.session.userId
-  const {name, email, phoneNumber} = req.body
-  const item = await userModel.findOne({_id:userId})
-  let flag = 0
-  if(!name){
-    name = item.name
-  }
-  if(!email){
-    email=item.email
-  }
-  if(!phoneNumber){
-    if(!item.MobileNumber){
-      await userModel.updateOne({_id:userId},{$set:{name:name,email:email}})
-       flag = 1
-
-    }else{
-      phoneNumber = item.MobileNumber
-    }
-  }
-  if(flag == 0){
-    req.session.name = name
-    req.session.email = email
-  await userModel.updateOne({_id:userId},{$set:{name:name,email:email,MobileNumber:phoneNumber}})
-  }
-  res.redirect('/profile')
-})
+router.post('/updateInfo',us.updateUserProfile)
 //=============================================================================================
 //password change
-router.get('/changePassword',(req,res)=>{
-  const name = req.session.name
-  res.render('user/userPasswordChenge',{title:"Zoan | Change Password",name})
-})
+router.get('/changePassword',us.passChange)
+
+
+
+
 
 //password Check
 router.post('/checkPasswords',async(req,res)=>{
+// try {
+  
+// } catch (error) {
+  
+// }
+console.log("inside check password")
 
-
-
-//checking validator
-  // const Pass = req.body.Pass
+// checking validator
+  const Pass = req.body.Pass
   // const ar = []
-  // await pValidator.validate(Pass,{details:true}).forEach((x)=>{
-  //    ar[x]=x.message
-  //    console.log(x.message)
-  // })
+  // console.log("pass===",Pass);
+  //password validator
+  const errors = pValidator.validate(Pass,{details:true})
+
+console.log("errors====",errors);
+  if (errors.length === 0) {
+    const hashPass = await bcrypt.hash(Pass,10)
+    // res.status(200).json({ message: "Password is valid." });
+    await userModel.updateOne({_id:req.session.userId},{$set:{password:Pass}})
+    res.json({
+      success:true
+
+      })
+
+  }
+  else {
+    // Map error codes to user-friendly error messages
+    const errorMessage = errors[0].message
+   
+    console.log("error:===",errorMessage);
+    res.status(400 ).json({ 
+      errors: errorMessage
+     });
+  }
+
+
   // console.log("ar.length===",ar.length);
   
-  
-  
-  
-  
-  
-  res.json({
-  success:true
-  })
   
 })
 

@@ -9,9 +9,10 @@ const otpModel = require('../models/otpModel')
 
 const otpGenerator = require('otp-generator')
 
-var vaotp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCaseAlphabets: false, upperCaseAlphabets: false })
-
-console.log(vaotp)
+var vaotp= () => {var votp = otpGenerator.generate(4, { digits: true, specialChars: false, lowerCaseAlphabets: false, upperCaseAlphabets: false })
+console.log(votp)
+  return votp
+}
 // sent mail with real email account
 
 
