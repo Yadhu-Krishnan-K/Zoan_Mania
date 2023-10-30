@@ -263,7 +263,7 @@ console.log("errors====",errors);
   if (errors.length === 0) {
     const hashPass = await bcrypt.hash(Pass,10)
     // res.status(200).json({ message: "Password is valid." });
-    await userModel.updateOne({_id:req.session.userId},{$set:{password:Pass}})
+    await userModel.updateOne({_id:req.session.userId},{$set:{password:hashPass}})
     res.json({
       success:true
 
