@@ -3,15 +3,22 @@ const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
 const user = require('../models/user')
 const otpModel = require('../models/otpModel')
-
-
 //otp generator
-
 const otpGenerator = require('otp-generator')
 
-var vaotp= () => {var votp = otpGenerator.generate(4, { digits: true, specialChars: false, lowerCaseAlphabets: false, upperCaseAlphabets: false })
-console.log(votp)
-  return votp
+
+
+
+
+const vaotp= () => { var vtp = otpGenerator.generate(4,
+  {
+  digits: true,
+  specialChars: false, 
+  lowerCaseAlphabets: false, 
+  upperCaseAlphabets: false 
+  })
+  console.log(vtp)
+  return vtp
 }
 // sent mail with real email account
 
