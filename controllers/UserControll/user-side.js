@@ -2,6 +2,7 @@ const userModel = require('../../models/user')
 const productInHome = require('./home-page-products')
 const products = require('../../models/products')
 const cartModel = require('../../models/cartModel')
+const mongoose = require('mongoose')
 
 
 const controller = require('/home/berthold/Desktop/brototype/week_8/Zoan_proto/util/for-otp')
@@ -24,10 +25,8 @@ const userLogin = (req, res) => {
     let txt = req.session.txt;
     if (req.session.err) {
         res.render('user/userLogin', { title: 'login', txt });
-        console.log("Rendering with 'txt'");
         req.session.err = false; 
     } else {
-        console.log("Rendering without 'txt'");
         res.render('user/userLogin', { title: 'login' });
     }
 }
@@ -56,9 +55,10 @@ const getHome = async(req,res)=>{
 
 const otpForm = (req,res)=>{
     // otp timer-----------------
+    req.session.vaotp = controller.vaotp() 
+    console.log("signup otp ==",req.session.vaotp)
     const timer =  setTimeout(() => {
-        const vaotp = controller.vaotp 
-        vaotp = null
+        req.session.vaotp = null
         req.session.Pw = null
         console.log("time up")
     }, 60000);
@@ -72,9 +72,9 @@ const otpForm = (req,res)=>{
 //entering home--------------------
 const postEnteringHOme = async(req,res)=>{
     let userOtp=req.body.number1
-    const vaotp = controller.vaotp
+    const vaotp = req.session.vaotp
     console.log(vaotp)
-    console.log(controller.otp)
+    // console.log("What the hell is this ==== ",controller.otp)
     console.log(req.session.data)
     const {name,email,password}=req.session.data;
     
@@ -511,5 +511,5 @@ module.exports = {
     getUserProfile,
     updateUserProfile,
     passChange,
-
+    
 }
