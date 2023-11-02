@@ -19,9 +19,8 @@ const sch = mongoose.Schema({
         required:true
     },
     address:[
-        {
-            userName: {type: String},
-            AddressLane: { type: String },
+        {   Name: {type: String},
+            AddressLine: { type: String },
             City: { type: String },
             Pincode: { type: Number },
             State: { type: String },

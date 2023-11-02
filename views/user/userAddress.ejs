@@ -1,11 +1,285 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Address</title>
-</head>
-<body>
+<%- include('../layouts/user/header') -%>
+
+    <div class="container-flui gx-0d">
+        <div class="row gx-0">
+            <%- include('../layouts/user/profileSidbar'); -%>
+            <div class="col-md-8 d-flex flex-column align-items-center">
+                    <%if(userData && Array.isArray(userData.address) && userData.address.length === 0){%>
+                    
+                        <div class="mt-4 address-body">
+                            <h1>NO address found....</h1>
+                        </div>
+                                    <div class="row" id="address-list-container">
+
+                    <%}else if(userData && Array.isArray(userData.address)){%>
+                       <% userData.address.forEach((addr)=>{ %>
+
+
+                        <!-- Name: {type: String},
+                        AddressLine: { type: String },
+                        City: { type: String },
+                        Pincode: { type: Number },
+                        State: { type: String },
+                        Mobile: { type: Number }, -->
+                        <div class="col-md-12 shadow rounded">
+                            <div class="row" style="width: 500px;">
+                            <div class="col-md-6 ">
+                                <h5>Name</h5>
+                                <h5>Address</h5>
+                                <h5>City</h5>
+                                <h5>Pincode</h5>
+                                <h5>State</h5>
+                                <h5>Mobile</h5>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="gy-0">: <%= addr.Name %> </p>
+                                <p>: <%= addr.AddressLine %> </p>
+                                <p>: <%= addr.City %> </p>
+                                <p>: <%= addr.Pincode %> </p>
+                                <p>: <%= addr.State %> </p>
+                                <p>: <%= addr.Mobile %> </p>
+                                
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#EditAddressModal" onclick="openEditAddressModal('<%=addr._id%>')">Edit</button>
+                                    <a href="/deleteAddress/id" onclick="return confirm('Do you want delete the address')" class="btn btn-danger"> Delete </a>
+                            </div>
+                        </div>
+                        </div>
+
+
+
+                        <!-- modal2 -->
+            
+                            <div class="modal fade" id="EditAddressModal<%= addr._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit address</h5>
+                                    
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Name:</label>
+                                            <input type="text" class="form-control" name="reci-name" value="<%= addr.Name %>" id="reci-name">
+                                            </div>
+                                            <div class="form-group">
+                                            <label for="message-text" class="col-form-label">Addrss:</label>
+                                            <textarea class="form-control" id="reci-address" name="reci-address"><%= addr.AddressLine %></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="recipient-name" class="col-form-label">City:</label>
+                                                <input type="text" class="form-control" id="reci-City" name="reci-City"  value="<%= addr.City %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="recipient-name" class="col-form-label">Pincode:</label>
+                                                <input type="number" class="form-control" id="reci-Pincode" name="reci-Pincode" value="<%= addr.Pincode %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="recipient-name" class="col-form-label">State:</label>
+                                                <input type="text" class="form-control" id="reci-State" name="reci-State" value="<%= addr.State %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="recipient-name" class="col-form-label">Mobile:</label>
+                                                <input type="number" class="form-control" id="reci-Mobile" name="reci-Mobile" value="<%= addr.Mobile %>">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button id="saveCahnge" onclick="updateAddress('<%= addr._id %>','<%= userData._id %>')" type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+
+<br>
+                       <% }) %>
+                    <%}%>
+                </div>
+
+            </div>
+            <div class="col-md-2 mt-2 d-flex justify-content-center align-items-center position-sticky top" >
+                <span>Add Address</span>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add address</button>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add address</h5>
+                    
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                              <label for="recipient-name" class="col-form-label">Name:</label>
+                              <input type="text" class="form-control" id="recipient-name">
+                            </div>
+                            <div class="form-group">
+                              <label for="message-text" class="col-form-label">Addrss:</label>
+                              <textarea class="form-control" id="recipient-address"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">City:</label>
+                                <input type="text" class="form-control" id="recipient-City">
+                              </div>
+                              <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Pincode:</label>
+                                <input type="number" class="form-control" id="recipient-Pincode">
+                              </div>
+                              <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">State:</label>
+                                <input type="text" class="form-control" id="recipient-State">
+                              </div>
+                              <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Mobile:</label>
+                                <input type="number" class="form-control" id="recipient-Mobile">
+                              </div>
+                          </form>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveCahnge" onclick="saveAddress()" type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+
+
+            
+
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+    <script>
+
+        const saveAddress = async()=>{
+            const Name = document.getElementById('recipient-name').value
+            const Address = document.getElementById('recipient-address').value
+            const City = document.getElementById('recipient-City').value
+            const Pincode = document.getElementById('recipient-Pincode').value
+            const State = document.getElementById('recipient-State').value
+            const Mobile = document.getElementById('recipient-Mobile').value
+            
+            console.log("Name=",Name,
+            "AddressLine=",Address,
+            "City=",City,
+            "Pincode=",Pincode,
+            "State=",State,
+            "Mobile=",Mobile)   
+
+            const res = await fetch('/saveAddress',{
+                method: "POST",
+                headers:{
+                    "Content-Type":"application/json",
+                },
+                body: JSON.stringify({
+                    Name,Address,City,Pincode,State,Mobile
+                })
+            })
+            const data =await res.json()
+            // console.log(data)
+        if (data.success) {
+        // Address saved successfully
+        // Display a success message
+        
+        // Clear form fields (optional)
+        document.getElementById('recipient-name').value = "";
+        document.getElementById('recipient-address').value = "";
+        document.getElementById('recipient-City').value = "";
+        document.getElementById('recipient-Pincode').value = "";
+        document.getElementById('recipient-State').value = "";
+        document.getElementById('recipient-Mobile').value = "";
+
+        // Close the modal (assuming you're using Bootstrap modal)
+        $('#exampleModal').modal('hide');
+        
+        // Optionally, you can update the address list on the page.
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Your address has been saved',
+            showConfirmButton: false,
+            timer: 1500
+        })
+        setTimeout(()=>{
+            location.reload();
+        },1800)
+        
+    }
     
-</body>
-</html>
+    
+}
+
+//dfkjaj lkdjfsj flkjlkdsj
+
+    function openEditAddressModal(addressId) {
+        console.log("id===",addressId)
+        console.log("edit button clicked")
+                $('#EditAddressModal' + addressId).modal('show');
+    }
+
+
+
+
+
+
+    const updateAddress = async(addressId,userId) => {
+            console.log("address Id from console===",addressId)
+            const Name = document.getElementById('reci-name').value
+            const Address = document.getElementById('reci-address').value
+            const City = document.getElementById('reci-City').value
+            const Pincode = document.getElementById('reci-Pincode').value
+            const State = document.getElementById('reci-State').value
+            const Mobile = document.getElementById('reci-Mobile').value
+
+        const res = await fetch(`/updateAddress/${userId}`,{
+            method: "POST",
+            headers: {
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({
+                addressId,Name,Address,City,Pincode,State,Mobile
+            })
+        })
+        const data = await res.json()
+        if(data.success){
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<%- include('../layouts/user/footer') -%>
