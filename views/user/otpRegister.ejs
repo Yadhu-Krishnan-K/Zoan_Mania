@@ -6,13 +6,23 @@
         <p>Enter your 4-digit code that you received on your email.</p>
         <div class="otp-section">
             <form action="/home" method="post">
+               <% if(erro !== "" && erro){ %>
+               
+                    <p class="alert alert-danger"><%=erro%></p>
+               
+               <% }else{ %>
+                    <p class="alert alert-danger" style="display: none;"><%=erro%></p>
+
+                <%}%>
+          
                 <div class="otps">
                     <input type="number" name="number1" id="number1" class="numb">
                     <!-- You can add similar input fields for number2, number3, and number4 if needed -->
                 </div>
-                <div class="timer mt-1" style="text-align: center;">00:60</div>
+                <div class="timer mt-1" style="text-align: center;">00:60</div> 
                 <div class="button d-flex justify-content-center mt-3">
-                    <input type="submit" value="Verify" class="row">
+                    <!-- <input type="submit" value="Verify" class="row"> -->
+                    <button value="Verify" onclick="verify()" class="row p-1">Verify</button>
                 </div>
             </form>
 
@@ -26,6 +36,38 @@
 </section>
 
 <script>
+
+
+// function verify(){
+
+//     var number1 = document.getElementById('number1').value
+//     $.ajax({
+//         url:'/home',
+//         method:'POST',
+//         data:{
+//             number1
+//         }
+//     })
+
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     let timeInSeconds = 60;
 
@@ -46,9 +88,7 @@
     }
 
     function resendOTP() {
-        // Handle the logic to resend the OTP here
-        // You can make an API request to send a new OTP, for example
-        // After sending, you can reset the timer and hide the resend button
+  
         timeInSeconds = 60;
         document.querySelector('.timer').textContent = '00:60';
         document.querySelector('.resend-otp').style.display = 'none';

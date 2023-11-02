@@ -5,6 +5,8 @@ const otpGenerator = require('otp-generator')
 const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
 const mongoose  = require('mongoose')
+
+
 const us = require('../controllers/UserControll/user-side')
 const userModel = require('../models/user')
 const authGuard = require('../middlewares/authGuard')
@@ -73,7 +75,7 @@ router.get('/Product-list',authGuard.userLoginAuthGuard, userAccess, us.productL
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
+ 
 //============================================================================================================================================
 
 //product detail page
@@ -275,7 +277,7 @@ console.log("errors====",errors);
     const errorMessage = errors[0].message
    
     console.log("error:===",errorMessage);
-    res.status(400 ).json({ 
+    res.status(400).json({ 
       errors: errorMessage
      });
   }
@@ -284,6 +286,66 @@ console.log("errors====",errors);
   // console.log("ar.length===",ar.length);
   
   
+})
+
+
+//Manage  Address
+
+router.get('/manageAddress',async(req,res)=>{
+
+  const userData = await userModel.findOne({_id:req.session.userId})
+//  console.log("userdataaa",userData);
+  const name = req.session.name
+  
+  res.render('user/userAddress',{title:"Zoan | Address",name, userData})
+})
+
+
+//user Address add
+
+router.post('/saveAddress',async(req,res)=>{
+  console.log("req.body==",req.body)
+  const {Name,Address,City,Pincode,State,Mobile} = req.body;
+  console.log("Name=",Name,
+    "AddressLine=",Address,
+    "City=",City,
+    "Pincode=",Pincode,
+    "State=",State,
+    "Mobile=",Mobile)
+
+  const addr = {
+    Name:Name,
+    AddressLine:Address,
+    City:City,  
+    Pincode:Pincode,
+    State:State,
+    Mobile:Mobile
+  }
+  await userModel.updateOne({_id:req.session.userId},{$push:{address: addr}})
+  // const customer = await userModel.findOne({_id:req.session.userId})
+  // console.log("custData=======",customer)
+  // customer.addr.push()
+  // customer.save()
+  // res.redirect('/manageAddress ')
+  console.log("reached success response")
+  res.json({ success: true, message: "Address saved successfully" });
+
+})
+
+
+
+// customer update address===============
+
+
+router.post('/updateAddress/:userId',async(req,res)=>{
+  console.log("userId from updateAddress===",req.params.userId)
+  const userId = req.params.userId;
+
+  const {addressId,Name,Address,City,Pincode,State,Mobile} = req.body;
+  console.log("AddressId====",addressId)
+  const userData = await userModel.findOne({_id:userId})
+  // console.log('ith userData======',userData)
+  // await userModel.updateOne({_id:userId},{$set:{}})
 })
 
 

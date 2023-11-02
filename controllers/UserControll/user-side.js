@@ -14,8 +14,9 @@ const controller = require('/home/berthold/Desktop/brototype/week_8/Zoan_proto/u
 // res.redirect('\login')
 // }
 
-
+ 
 const bcrypt = require('bcrypt')
+const { password } = require('../../util/passwordValidator')
 const saltRounds = 10
 
   
@@ -56,17 +57,23 @@ const getHome = async(req,res)=>{
 const otpForm = (req,res)=>{
     // otp timer-----------------
     req.session.vaotp = controller.vaotp() 
+    let time = new Date()
+    // let time1 = new Date(time)
+    // let diff = Math.floar((time-time1)/1000)
     console.log("signup otp ==",req.session.vaotp)
     const timer =  setTimeout(() => {
         req.session.vaotp = null
         req.session.Pw = null
         console.log("time up")
     }, 60000);
+    if(req.session.errorOtp){
+      var erro = req.session.errorOtp
+      setTimeout(()=>{
+        erro=""
+      },60000)
+    }
 
-    // clearTimeout(timer)
-    //------------------
-    // console.log(controller.vaotp)
-    res.render('user/otpRegister',{title:"Register"})
+    res.render('user/otpRegister',{title:"Register",time,erro})
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //entering home--------------------
@@ -76,9 +83,11 @@ const postEnteringHOme = async(req,res)=>{
     console.log(vaotp)
     // console.log("What the hell is this ==== ",controller.otp)
     console.log(req.session.data)
-    const {name,email,password}=req.session.data;
-    
-    req.session.name = name
+    // const {name,email,password}=req.session.data;
+    const name = req.session.name
+    const email = req.session.email
+    // const password = req.session.password
+    // req.session.name = name
 
 
     const logins = await userModel.findOne({email:email})
@@ -89,24 +98,26 @@ const postEnteringHOme = async(req,res)=>{
     //     },60000)
     // }
     if(!logins){
-    if(userOtp == vaotp||userOtp == req.session.Pw){
-        const hashPass = await bcrypt.hash(req.session.password,saltRounds)
-        req.session.userAuth = true;
+      if(userOtp == vaotp||userOtp == req.session.Pw){
+          const hashPass = await bcrypt.hash(req.session.password,saltRounds)
+          req.session.userAuth = true;
 
-        // await otpModel.delete()
+          // await otpModel.delete()
 
-        const logged=await userModel.create({name,email,password:hashPass});
-        console.log(logged)
+          const logged=await userModel.create({name,email,password:hashPass});
+          console.log(logged)
 
-        req.session.userId = await userModel.findOne({email:email},{_id:1})
-        res.redirect('/userHome')
+          req.session.userId = await userModel.findOne({email:email},{_id:1})
+          res.redirect('/userHome')
+      }else{
+          // res.send('something went wrong')
+          req.session.errorOtp = "enter valid otp"
+          // // res.render('/signup',{text:"enter valid otp"})
+          res.redirect('/otpsen')
+      }
     }else{
-        res.send('something went wrong')
-        // res.render('/signup',{text:"enter valid otp"})
-    }
-}else{
     // res.render('/signup',{text:"email already exist"})
-    res.send('email already exists')
+    // res.send('email already exists')
 }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
