@@ -39,9 +39,9 @@
                                 <div class="d-flex " style="height: 30px; width: 90px;">
 
                                  
-                                    <button style="border: 0;"  id="decBtn_<%= cart.ProductId._id %>"onload="disap('<%= cart.ProductId._id %>','<%= cart.ProductId.Stock %>')" onclick="updateQuandity('<%= cart.ProductId._id %>',-1)"><div class="col d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">-</div></button>
+                                    <button style="border: 0;"  id="decBtn_<%= cart.ProductId._id %>" onclick="disap('<%= cart.ProductId._id %>','<%= cart.ProductId.Stock %>');updateQuandity('<%= cart.ProductId._id %>',-1,'<%= cart.ProductId.Stock %>')"><div class="col d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">-</div></button>
                                   <div class="col d-flex justify-content-center align-items-center " style="width: 30px; height: 30px; border: 1px black solid;" id="quantity_<%= cart.ProductId._id %>"><%= cart.Quantity %></div>
-                                    <button style="border: 0;" id="incBtn_<%= cart.ProductId._id%>" onclick="updateQuandity('<%= cart.ProductId._id %>',1)"><div class="col d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;  background: #f1efef;">+</div></button>
+                                    <button style="border: 0;" id="incBtn_<%= cart.ProductId._id%>" onclick="disap('<%= cart.ProductId._id %>','<%= cart.ProductId.Stock %>');updateQuandity('<%= cart.ProductId._id %>',1,'<%= cart.ProductId.Stock %>')"><div class="col d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;  background: #f1efef;">+</div></button>
                                     
                                    
                                
@@ -115,16 +115,20 @@ function disap(productId, Stock){
 
 
 
-  <!-- var qid = document.getElementById('') -->
-  function updateQuandity(productId,number){
-    
-
+  var qid = document.getElementById('')
+  function updateQuandity(productId,number,Stock){
+  const quantity = document.getElementById('quantity_'+productId).textContent
+  console.log("quantity=====",quantity)
+  var inc = number
+  if(quantity == 1 && number == -1){inc = 0}
+  if(quantity == Stock && number == 1){inc = 0}
+  console.log("number====",inc)
     $.ajax({
       url:'/updateCartValue',
       method: 'POST',
       data:{
         productId,
-        number,
+        inc
       },
       success:(Response)=>{
         console.log("response to front end======",Response.Quantity);
@@ -148,7 +152,8 @@ function disap(productId, Stock){
         
       }
     })
-  }
+  
+}
 
 
   function deleteItem(cartId,name,ParentId){
