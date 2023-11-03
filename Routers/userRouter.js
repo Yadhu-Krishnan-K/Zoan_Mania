@@ -7,6 +7,7 @@ const Mailgen = require('mailgen')
 const mongoose  = require('mongoose')
 
 
+const orderModel = require('../models/order')
 const us = require('../controllers/UserControll/user-side')
 const userModel = require('../models/user')
 const authGuard = require('../middlewares/authGuard')
@@ -23,7 +24,7 @@ router.get('/',authGuard.userLoggedinAuthGuard,(req,res)=>{
 
     res.render('user/anonymous',{productInHome})
 })
-
+ 
 
 //user login-------------------------------------------------------------------------
 router.get('/login',authGuard.userLoggedinAuthGuard,us.userLogin);
@@ -208,69 +209,53 @@ router.get('/addToCart/:id',us.userAddtoCart);
 
 //============================================
 //user cart
-
 router.get('/cart',authGuard.userLoginAuthGuard,us.userGetCart)
-//====================================================
-//=========================================================
+
 //cart quandity updation
-
-  router.post('/updateCartValue',us.cartQuantityUpdate)
-
+router.post('/updateCartValue',us.cartQuantityUpdate)
 
 //cart item deletion
-
-
 router.put('/deleteCartItem/:cartId',us.cartItemDeletion)
 
 
 
-
-
-
-
 //=============================================================================================================
-//user profile========================================
 
+
+
+
+//user profile========================================
 router.get('/profile',us.getUserProfile)
 
-
 //user profile update=================================
-
 router.post('/updateInfo',us.updateUserProfile)
+
+
+
+
 //=============================================================================================
+
+
+
 //password change
 router.get('/changePassword',us.passChange)
 
-
-
-
-
 //password Check
 router.post('/checkPasswords',async(req,res)=>{
-// try {
-  
-// } catch (error) {
-  
-// }
 console.log("inside check password")
-
 // checking validator
   const Pass = req.body.Pass
-  // const ar = []
-  // console.log("pass===",Pass);
-  //password validator
+ 
   const errors = pValidator.validate(Pass,{details:true})
 
-console.log("errors====",errors);
+  console.log("errors====",errors);
   if (errors.length === 0) {
     const hashPass = await bcrypt.hash(Pass,10)
     // res.status(200).json({ message: "Password is valid." });
     await userModel.updateOne({_id:req.session.userId},{$set:{password:hashPass}})
     res.json({
       success:true
-
       })
-
   }
   else {
     // Map error codes to user-friendly error messages
@@ -343,9 +328,143 @@ router.post('/updateAddress/:userId',async(req,res)=>{
 
   const {addressId,Name,Address,City,Pincode,State,Mobile} = req.body;
   console.log("AddressId====",addressId)
+  const addr = {
+    Name:Name,
+    AddressLine:Address,
+    City:City,
+    Pincode:Pincode,
+    State:State,
+    Mobile:Mobile
+  }   
   const userData = await userModel.findOne({_id:userId})
   // console.log('ith userData======',userData)
   // await userModel.updateOne({_id:userId},{$set:{}})
+  await userModel.findOneAndUpdate({'address._id':addressId},{$set: {'address.$':addr}})
+  res.json({ success: true, message: "Address updated successfully" });
+})
+
+//delete address
+
+router.get('/deleteAddress/:userId/:addresId',async(req,res)=>{
+ try {
+  let userId = req.params.userId
+  console.log("reached /delete address")
+  
+  let id = req.params.addresId
+  console.log(id);
+  const data = await userModel.findOne({ _id: userId })
+  await userModel.updateOne({_id: data._id},{
+      $pull:{
+          address:{_id: id}
+      }
+  })
+  console.log("delete:" + data);
+  res.redirect('/manageAddress')
+ } catch (error) {
+  console.log(error)
+ }
+})
+
+
+//=====================================================================================================================================================
+//================================================
+//user checkout
+router.get('/buyTheProducts',async (req, res)=>{
+  const email = req.session.email;
+  console.log("cart 1=" + email);
+  let datas = req.body;
+  console.log(datas);
+  const Address = req.body.selectedAddress;
+  const paymentMethod = req.body.selectedPayment;
+  const amount = req.session.totalPrice;
+  console.log(amount);
+  
+  try {
+      const userData = await userModel.findOne({ email: email });
+      console.log(userData);
+      
+      if (!userData) {
+          console.log("cart data note available");
+          // res.render("errorView/404admin");
+          return;
+      }
+
+      const userID = userData._id;
+      console.log("order time user id ",userID);
+
+      const cartData = await cartCollection.findOne({ userId: userID }).populate("products.productId");
+      console.log("cartData",cartData);
+
+      if (!cartData) {
+          console.log("Cart data not available");
+          // res.render("errorView/404admin");
+          return;
+      }
+
+      const addressNew = await userCollection.findOne({
+          _id:userID,
+          address:{$elemMatch:{_id: new mongoose.Types.ObjectId(Address)}}
+      })
+      console.log("address 0001:",addressNew); 
+
+      const add = {
+          Name: addressNew.address[0].nameuser,
+          Address:  addressNew.address[0].addressLine,
+          Pincode: addressNew.address[0].pincode,
+          City: addressNew.address[0].city,
+          State: addressNew.address[0].state,
+          Mobile:  addressNew.address[0].mobile,
+      }
+
+      const newOrder = new orderCollection({
+          UserId: userID,
+          Items: cartData.products,
+          PaymentMethod: paymentMethod,
+          OrderDate: moment(new Date()).format("llll"),
+          ExpectedDeliveryDate: moment().add(4, "days").format("llll"),
+          TotalPrice: amount,
+          Address: add,
+      });
+
+      const order = await newOrder.save();
+      req.session.orderID = order._id;
+      console.log("Order detail", order);
+      await cartCollection.findByIdAndDelete(cartData._id);
+
+      for (const item of order.Items) {
+          const productId = item.productId;
+          const quantity = item.quantity;
+          const product = await productsCollections.findById(productId);
+
+          if (product) {
+              const updateQuantity = product.AvailableQuantity - quantity;
+              if (updateQuantity < 0) {
+                  product.AvailableQuantity = 0;
+                  product.Status = "Out of stock";
+              } else {
+                  product.AvailableQuantity = updateQuantity;
+                  await product.save();
+              }
+          }
+      }
+
+      if (paymentMethod === "cod") {
+          res.render('userView/placeOrder');
+      }
+  } catch (error) {
+      console.error("An error occurred:", error);
+      console.log("cart data note available 01--");
+      // res.render("errorView/404");
+  }
+}
+)
+
+
+//order confirmation page======================================================
+router.post('/placeOrder',(req,res)=>{
+  const name = req.session.name
+  console.log("userId==",req.session.userId)
+  res.render('user/userOrderConfirm',{title:"Order Confirmed",name})
 })
 
 

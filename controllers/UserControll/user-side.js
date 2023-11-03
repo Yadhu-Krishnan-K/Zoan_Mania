@@ -17,6 +17,7 @@ const controller = require('/home/berthold/Desktop/brototype/week_8/Zoan_proto/u
  
 const bcrypt = require('bcrypt')
 const { password } = require('../../util/passwordValidator')
+//c//onst products = require('../../models/products')
 const saltRounds = 10
 
   
@@ -45,11 +46,12 @@ const getHome = async(req,res)=>{
     const name = req.session.name
     console.log(name)
     const loger = await userModel.find({name:name})
+    const productModel = await products.find()
     console.log("loger=====",loger)
     req.session.userId = loger[0]._id
     console.log("req.session.userId=====",req.session.userId)
     
-    res.render('user/userHome',{title:"Zoan Home",productInHome,name})
+    res.render('user/userHome',{title:"Zoan Home",productModel,name})
     
 }
 
@@ -140,8 +142,8 @@ const userLoginBackend = async(req,res)=>{
         // const check = await userModel.findOne({email:email},{access:1})
         console.log(logins.access)
         if(isChecked == true && logins.access){
-            req.session.userAuth = true;
-            req.session.userId = await userModel.findOne({email:email},{_id: 1})
+            req.session.userAuth = true; 
+            req.session.userId = logins._iduser
             console.log('userId='+req.session.userId)
             res.redirect('/userHome')
         }else if(logins.access == false){
@@ -396,7 +398,11 @@ const cartItemDeletion = async(req,res)=>{
       console.log("ParentId====",ParentId);
       console.log("cartId=====",cartId)
       // await cartModel.updateOne({_id:ParentId},{Items: {$pull: {_id:cartId}}})
-  
+      await cartModel.updateOne({_id: ParentId},{
+        $pull:{
+            Items:{_id: cartId}
+        }
+    })
       res.json({
         success:true,
         message:"Password Updated Successfully"
@@ -463,7 +469,6 @@ const updateUserProfile = async(req,res)=>{
 
 
 
-
 //get Password Change
 
 const passChange = (req,res)=>{
@@ -522,5 +527,5 @@ module.exports = {
     getUserProfile,
     updateUserProfile,
     passChange,
-    
+
 }

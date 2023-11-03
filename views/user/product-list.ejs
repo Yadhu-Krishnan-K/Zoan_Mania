@@ -56,20 +56,23 @@
 
               <div class="row ms-5 me-5">
                 <% productsList.forEach(product => {  %>
-                  <% if(product.Stock > 0 && product.visible === true){ %>
+                 
                     <div class="col-md-3 p-4">
                       <div class="card" style="width: 18rem;margin-left: 25px;">
                           <img class="card-img-top" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/<%=product.Image[0].mainimage%>" alt="Card image cap">
                           <div class="card-body">
                               <h6 class="card-title"><%=product.Name%></h6>
     
-                              <p class="card-text" style="font-weight: 700;">₹<%=product.Price%>/-</p>
-                              <a href="/addToCart/<%= product._id %>" class="btn btn-warning">Add To Cart</a>
+                              <% if(product.Stock>=1){ %>
+                                <p class="card-text" style="font-weight: 700;">₹<%=product.Price%>/-</p>
+                              <% }else{ %>
+                                <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out of stock</p>
+                              <% } %>                              <a href="/addToCart/<%= product._id %>" class="btn btn-warning">Add To Cart</a>
                               <a href="/productDetail/<%= product._id %>" class="btn btn-primary">view Details</a>
                           </div>
                       </div>     
                     </div>
-                  <% } %>
+                  
                 <% }) %>
               </div>
 
