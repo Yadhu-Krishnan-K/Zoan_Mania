@@ -40,7 +40,7 @@
                                 <p>: <%= addr.Mobile %> </p>
                                 
                                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#EditAddressModal" onclick="openEditAddressModal('<%=addr._id%>')">Edit</button>
-                                    <a href="/deleteAddress/id" onclick="return confirm('Do you want delete the address')" class="btn btn-danger"> Delete </a>
+                                    <a href="/deleteAddress/<%= userData._id %>/<%= addr._id %>" onclick="return confirm('Do you want delete the address')" class="btn btn-danger"> Delete </a>
                             </div>
                         </div>
                         </div>
@@ -264,9 +264,35 @@
             })
         })
         const data = await res.json()
-        if(data.success){
+        if (data.success) {
+        // Address saved successfully
+        // Display a success message
+        
+        // Clear form fields (optional)
+        document.getElementById('recipient-name').value = "";
+        document.getElementById('recipient-address').value = "";
+        document.getElementById('recipient-City').value = "";
+        document.getElementById('recipient-Pincode').value = "";
+        document.getElementById('recipient-State').value = "";
+        document.getElementById('recipient-Mobile').value = "";
 
-        }
+        // Close the modal (assuming you're using Bootstrap modal)
+        $('#exampleModal').modal('hide');
+        
+        // Optionally, you can update the address list on the page.
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Your address has been updated',
+            showConfirmButton: false,
+            timer: 1500
+        })
+        setTimeout(()=>{
+            location.reload();
+        },1800)
+        
+    }
+    
     }
 
 
