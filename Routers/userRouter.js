@@ -378,21 +378,21 @@ router.get('/buyTheProducts',async (req, res)=>{
   const paymentMethod = req.body.selectedPayment;
   const amount = req.session.totalPrice;
   console.log(amount);
-  
+
   try {
       const userData = await userModel.findOne({ email: email });
       console.log(userData);
       
       if (!userData) {
           console.log("cart data note available");
-          // res.render("errorView/404admin");
+
           return;
       }
 
       const userID = userData._id;
       console.log("order time user id ",userID);
 
-      const cartData = await cartCollection.findOne({ userId: userID }).populate("products.productId");
+      const cartData = await cartModel.findOne({ userId: userID }).populate("products.productId");
       console.log("cartData",cartData);
 
       if (!cartData) {
@@ -447,7 +447,7 @@ router.get('/buyTheProducts',async (req, res)=>{
               }
           }
       }
-
+//just redired if code to some route
       if (paymentMethod === "cod") {
           res.render('userView/placeOrder');
       }

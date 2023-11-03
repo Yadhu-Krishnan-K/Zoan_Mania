@@ -47,9 +47,9 @@ const getHome = async(req,res)=>{
     console.log(name)
     const loger = await userModel.find({name:name})
     const productModel = await products.find()
-    console.log("loger=====",loger)
+    // console.log("loger=====",loger)
     req.session.userId = loger[0]._id
-    console.log("req.session.userId=====",req.session.userId)
+    // console.log("req.session.userId=====",req.session.userId)
     
     res.render('user/userHome',{title:"Zoan Home",productModel,name})
     
@@ -109,7 +109,9 @@ const postEnteringHOme = async(req,res)=>{
           const logged=await userModel.create({name,email,password:hashPass});
           console.log(logged)
 
-          req.session.userId = await userModel.findOne({email:email},{_id:1})
+          const user = await userModel.findOne({email:email})
+
+          req.session.userId = user._id
           res.redirect('/userHome')
       }else{
           // res.send('something went wrong')
@@ -130,7 +132,7 @@ const userLoginBackend = async(req,res)=>{
     
     const logins = await userModel.findOne({email: email})
     // console.log(logins)
-    console.log(logins)
+    // console.log(logins)
     if(!logins){
         req.session.txt ="No users found"
         res.redirect('/login')
@@ -140,10 +142,11 @@ const userLoginBackend = async(req,res)=>{
         
         req.session.name = logins.name
         // const check = await userModel.findOne({email:email},{access:1})
-        console.log(logins.access)
+        // console.log(logins.access)
         if(isChecked == true && logins.access){
             req.session.userAuth = true; 
-            req.session.userId = logins._iduser
+            req.session.email = email
+            req.session.userId = logins._id
             console.log('userId='+req.session.userId)
             res.redirect('/userHome')
         }else if(logins.access == false){
@@ -309,12 +312,14 @@ const userGetCart = async(req,res)=>{
       if(cartDetail){
   
         const carts=cartDetail.Items
-        console.log("carts = ",carts)   
-        console.log("carts.ProductId from /cart",carts.ProductId); 
+        // console.log("carts = ",carts)   
+        // console.log("carts.ProductId from /cart",carts.ProductId); 
         // let i=-1
         let sum=0
   
           carts.forEach(cart => {
+            console.log("==========================================================")
+            console.log("carts.cart=========================================================",cart)
             sum+=(cart.Quantity * cart.ProductId.Price)
           });
   
@@ -338,7 +343,7 @@ const userGetCart = async(req,res)=>{
 
 const cartQuantityUpdate = async(req,res)=>{
     console.log(req.body);
-    const {number,productId} = req.body
+    const {inc,productId} = req.body
   
     // console.log("reached server updating.....")
     // console.log("server side number ==",number)
@@ -356,11 +361,11 @@ const cartQuantityUpdate = async(req,res)=>{
     })
   
     //total amount
-    cartDetail.totalAmount += number*product.Price
+    cartDetail.totalAmount += inc*product.Price
     // console.log("cartItem===",cartItem)
   
     //newQuandity
-    const newQuantity = cartItem.Quantity+Number(number)
+    const newQuantity = cartItem.Quantity+Number(inc)
   
     //cart Items price
     if(newQuantity>=1 && newQuantity <= product.Stock){

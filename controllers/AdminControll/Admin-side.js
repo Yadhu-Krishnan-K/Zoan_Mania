@@ -11,7 +11,7 @@ const getCustomer = async(req,res,next)=>{
     req.session.logged = true
     let i = 0;
     const userData = await db.find();
-    res.render('supAdmin/admin-control-user',{userData,i,})
+    res.render('supAdmin/admin-control-user',{userData,i,title:"Customers"})
     // res.send('oky')
 }
 
@@ -20,7 +20,7 @@ const getInventory = async(req,res)=>{
     try {
         i=0
         const products = await productModel.find({})
-        res.render('supAdmin/admin-inventory',{products,i})
+        res.render('supAdmin/admin-inventory',{products,i,title:"Inventory"})
     } catch (error) {
         console.log(error)
     }
@@ -31,7 +31,7 @@ const getInventory = async(req,res)=>{
 
 const getAddProduct = async(req,res)=>{
     const categorys = await Categories.find({})
-    res.render('supAdmin/admin-addProduct',{categorys})
+    res.render('supAdmin/admin-addProduct',{categorys,title:"Add Products"})
 
     // res.send('hai')
 }
@@ -62,13 +62,13 @@ const getCategory = async(req,res)=>{
     i=0
     const datas = await Categories.find()
     // console.log(datas)
-    res.render('supAdmin/admin-category',{datas,i})
+    res.render('supAdmin/admin-category',{datas,i,title:"Categories"})
 
 }
 //===============================================================================================================
 //----const add-category
 const addCategory = (req,res)=>{
-    res.render('supAdmin/admin-category-add')
+    res.render('supAdmin/admin-category-add',{title:"Add category"})
 }
 
 
