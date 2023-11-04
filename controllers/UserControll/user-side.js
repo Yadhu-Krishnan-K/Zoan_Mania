@@ -147,6 +147,7 @@ const userLoginBackend = async(req,res)=>{
             req.session.userAuth = true; 
             req.session.email = email
             req.session.userId = logins._id
+            req.session.save()
             console.log('userId='+req.session.userId)
             res.redirect('/userHome')
         }else if(logins.access == false){
@@ -299,7 +300,7 @@ const userGetCart = async(req,res)=>{
     try {
   
       const name = req.session.name
-      // console.log("username====",req.session.name);
+      // console.log("username====",req.session.email);
       // console.log("session.userId====",req.session.userId);
       // console.log("heleleleooeloeo");
       const userId=new mongoose.Types.ObjectId(req.session.userId)
@@ -318,8 +319,8 @@ const userGetCart = async(req,res)=>{
         let sum=0
   
           carts.forEach(cart => {
-            console.log("==========================================================")
-            console.log("carts.cart=========================================================",cart)
+            // console.log("==========================================================")
+            // console.log("carts.cart=========================================================",cart)
             sum+=(cart.Quantity * cart.ProductId.Price)
           });
   
@@ -429,7 +430,10 @@ const cartItemDeletion = async(req,res)=>{
 
 const getUserProfile = async(req,res)=>{
     const name=req.session.name
+    // req.session.save()
     const userData = await userModel.findOne({name:name})
+    req.session.email = userData.email
+    req.session.save()
     console.log("email==="+userData.email);
     // console.log("name===",name)
     res.render('user/userProfile',{name,userData,title:"Zoan | profile"})
