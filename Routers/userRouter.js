@@ -5,10 +5,11 @@ const otpGenerator = require('otp-generator')
 const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
 const mongoose  = require('mongoose')
+const moment = require('moment')
 
 
-const orderModel = require('../models/order')
 const us = require('../controllers/UserControll/user-side')
+const orderModel = require('../models/order')
 const userModel = require('../models/user')
 const authGuard = require('../middlewares/authGuard')
 const productInHome = require('../controllers/UserControll/home-page-products')
@@ -370,11 +371,26 @@ router.get('/deleteAddress/:userId/:addresId',async(req,res)=>{
 //================================================
 //user checkout
 router.get('/buyTheProducts',async (req, res)=>{
+  const name = req.session.name
+  const userData= await userModel.findOne({name:name})
+  // console.log("fdff",userData);
+  res.render('user/userCheckout',{title:"Zoan | Checkout",userData,name})
+  
+}
+)
+
+
+//order confirmation page======================================================
+router.post('/placeOrder',async(req,res)=>{
+  // const name = req.session.name
+  console.log("userId==",req.session.userId)
   const email = req.session.email;
+  console.log("req.session=============================================345594--------------==============",req.session)
   console.log("cart 1=" + email);
   let datas = req.body;
   console.log(datas);
   const Address = req.body.selectedAddress;
+  console.log("Addrss=====",Address)
   const paymentMethod = req.body.selectedPayment;
   const amount = req.session.totalPrice;
   console.log(amount);
@@ -392,7 +408,7 @@ router.get('/buyTheProducts',async (req, res)=>{
       const userID = userData._id;
       console.log("order time user id ",userID);
 
-      const cartData = await cartModel.findOne({ userId: userID }).populate("products.productId");
+      const cartData = await cartModel.findOne({ userId: userID }).populate("Items.ProductId");
       console.log("cartData",cartData);
 
       if (!cartData) {
@@ -401,22 +417,24 @@ router.get('/buyTheProducts',async (req, res)=>{
           return;
       }
 
-      const addressNew = await userCollection.findOne({
+      const addressNew = await userModel.findOne({
           _id:userID,
           address:{$elemMatch:{_id: new mongoose.Types.ObjectId(Address)}}
       })
       console.log("address 0001:",addressNew); 
 
       const add = {
-          Name: addressNew.address[0].nameuser,
-          Address:  addressNew.address[0].addressLine,
-          Pincode: addressNew.address[0].pincode,
-          City: addressNew.address[0].city,
-          State: addressNew.address[0].state,
-          Mobile:  addressNew.address[0].mobile,
+          Name: addressNew.address[0].Name,
+          Address:  addressNew.address[0].AddressLine,
+          Pincode: addressNew.address[0].Pincode,
+          City: addressNew.address[0].City,
+          State: addressNew.address[0].State,
+          Mobile:  addressNew.address[0].Mobile,
       }
 
-      const newOrder = new orderCollection({
+      console.log(add);
+
+      const newOrder = new orderModel({
           UserId: userID,
           Items: cartData.products,
           PaymentMethod: paymentMethod,
@@ -426,45 +444,43 @@ router.get('/buyTheProducts',async (req, res)=>{
           Address: add,
       });
 
+
       const order = await newOrder.save();
       req.session.orderID = order._id;
       console.log("Order detail", order);
-      await cartCollection.findByIdAndDelete(cartData._id);
+      await cartModel.findByIdAndDelete(cartData._id);
 
       for (const item of order.Items) {
           const productId = item.productId;
           const quantity = item.quantity;
-          const product = await productsCollections.findById(productId);
+          const product = await products.findById(productId);
 
           if (product) {
-              const updateQuantity = product.AvailableQuantity - quantity;
+              const updateQuantity = products.Stock - quantity;
               if (updateQuantity < 0) {
-                  product.AvailableQuantity = 0;
+                  product.Stock = 0;
                   product.Status = "Out of stock";
               } else {
-                  product.AvailableQuantity = updateQuantity;
+                  product.Stock = updateQuantity;
                   await product.save();
               }
           }
       }
 //just redired if code to some route
       if (paymentMethod === "cod") {
-          res.render('userView/placeOrder');
+          res.redirect('/placeOrder');
       }
   } catch (error) {
       console.error("An error occurred:", error);
       console.log("cart data note available 01--");
       // res.render("errorView/404");
   }
-}
-)
+  // res.render('user/userOrderConfirm',{title:"Order Confirmed",name})
+})
 
-
-//order confirmation page======================================================
-router.post('/placeOrder',(req,res)=>{
-  const name = req.session.name
-  console.log("userId==",req.session.userId)
-  res.render('user/userOrderConfirm',{title:"Order Confirmed",name})
+router.get('/placeOrder',(req,res)=>{
+  let name = req.session.name
+  res.render('user/userOrderConfirm',{name, title:"Confirmed oreder"})
 })
 
 
@@ -497,3 +513,37 @@ router.post('/placeOrder',(req,res)=>{
 
 
 module.exports = router 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

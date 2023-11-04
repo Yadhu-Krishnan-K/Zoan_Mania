@@ -1,23 +1,23 @@
 <%- include('../layouts/user/header') -%>
 
     <form id="orderForm" action="/placeOrder" method="post">
-        <div class="container p-3">
+        <div class="container p-3">                                                                                                     
             <div class="row">
                 <div class="col-md-6">
                     <h3 class="mb-4">Delivery Addresses</h3>
-                    <% userData.address.forEach((address) => { %>
+                    <% userData.address.forEach((addr) => { %>
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="form-check">
-                                <input class="form-check-input address-radio" type="radio" name="selectedAddress" id="address_<%= address._id %>" value="<%= address._id %>"  />
-                                <h5 class="card-title"><%= address.Name %></h5>
-                                <p class="card-text"><%= address.AddressLine %></p>
-                                <p class="card-text"><%= address.City %>, <%= address.State %> <%= address.Pincode %></p>
-                                <p class="card-text"><%= address.Mobile %></p>
+                                <input class="form-check-input address-radio" type="radio" name="selectedAddress" id="address_<%= addr._id %>" value="<%= addr._id %>"  />
+                                <h5 class="card-title"><%= addr.Name %></h5>
+                                <p class="card-text"><%= addr.AddressLine %></p>
+                                <p class="card-text"><%= addr.City %>, <%= addr.State %> <%= addr.Pincode %></p>
+                                <p class="card-text"><%= addr.Mobile %></p>
                             </div>
                         </div>
                     </div>
-                    <% }); %>
+                    <% }) %>
                     <% if (userData.address.length === 0) { %>
                     <p class="text-center">No saved addresses. Please add a new address.</p>
                     <% } %>
@@ -36,7 +36,7 @@
                             </div>
                             <div class="text-center mt-4">
                                 <button class="btn btn-warning mt-4" id="confirmOrderButton" type="button">Confirm Order</button>
-                                <a href="/user/home"><button class="btn btn-success mt-4" type="button">Back to Shop</button></a>
+                                <a href="/userHome"><button class="btn btn-success mt-4" type="button">Back to Shop</button></a>
                             </div>
                         </div>
                     </div>
