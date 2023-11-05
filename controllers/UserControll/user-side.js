@@ -323,7 +323,7 @@ const userGetCart = async(req,res)=>{
             // console.log("carts.cart=========================================================",cart)
             sum+=(cart.Quantity * cart.ProductId.Price)
           });
-  
+          req.session.totalAmount = sum;
           const totalPrice = await  cartModel.updateOne({userId: userId}, {$set:{totalAmount: sum}})
   
         res.render('user/cart-page',{title:'My cart',name,cartDetail,sum})
@@ -364,7 +364,7 @@ const cartQuantityUpdate = async(req,res)=>{
     //total amount
     cartDetail.totalAmount += inc*product.Price
     // console.log("cartItem===",cartItem)
-  
+    req.session.totalAmount = cartDetail.totalAmount
     //newQuandity
     const newQuantity = cartItem.Quantity+Number(inc)
   
