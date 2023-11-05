@@ -336,7 +336,7 @@ router.post('/updateAddress/:userId',async(req,res)=>{
     Pincode:Pincode,
     State:State,
     Mobile:Mobile
-  }   
+  }
   const userData = await userModel.findOne({_id:userId})
   // console.log('ith userData======',userData)
   // await userModel.updateOne({_id:userId},{$set:{}})
@@ -373,7 +373,7 @@ router.get('/deleteAddress/:userId/:addresId',async(req,res)=>{
 router.get('/buyTheProducts',async (req, res)=>{
   const name = req.session.name
   const userData= await userModel.findOne({name:name})
-  // console.log("fdff",userData);
+
   res.render('user/userCheckout',{title:"Zoan | Checkout",userData,name})
   
 }
@@ -392,24 +392,24 @@ router.post('/placeOrder',async(req,res)=>{
   const Address = req.body.selectedAddress;
   console.log("Addrss=====",Address)
   const paymentMethod = req.body.selectedPayment;
-  const amount = req.session.totalPrice;
+  const amount = req.session.totalAmount;
   console.log(amount);
 
   try {
       const userData = await userModel.findOne({ email: email });
-      console.log(userData);
+      // console.log(userData);
       
       if (!userData) {
-          console.log("cart data note available");
+          // console.log("cart data note available");
 
           return;
       }
 
       const userID = userData._id;
-      console.log("order time user id ",userID);
+      // console.log("order time user id ",userID);
 
       const cartData = await cartModel.findOne({ userId: userID }).populate("Items.ProductId");
-      console.log("cartData",cartData);
+      console.log("cartData====================----------------=================",cartData);
 
       if (!cartData) {
           console.log("Cart data not available");
@@ -421,22 +421,31 @@ router.post('/placeOrder',async(req,res)=>{
           _id:userID,
           address:{$elemMatch:{_id: new mongoose.Types.ObjectId(Address)}}
       })
-      console.log("address 0001:",addressNew); 
+      // const addressId =  new mongoose.Types.ObjectId(Address)
+      // console.log("address Id from the page ====",addressId)
+      if (addressNew) {
+        var addressObjIndex = addressNew.address.findIndex(addr=>addr._id == Address)
+        // console.log("addressObj=====",addressObjIndex)
+      } 
+      
+      // console.log("addressId.address",addressNew.address); 
+      // console.log("objectIds are same=====","new ObjectId("6541f1057bf96cfe7677474c")"===new mongoose.Types.ObjectId(Address));
+      // console.log("The address object is =========",addressObj);
 
       const add = {
-          Name: addressNew.address[0].Name,
-          Address:  addressNew.address[0].AddressLine,
-          Pincode: addressNew.address[0].Pincode,
-          City: addressNew.address[0].City,
-          State: addressNew.address[0].State,
-          Mobile:  addressNew.address[0].Mobile,
+          Name: addressNew.address[addressObjIndex].Name,
+          Address: addressNew.address[addressObjIndex].AddressLine,
+          Pincode: addressNew.address[addressObjIndex].Pincode,
+          City: addressNew.address[addressObjIndex].City,
+          State: addressNew.address[addressObjIndex].State,
+          Mobile:  addressNew.address[addressObjIndex].Mobile
       }
 
       console.log(add);
 
       const newOrder = new orderModel({
           UserId: userID,
-          Items: cartData.products,
+          Items: cartData.Items,
           PaymentMethod: paymentMethod,
           OrderDate: moment(new Date()).format("llll"),
           ExpectedDeliveryDate: moment().add(4, "days").format("llll"),
