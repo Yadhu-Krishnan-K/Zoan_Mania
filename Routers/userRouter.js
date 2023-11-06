@@ -19,6 +19,7 @@ const Fotp = require('../util/forgotPassword')
 const userAccess = require('../middlewares/userSession')
 const cartModel = require('../models/cartModel')
 const pValidator = require('../util/passwordValidator')
+const cart = require('../models/cartModel')
 
 
 router.get('/',authGuard.userLoggedinAuthGuard,(req,res)=>{
@@ -383,17 +384,17 @@ router.get('/buyTheProducts',async (req, res)=>{
 //order confirmation page======================================================
 router.post('/placeOrder',async(req,res)=>{
   // const name = req.session.name
-  console.log("userId==",req.session.userId)
+  // console.log("userId==",req.session.userId)
   const email = req.session.email;
-  console.log("req.session=============================================345594--------------==============",req.session)
-  console.log("cart 1=" + email);
+  // console.log("req.session=============================================345594--------------==============",req.session)
+  // console.log("cart 1=" + email);
   let datas = req.body;
-  console.log(datas);
+  // console.log(datas);
   const Address = req.body.selectedAddress;
-  console.log("Addrss=====",Address)
+  // console.log("Addrss=====",Address)
   const paymentMethod = req.body.selectedPayment;
   const amount = req.session.totalAmount;
-  console.log(amount);
+  // console.log(amount); 
 
   try {
       const userData = await userModel.findOne({ email: email });
@@ -408,8 +409,8 @@ router.post('/placeOrder',async(req,res)=>{
       const userID = userData._id;
       // console.log("order time user id ",userID);
 
-      const cartData = await cartModel.findOne({ userId: userID }).populate("Items.ProductId");
-      console.log("cartData====================----------------=================",cartData);
+      const cartData = await cartModel.findOne({ userId: userID });
+      console.log("cartData====================----------------=================",cartData.Items);
 
       if (!cartData) {
           console.log("Cart data not available");
@@ -442,15 +443,23 @@ router.post('/placeOrder',async(req,res)=>{
       }
 
       console.log(add);
+      const itemArray = []
+      cartData.Items.forEach((item)=>{
+        itemArray.push(item)
+      })
+      console.log("iremArray=====",itemArray)
 
       const newOrder = new orderModel({
           UserId: userID,
-          Items: cartData.Items,
+          Items: cartData.Items.map(cartItem => ({
+            productId: cartItem.ProductId, // Assuming this is the correct property name
+            quantity: cartItem.Quantity,
+          })),
           PaymentMethod: paymentMethod,
           OrderDate: moment(new Date()).format("llll"),
           ExpectedDeliveryDate: moment().add(4, "days").format("llll"),
           TotalPrice: amount,
-          Address: add,
+          Address: add
       });
 
 
@@ -460,12 +469,14 @@ router.post('/placeOrder',async(req,res)=>{
       await cartModel.findByIdAndDelete(cartData._id);
 
       for (const item of order.Items) {
+        // console.log("item.quantity===============00000000-------098888880000-------",item.quantity)
           const productId = item.productId;
           const quantity = item.quantity;
           const product = await products.findById(productId);
 
           if (product) {
-              const updateQuantity = products.Stock - quantity;
+              const updateQuantity = product.Stock - quantity;
+
               if (updateQuantity < 0) {
                   product.Stock = 0;
                   product.Status = "Out of stock";
