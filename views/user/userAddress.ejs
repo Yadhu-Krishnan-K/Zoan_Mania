@@ -1,8 +1,8 @@
 <%- include('../layouts/user/header') -%>
 
-    <div class="container-flui gx-0d">
-        <div class="row gx-0">
-            <%- include('../layouts/user/profileSidbar'); -%>
+    <div class="container-fluid gx-0">
+        <div class="row gx-0 d-flex justify-content-center ">
+            <!-- <%- include('../layouts/user/profileSidbar'); -%> -->
             <div class="col-md-8 d-flex flex-column align-items-center">
                     <%if(userData && Array.isArray(userData.address) && userData.address.length === 0){%>
                     
@@ -21,28 +21,92 @@
                         Pincode: { type: Number },
                         State: { type: String },
                         Mobile: { type: Number }, -->
-                        <div class="col-md-12 shadow rounded">
-                            <div class="row" style="width: 500px;">
+                        <div class="col-md-12 shadow rounded mt-4">
+                            <!-- <div class="row" style="width: 500px;">
                             <div class="col-md-6 ">
-                                <h5>Name</h5>
-                                <h5>Address</h5>
-                                <h5>City</h5>
-                                <h5>Pincode</h5>
-                                <h5>State</h5>
-                                <h5>Mobile</h5>
+                                <div><h5>Name</h5></div>
+                                <div><h5>Address</h5></div>
+                                <div><h5>City</h5></div>
+                                <div><h5>Pincode</h5></div>
+                                <div><h5>State</h5></div>
+                                <div><h5>Mobile</h5></div>
                             </div>
                             <div class="col-md-6">
-                                <p class="gy-0">: <%= addr.Name %> </p>
-                                <p>: <%= addr.AddressLine %> </p>
-                                <p>: <%= addr.City %> </p>
-                                <p>: <%= addr.Pincode %> </p>
-                                <p>: <%= addr.State %> </p>
-                                <p>: <%= addr.Mobile %> </p>
+                                <div><p class="gy-0">: <%= addr.Name %> </p></div>
+                                <div><p>: <%= addr.AddressLine %> </p></div>
+                                <div><p>: <%= addr.City %> </p></div>
+                                <div><p>: <%= addr.Pincode %> </p></div>
+                                <div><p>: <%= addr.State %> </p></div>
+                                <div><p>: <%= addr.Mobile %> </p></div>
                                 
                                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#EditAddressModal" onclick="openEditAddressModal('<%=addr._id%>')">Edit</button>
                                     <a href="/deleteAddress/<%= userData._id %>/<%= addr._id %>" onclick="return confirm('Do you want delete the address')" class="btn btn-danger"> Delete </a>
                             </div>
-                        </div>
+                        </div> -->
+                        <div class="card">
+                            <div class="card-body">
+                              <div class="row">
+                                <div class="col-sm-3">
+                                  <h5 class="mb-0">Name</h5>
+                                </div>
+                                <div class="col-sm-9">
+                                  <p class="text-muted mb-0"><%= addr.Name %></p>
+                                </div>
+                              </div>
+                              <hr>
+                              <div class="row">
+                                <div class="col-sm-3">
+                                  <h5 class="mb-0">Address</h5>
+                                </div>
+                                <div class="col-sm-9">
+                                  <p class="text-muted mb-0"><%= addr.AddressLine %></p>
+                                </div>
+                              </div>
+                              <hr> 
+                              <div class="row">
+                                  <div class="col-sm-3">
+                                      <h5 class="mb-0">City</h5>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0"><%= addr.City %></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                  <div class="col-sm-3">
+                                    <h5 class="mb-0">State</h5>
+                                  </div>
+                                  <div class="col-sm-9">
+                                    <p class="text-muted mb-0"><%= addr.State %></p>
+                                  </div>
+                                </div>
+                                <hr>
+                              <div class="row">
+                                <div class="col-sm-3">
+                                  <h5 class="mb-0">Pincode</h5>
+                                </div>
+                                <div class="col-sm-9">
+                                  <p class="text-muted mb-0"><%= addr.Pincode %></p>
+                                </div>
+                              </div>
+                              <hr>
+                              <div class="row">
+                                <div class="col-sm-3">
+                                  <h5 class="mb-0">Mobile</h5>
+                                </div>
+                                <div class="col-sm-9">
+                                  <p class="text-muted mb-0"><%= addr.Mobile %></p>
+                                </div>
+                              </div>
+                              <hr>
+                              <div class="row d-flex justify-content-end align-items-center">
+                                <div>
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#EditAddressModal" onclick="openEditAddressModal('<%=addr._id%>')">Edit</button>
+                                    <a href="/deleteAddress/<%= userData._id %>/<%= addr._id %>" onclick="return confirm('Do you want delete the address')" class="btn btn-danger"> Delete </a>
+                                </div>    
+                                </div>
+                            </div>
+                          </div>
                         </div>
 
 
@@ -99,7 +163,7 @@
                 </div>
 
             </div>
-            <div class="col-md-2 mt-2 d-flex justify-content-center align-items-center position-sticky top" >
+            <div class="col-md-2 mt-2 d-flex justify-content-center align-items-center " >
                 <span>Add Address</span>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add address</button>
             </div>
@@ -150,7 +214,7 @@
                               </div>
                           </form>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button id="saveCahnge" onclick="saveAddress()" type="button" class="btn btn-primary">Save changes</button>
                     </div>

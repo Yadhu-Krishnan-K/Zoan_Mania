@@ -230,7 +230,7 @@ router.put('/deleteCartItem/:cartId',us.cartItemDeletion)
 router.get('/profile',us.getUserProfile)
 
 //user profile update=================================
-router.post('/updateInfo',us.updateUserProfile)
+router.put('/updateInfo',us.updateUserProfile)
 
 
 
@@ -442,12 +442,8 @@ router.post('/placeOrder',async(req,res)=>{
           Mobile:  addressNew.address[addressObjIndex].Mobile
       }
 
-      console.log(add);
-      const itemArray = []
-      cartData.Items.forEach((item)=>{
-        itemArray.push(item)
-      })
-      console.log("iremArray=====",itemArray)
+      // console.log(add);
+     
 
       const newOrder = new orderModel({
           UserId: userID,
@@ -500,13 +496,33 @@ router.post('/placeOrder',async(req,res)=>{
 
 router.get('/placeOrder',(req,res)=>{
   let name = req.session.name
-  res.render('user/userOrderConfirm',{name, title:"Confirmed oreder"})
+  let orderId = req.session.orderID
+  res.render('user/userOrderConfirm',{name, title:"Oreder Confirmed",orderId})
 })
 
 
+router.get('/orderDetails',async(req,res)=>{
+  try {
+    const name = req.session.name;
+    // const orderId = req.session.orderID
+    const orderDetails = await  orderModel.find({UserId:req.session.userId})
+    console.log('order details to display',orderDetails);
+    console.log("-----------------------------------------------============================================================================---------------------------------------------------------------------------------------------==================");
+    console.log(`=========================================
+    ===========================================
+    ================================
+    ====================================                     =======================`);
+    res.render('user/orderTracker',{title:"Zoan | Track your orders",name,orderDetails})
+  } catch (error) {
+    console.error(error)
+  }
+})
 
 
-
+//cancel order
+router.get('/cancelOrder',(req,res)=>{
+  
+})
 
 
 

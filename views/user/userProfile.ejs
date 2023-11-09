@@ -1,31 +1,218 @@
 <%- include('../layouts/user/header') -%>
 
-    <div class="container-fluid gx-0">
-        <div class="row gx-0">
-        <%- include('../layouts/user/profileSidbar') -%><!--col-md-12 sidebar -->
-
-
-            <div class="col-md-10 d-flex justify-content-center align-items-center">
-               <div class="main shadow rounded mt-5 mb-5 p-3" style="width: 90%;">
-                <form action="/updateInfo" method="post">
-                <h1>Personal Info</h1><br>
-                <h4>Name</h4>
-                <input type="text" name="name" placeholder="Name" value="<%= name %>"><br><br>
-                <!-- <h4>Gender</h4>
-                <input id="male" type="radio" name="male" style="cursor: pointer;"><label for="male">Male</label>
-                <input id="female" name="female" style="margin-left: 10px; cursor: pointer;" type="radio" name="" id=""><label for="female">female</label><br><br> -->
-                <h4>Email Address</h4>
-                <input type="email" name="email" id="email" placeholder="Enter email" value="<%= userData.email%>"><br><br>
-                <h4>Mobile Number</h4>
+    
+    
+    
+    <section style="background-color: #eee;">
+        <div class="container py-5">
+          
+      
+          <div class="row">
+            <div class="col-lg-3">
+              <div class="card mb-4">
+                <div class="card-body text-center">
+                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                    class="rounded-circle img-fluid" style="width: 150px;">
+                  <h5 class="my-3">Hello<%= name %></h5>
+                  <!-- <p class="text-muted mb-1">Full Stack Developer</p>
+                  <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
+                  <div class="d-flex justify-content-center mb-2">
+                    <button type="button" class="btn btn-primary">Follow</button>
+                    <button type="button" class="btn btn-outline-primary ms-1">Message</button>
+                  </div> -->
+                </div>
+              </div>
+              <div class="card mb-4 mb-lg-0">
+                <div class="card-body p-0">
+                  <ul class="list-group list-group-flush rounded-3">
+                    <a href="/profile" style="text-decoration: none;">
+                        <li class="list-group-item d-flex align-items-center p-3">
+                            <i class="fa-regular fa-user" style="color: #357af3;"></i>                      
+                            <p class="mb-0 ms-3">Profile Info</p>
+                        </li>
+                    </a>
+                    <a href="/orderDetails" style="text-decoration: none;">
+                        <li class="list-group-item d-flex  align-items-center p-3">
+                            <iconify-icon icon="mdi:cart-check" style="color: #357af3;"></iconify-icon>
+                            <p class="mb-0 ms-3">My Orders</p>
+                        </li>
+                    </a>
+                    <a href="/manageAddress" style="text-decoration: none;">
+                        <li class="list-group-item d-flex  align-items-center p-3">
+                            <iconify-icon icon="teenyicons:address-book-outline" style="color: #357af3;"></iconify-icon>
+                            <p class="mb-0 ms-3">Manage Address</p>
+                        </li>
+                    </a>
+                    <a href="/WishList" style="text-decoration: none;">
+                        <li class="list-group-item d-flex  align-items-center p-3">
+                            <iconify-icon icon="mdi:heart-outline" style="color: #357af3;"></iconify-icon>
+                            <p class="mb-0 ms-3">Wishlist</p>
+                        </li>
+                    </a>
+                    <a href="/changePassword" style="text-decoration: none;">
+                        <li class="list-group-item d-flex  align-items-center p-3">
+                            <iconify-icon icon="solar:password-broken" style="color: #357af3;"></iconify-icon>
+                            <p class="mb-0 ms-3">Change Password</p>
+                        </li>
+                    </a>
+                  </ul>
+                </div>
                 
-                <input type="number" name="phoneNumber" id="PNumber" value="<%= userData.MobileNumber %>" placeholder="number"><br><br>
-                
-                <button class="btn btn-success" type="submit">Save</button>
-                </form>
-               </div>
+
+              </div>
             </div>
-            
-        </div>
+            <div class="col-lg-8">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Name</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= name %></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Email</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= userData.email%></p>
+                    </div>
+                  </div>
+                  <!-- <hr> -->
+                  <!-- <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Phone</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">(097) 234-5678</p>
+                    </div>
+                  </div> -->
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Mobile</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= userData.MobileNumber %></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row d-flex justify-content-end ">
+                    <div>
+                  <button type="button" onclick="openEditModal()" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal" id="modalBtn">Edit</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Profile</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Name</label>
+            <input type="text" class="form-control" value="<%= name %>" id="recipient-name">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Email:</label>
+            <input type="text" class="form-control" value="<%= userData.email%>" id="recipient-email">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Phone Number:</label>
+            <input type="text" class="form-control" value="<%= userData.MobileNumber %>" id="recipient-Pnumber">
+          </div>
+          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" onclick="saveDetail()" class="btn btn-primary">Save Details</button>
+      </div>
     </div>
+  </div>
+</div>
 
+            </div>
+          </div>
+        </div>
+      </section>
+
+<script>
+    // const exampleModal = document.getElementById('editModal')
+    //   exampleModal.addEventListener('show.bs.modal', event => {
+    //     // Button that triggered the modal
+    //     const button = event.relatedTarget
+    //     // Extract info from data-bs-* attributes
+    //     const recipient = button.getAttribute('data-bs-whatever')
+    //     // If necessary, you could initiate an AJAX request here
+    //     // and then do the updating in a callback.
+    
+    //     // Update the modal's content.
+    //     const modalTitle = exampleModal.querySelector('.modal-title')
+    //     const modalBodyInput = exampleModal.querySelector('.modal-body input')
+    //     })
+
+
+    function openEditModal() {
+        // console.log("id===",addressId)
+        console.log("edit button clicked")
+                $('#editModal').modal('show');
+    }
+
+
+    function saveDetail(){
+
+        const name = document.getElementById('recipient-name').value
+        console.log("name==",name)
+        const email = document.getElementById('recipient-email').value
+        console.log("email==",email)
+
+        const phone = document.getElementById('recipient-Pnumber').value
+        console.log("phone==",phone)
+
+
+        const data = {
+            name,email,phone
+        }
+        fetch('/updateInfo',{
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify(data)
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            document.getElementById('recipient-name').value = "";
+        document.getElementById('recipient-email').value = "";
+        document.getElementById('recipient-Pnumber').value = "";
+
+        // Close the modal (assuming you're using Bootstrap modal)
+        $('#editModal').modal('hide');
+        
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Your address has been updated',
+            showConfirmButton: false,
+            timer: 1500
+        })
+        setTimeout(()=>{
+            location.reload();
+        },1800)
+        // Optionally, you can update the address list on the page.
+            });
+        
+    }
+    
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <%- include('../layouts/user/footer') -%>

@@ -35,7 +35,7 @@
                         </div>
                         <br>
                         <div class="border p-3 mb-3">
-                            <input type="file" name="mainimage" accept="image/*" style="width: 188px; height:188px;" onchange="Cimg(e)">
+                            <input type="file" name="mainimage" accept="image/*" style="width: 188px; height:188px;" onchange="Cimg(event)">
                             <img src="/uploads/<%=P_detail.Image[0].mainimage %>" alt="" width="80px" id="mainImage">
                             <input type="file" name="image2" accept="image/*" style="width: 188px; height:188px;" >
                             <img src="/uploads/<%= P_detail.Image[0].image1 %>" alt="" width="80px">
@@ -125,8 +125,9 @@
                 }
             })
         }
-        function Cimg(e){
-            document.getElementById('mainImage').src=URL.createObjectURL(e.target.result)
+        function Cimg(ev){
+            document.getElementById('mainImage').src = URL.createObjectURL(ev.target.files[0]);
+
         }
     </script>
 <%- include('../layouts/admin/footer'); -%>

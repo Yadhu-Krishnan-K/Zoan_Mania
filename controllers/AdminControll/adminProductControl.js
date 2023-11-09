@@ -11,7 +11,7 @@ const products = require('../../models/products')
 const getAdminAddProduct = (req,res)=>{
     
     res.render('supAdmin/admin-addProduct')  
-    // res.send('hei')
+
 }
 
 //====================================================================================================
@@ -24,7 +24,7 @@ const deleteProduct = async(req,res)=>{
     }else{
         await products.updateOne({_id: req.params.id},{$set:{visible:true}})
     }
-    // await products.findByIdAndDelete({_id: req.params.id})
+
     res.redirect('/admin/inventory');
 
 }
