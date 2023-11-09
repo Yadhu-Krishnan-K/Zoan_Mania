@@ -1,0 +1,91 @@
+<%- include('../layouts/admin/header'); -%>
+
+    <div class="col-md-12">
+        <table class="table align-middle mb-0 bg-white">
+            <thead class="bg-light">
+                <tr>
+                    <th scope="col">Sr No.</th>
+                    <th scope="col">Order ID</th>
+                    <th scope="col">Customer ID</th>
+                    <th scope="col">Ordered Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Payment Method</th>
+                    <th scope="col">Payment Status</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (let i = 0; i < ordersData.length; i++) { %>
+                    <tr>
+                      <td><%= i + 1 %></td>
+                      <td><%= ordersData[i]._id %></td>
+                      <td><%= ordersData[i].UserId %></td>
+                      <td>
+                        <% const orderDate = new Date(ordersData[i].OrderDate); %>
+                        <%= orderDate.toLocaleString('default', { month: 'short' }) %>
+                        <%= orderDate.getDate() %>,
+                        <%= orderDate.getFullYear() %>
+                        <%= orderDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+                      </td>
+                      <td>
+                        <% if (ordersData[i].Status !== 'Cancelled') { %>
+                            <% const currentStatus = ordersData[i].Status || 'Order Placed'; %>
+                            <select class="form-select" id="statusSelect<%= i %>" onchange="updateOrderStatus('<%= ordersData[i]._id %>', this.value)">
+                              <option value="Pending" <%= currentStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                <option value="Order Placed" <%= currentStatus === 'Order Placed' ? 'selected' : '' %>>Order Placed</option>
+                                <option value="Shipped" <%= currentStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                <option value="Delivered" <%= currentStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                <option value="Rejected" <%= currentStatus === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+                              </select>
+                              
+                        <% } else { %>
+                            Cancelled
+                          <% } %>
+        
+                      </td>
+                      <td>
+                        <%= ordersData[i].PaymentMethod %>
+                      </td>
+                      <td>
+                        <%= ordersData[i].PaymentStatus %>
+                      </td>
+                      <td>
+                        <%= ordersData[i].TotalPrice %>
+                      </td>
+                      <td>
+                        <a href="/admin/orders/details/<%= ordersData[i]._id %>" class="btn btn-success btn-sm">
+                          View Details
+                        </a>
+                      </td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+    </div>
+
+    <script>
+      function updateOrderStatus(orderId, newStatus) {
+        fetch(`/admin/orders/updateStatus/${orderId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ newStatus }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+                if (data.success) {
+                  alert('Order status updated successfully!');
+                } else {
+                  alert('Failed to update order status.');
+                }
+          })
+          .catch((error) => {
+            console.error('Error updating status:', error);
+          });
+      }
+    </script>
+    
+
+<%- include('../layouts/admin/footer'); -%>

@@ -15,6 +15,7 @@ const { fileLoader } = require('ejs');
 const catController = require('../controllers/AdminControll/adminCategoryController')
 const adminUserControl = require('../controllers/AdminControll/adminUserControl')
 const adminProductControl = require('../controllers/AdminControll/adminProductControl')
+const orderModel = require('../models/order')
 
 
 
@@ -198,7 +199,7 @@ router.get('/edit-product/:id',async(req,res)=>{
         const P_detail = await products.findOne({_id: id})
         const cate = await Cate.find()
         // console.log(P_detail);
-        res.render('supAdmin/admin-edit-product',{P_detail,cate});
+        res.render('supAdmin/admin-edit-product',{P_detail,cate,title:"Edit Product"});
     })
 
     //updating product
@@ -254,14 +255,31 @@ router.get('/delete-product/:id',adminProductControl.deleteProduct)
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //============================================================================================================================================================
 
+router.get('/Orders',async(req,res)=>{
+    const ordersData = await orderModel.find()
+    res.render('supAdmin/admin-order-tracker',{title:"Orders",ordersData})
+})
 
 
 
+//admin order update
+
+router.put('/orders/updateStatus/:orderId',async(req,res)=>{
+    const orderId = req.params.orderId
+    const newStatus = req.body.newStatus
+    await orderModel.findByIdAndUpdate(orderId,{Status:newStatus})
+})
 
 
-
-
-
+//admin order detail view page
+router.get('/orders/details/:orderId',async(req,res)=>{
+    let orderId=req.params.orderId;
+    let order = await orderModel.findOne({_id: orderId}).populate('Items.productId')
+    let ProductAllDetails = order.Items
+    // console.log("Order items in adminside====",ProductAllDetails)
+    res.render('supAdmin/adminSide-order-detail-page',{title:"Order Detail",ProductAllDetails})
+    
+})
 
 
 

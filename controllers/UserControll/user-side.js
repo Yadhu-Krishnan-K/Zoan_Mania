@@ -449,7 +449,8 @@ const getUserProfile = async(req,res)=>{
 
 const updateUserProfile = async(req,res)=>{
     const userId = req.session.userId
-    const {name, email, phoneNumber} = req.body
+    console.log("req.body===",req.body)
+    const {name, email, phone} = req.body
     const item = await userModel.findOne({_id:userId})
     let flag = 0
     if(!name){
@@ -458,21 +459,23 @@ const updateUserProfile = async(req,res)=>{
     if(!email){
       email=item.email
     }
-    if(!phoneNumber){
+    if(!phone){
       if(!item.MobileNumber){
         await userModel.updateOne({_id:userId},{$set:{name:name,email:email}})
          flag = 1
   
       }else{
-        phoneNumber = item.MobileNumber
+        phone = item.MobileNumber
       }
     }
     if(flag == 0){
       req.session.name = name
       req.session.email = email
-    await userModel.updateOne({_id:userId},{$set:{name:name,email:email,MobileNumber:phoneNumber}})
+    await userModel.updateOne({_id:userId},{$set:{name:name,email:email,MobileNumber:phone}})
     }
-    res.redirect('/profile')
+    res.json({
+      success:true,
+    })
   }
 
 
