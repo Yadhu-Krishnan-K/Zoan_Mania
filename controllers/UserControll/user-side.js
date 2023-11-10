@@ -1,24 +1,20 @@
-const userModel = require('../../models/user')
-const productInHome = require('./home-page-products')
-const products = require('../../models/products')
-const cartModel = require('../../models/cartModel')
 const mongoose = require('mongoose')
-
-
-const controller = require('/home/berthold/Desktop/brototype/week_8/Zoan_proto/util/for-otp')
-// const otpModel = require('../models/otpModel')async(req,res)=>{
-// console.log("your email is = ",req.session.email)
-// const data = await userModel.findOne({email: req.session.email})
-// const hashPass = await bcrypt.hash(req.body.password,10)
-// await userModel.updateOne({email: req.session.email},{password: hashPass})
-// res.redirect('\login')
-// }
-
- 
+const otpGenerator = require('otp-generator')
+const nodemailer = require('nodemailer')
+const Mailgen = require('mailgen')
 const bcrypt = require('bcrypt')
-const { password } = require('../../util/passwordValidator')
+
+// const { password } = require('../../util/passwordValidator')
 //c//onst products = require('../../models/products')
 const saltRounds = 10
+
+const pValidator = require('../../util/passwordValidator')
+const userModel = require('../../models/user')
+// const productInHome = require('./home-page-products')
+const products = require('../../models/products')
+const cartModel = require('../../models/cartModel')
+const controller = require('../../util/for-otp')
+
 
   
 
@@ -44,14 +40,16 @@ const getHome = async(req,res)=>{
     
     req.session.loggedIn = true;
     const name = req.session.name
+    const userId = req.session.userId
     console.log(name)
     const loger = await userModel.find({name:name})
     const productModel = await products.find()
+    const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
     // console.log("loger=====",loger)
     req.session.userId = loger[0]._id
     // console.log("req.session.userId=====",req.session.userId)
     
-    res.render('user/userHome',{title:"Zoan Home",productModel,name})
+    res.render('user/userHome',{title:"Zoan Home",productModel,name,cartData})
     
 }
 
@@ -166,15 +164,12 @@ const userLoginBackend = async(req,res)=>{
 //user logout==================
 const logout = (req,res)=>{
     
-    req.session.destroy((err)=>{
-        if (err) {
-            console.log(err)
-        } else {
-            // res.setHeader('Cache-Control','no-store')
+            req.session.userAuth = false
+            req.session.loggedIn = false
+        
             res.redirect('/')
-        }
-    }
-)}
+        
+}
 
 
 
@@ -482,25 +477,231 @@ const updateUserProfile = async(req,res)=>{
 
 
 //get Password Change
-
 const passChange = (req,res)=>{
     const name = req.session.name
     res.render('user/userPasswordChenge',{title:"Zoan | Change Password",name})
   }
 
 
+//otp-section for password change 
+const passwordChange = (req,res)=>{
+  console.log(Fotp.vaOtp)
+  res.render('user/otpFormForPC')
+}
+
+//otp password check
+const PassChecker = async(req,res)=>{
+  let n1 = req.body.n1
+  let n2 = req.body.n2
+  let n3 = req.body.n3
+  let n4 = req.body.n4
+  let val = n1*1000+n2*100+n3*10+n4*1
+  console.log(val)
+  const otp = Fotp.vaOtp
+  if(otp==val){
+      res.redirect('/pwConfirm')
+  }else{
+      res.send('401 Unauthorised')
+  }
+  // console.log(otp)
+}
 
 
+//password change otp send
+const pwSendOtp=async(req,res)=>{
+
+  const reOtp=otpGenerator.generate(4, { digits: true, specialChars: false, lowerCaseAlphabets: false, upperCaseAlphabets: false })
+  req.session.Pw = reOtp
+  console.log(reOtp)
+  const password = req.session.password
+  const email = req.session.email
+  
+  // const datas = await userModel.findOne({email:email})
+  const name = req.session.name;
+  
+  //    console.log(name)
+  //     console.log(email)
+  const data = {name,email,password}
+  
+  req.session.data = data
+  //   const exist = await user.findOne({email})
+     
+       let config = {
+         service : 'gmail',
+         auth : {
+           user:process.env.EMAIL,
+           pass:process.env.PASSWORD
+         }
+       }
+       
+       let transporter = nodemailer.createTransport(config)
+  
+       let MailGenerator =new Mailgen({
+         theme:"default",
+         product:{
+           name:"ZoanMania",
+           link:'https://mailgen.js/'
+         }
+       })
+       let response = {
+         body:{
+           name:name,
+           intro:`Welcome back to ZOAN MANiA
+           Password to enter Zoan_mania  "${reOtp}"`,
+           outro:"Looking forward to do more business"
+         }
+  
+       }
+       let mail =MailGenerator.generate(response)
+       let message = {
+         from:process.env.email,
+         to:email,
+         subject:'OTP VARIFICATION',
+         html:mail
+       }
+  
+       
+       transporter.sendMail(message).then(()=>{
+         return res.status(201).json({
+           msg:"you should receive an email"
+         })
+       }).catch(error => {
+         return res.status(500)
+       })
+  
+     res.redirect('/otpsen')
+  
+  }
 
 
+//password change
+const passwordChange2 = async(req,res)=>{
+  console.log("inside check password")
+  // checking validator
+    const Pass = req.body.Pass
+   
+    const errors = pValidator.validate(Pass,{details:true})
+  
+    console.log("errors====",errors);
+    if (errors.length === 0) {
+      const hashPass = await bcrypt.hash(Pass,10)
+      // res.status(200).json({ message: "Password is valid." });
+      await userModel.updateOne({_id:req.session.userId},{$set:{password:hashPass}})
+      res.json({
+        success:true
+        })
+    }
+    else {
+      // Map error codes to user-friendly error messages
+      const errorMessage = errors[0].message
+     
+      console.log("error:===",errorMessage);
+      res.status(400).json({ 
+        errors: errorMessage
+       });
+    }
+  
+  
+    // console.log("ar.length===",ar.length);
+  }
+
+  //render manage address
+  const renderManageAddress=async(req,res)=>{
+
+    const userData = await userModel.findOne({_id:req.session.userId})
+  //  console.log("userdataaa",userData);
+    const name = req.session.name
+    
+    res.render('user/userAddress',{title:"Zoan | Address",name, userData})
+  }
+
+  //add address
+  const addAddress = async(req,res)=>{
+    console.log("req.body==",req.body)
+    const {Name,Address,City,Pincode,State,Mobile} = req.body;
+    console.log("Name=",Name,
+      "AddressLine=",Address,
+      "City=",City,
+      "Pincode=",Pincode,
+      "State=",State,
+      "Mobile=",Mobile)
+  
+    const addr = {
+      Name:Name,
+      AddressLine:Address,
+      City:City,  
+      Pincode:Pincode,
+      State:State,
+      Mobile:Mobile
+    }
+    await userModel.updateOne({_id:req.session.userId},{$push:{address: addr}})
+    // const customer = await userModel.findOne({_id:req.session.userId})
+    // console.log("custData=======",customer)
+    // customer.addr.push()
+    // customer.save()
+    // res.redirect('/manageAddress ')
+    console.log("reached success response")
+    res.json({ success: true, message: "Address saved successfully" });
+  
+  }
+//customer update Address
+
+const updateAddress = async(req,res)=>{
+  console.log("userId from updateAddress===",req.params.userId)
+  const userId = req.params.userId;
+
+  const {addressId,Name,Address,City,Pincode,State,Mobile} = req.body;
+  console.log("AddressId====",addressId)
+  const addr = {
+    Name:Name,
+    AddressLine:Address,
+    City:City,
+    Pincode:Pincode,
+    State:State,
+    Mobile:Mobile
+  }
+  const userData = await userModel.findOne({_id:userId})
+  // console.log('ith userData======',userData)
+  // await userModel.updateOne({_id:userId},{$set:{}})
+  await userModel.findOneAndUpdate({'address._id':addressId},{$set: {'address.$':addr}})
+  res.json({ success: true, message: "Address updated successfully" });
+}
+
+//delete address
+const deleteAddress = async(req,res)=>{
+  try {
+   let userId = req.params.userId
+   console.log("reached /delete address")
+   
+   let id = req.params.addresId
+   console.log(id);
+   const data = await userModel.findOne({ _id: userId })
+   await userModel.updateOne({_id: data._id},{
+       $pull:{
+           address:{_id: id}
+       }
+   })
+   console.log("delete:" + data);
+   res.redirect('/manageAddress')
+  } catch (error) {
+   console.log(error)
+  }
+ }
 
 
-
-
-
-
-
-
+//==============================================================================-----------------------------------------------------
+//userCheckout
+const checkoutUser = async (req, res)=>{
+  const name = req.session.name
+  const userId = req.session.userId
+  const userData= await userModel.findOne({name:name})
+  const cartData = await cartModel.findOne({userId:userId})
+  if(cartData){
+  res.render('user/userCheckout',{title:"Zoan | Checkout",userData,name})
+  }else{
+    res.redirect('/userHome')
+  }
+}
 
 
 
@@ -539,5 +740,13 @@ module.exports = {
     getUserProfile,
     updateUserProfile,
     passChange,
-
+    passwordChange,
+    PassChecker,
+    pwSendOtp,
+    passwordChange2,
+    renderManageAddress,
+    addAddress,
+    updateAddress,
+    deleteAddress,
+    checkoutUser
 }
