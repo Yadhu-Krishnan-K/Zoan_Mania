@@ -29,7 +29,7 @@
                         <%= orderDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
                       </td>
                       <td>
-                        <% if (ordersData[i].Status !== 'Cancelled') { %>
+                        <% if (ordersData[i].Status !== 'Canceled') { %>
                             <% const currentStatus = ordersData[i].Status || 'Order Placed'; %>
                             <select class="form-select" id="statusSelect<%= i %>" onchange="updateOrderStatus('<%= ordersData[i]._id %>', this.value)">
                               <option value="Pending" <%= currentStatus === 'Pending' ? 'selected' : '' %>>Pending</option>

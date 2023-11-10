@@ -132,11 +132,10 @@ router.get('/logout',(req,res)=>{
     // console.log("logged =",req.session.logged)
     // console.log("adminAuth = ",req.session.adminAuth);
 
-    req.session.destroy((err)=>{
-        console.log(err)
+    req.session.adminAuth = false
+    req.session.logged = false
         res.redirect('/admin');
-    })
-    
+        
 })
 
 //---------------------------------------------------------------------------------------------------------------------

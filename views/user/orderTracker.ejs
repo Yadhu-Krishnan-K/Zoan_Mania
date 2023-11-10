@@ -1,253 +1,134 @@
-<!doctype html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%=title%></title>
 
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <%- include('../layouts/user/header') %>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="userCss/userstyle.css">
-    <link rel="stylesheet" href="userCss/home.css">
-    <link rel="stylesheet" href="userCss/orderTracker.css">
-    <link rel="stylesheet" href="userCss/progressBar.css">
-    <link rel="stylesheet" href="userCss/profile.css">
-    <link rel="stylesheet" href="userCss/carousal.css">
-    <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-
-<body style="overflow-x: hidden;">
-
-    <div class="main-navbar shadow-sm sticky-top" style="background-color: #fff;">
-        <div class="top-navbar">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-2 my-auto d-none d-sm-none d-md-block d-lg-block">
-                       <h4>ZOAN MANiA</h4>
-                    </div>
-                    <div class="col-md-4 my-auto rounded">
-                        <form role="search" action="/search" method="post">
-                            <div class="input-group">
-                                <input name="value" type="search" placeholder="Search product" class="form-control" />
-                                <button class="btn bg-white border" type="submit">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-6 my-auto">
-                        <ul class="nav justify-content-end">
-                            <li class="nav-item">
-                                <a class="nav-link" href="/userHome" style="color: #92bfda;">
-                                    <i class="fa-solid fa-house-chimney" style="color: #23a6f0;"></i> Home
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Product-list" style="color: #92bfda;">
-                                    <i class="fa fa-shopping-cart" style="color: #23a6f0;"></i> Shop
-                                </a>
-                            </li>
-                            <li class="nav-item d-flex justify-content-center align-items-center me-1">
-                                <a class="nav-link" href="/cart" style="color: #92bfda; padding-right: 0px;">
-                                    <i class="fa fa-shopping-cart" style="color: #23a6f0;"></i> Cart
-                                    <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        99+
-                                        <span class="visually-hidden">unread messages</span>
-                                      </span> -->
-                                </a>
-                                <!-- <%if(name){%>
-                                    <span class="badge badge-success" style="background: greenyellow">No</span>
-                                    <%}%> -->
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/wishlist" style="color: #92bfda;">
-                                    <i class="fa fa-heart" style="color: #23a6f0;"></i> Wishlist
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false" style="color: #92bfda;">
-                                    <i class="fa fa-user" style="color: #23a6f0;"></i>
-                                    <%= name %>
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li ><a class="dropdown-item" href="/profile" style="color: #92bfda;"><i class="fa fa-user" style="color: #23a6f0;"></i> Profile</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="/logout" style="color: #92bfda;"><i class="fa fa-sign-out" style="color: #23a6f0;"></i>Logout</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<section class=" gradient-custom-2">
+  <section class="gradient-custom-2">
     <div class="container py-5">
       <div class="row">
         <div class="col-md-12 col-lg-12 col-xl-12">
           <% if(orderDetails){ %>
-          <% orderDetails.forEach((order)=>{ %>
-          <div class="card card-stepper mt-5" style="border-radius: 16px;">
-            <div class="card-header p-4">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <p class="text-muted mb-2"> Order ID <span class="fw-bold text-body"><%= order._id %></span></p>
-                  <p class="text-muted mb-0"> Place On <span class="fw-bold text-body"><%= order.OrderDate %></span> </p>
-                  <p class="text-muted mb-0">Will be delivered on or before <span class="fw-bold text-body"><%= order.ExpectedDeliveryDate %></span></p>
-                </div>
-                <div>
-                  <div class="container">
-                    <% imageUrls.forEach((imageUrl, index) => { %>
-                      <input type="radio" name="slider" id="item-<%= index + 1 %>" <%= index === 0 ? 'checked' : '' %>>
-                    <% }); %>
-                    <div class="cards">
-                      <!-- Use EJS to dynamically render the images -->
-                      <% imageUrls.forEach((imageUrl, index) => { %>
-                        <label class="card" for="item-<%= index + 1 %>" id="song-<%= index + 1 %>">
-                          <img src="<%= imageUrl %>" alt="img">
-                        </label>
-                      <% }); %>
-                    </div>
-                    <div class="player">
-                      <div class="info-area" id="test">
-                        <% playerInfo.forEach((info, index) => { %>
-                          <label class="song-info" id="song-info-<%= index + 1 %>">
-                            <div class="title"><%= info.title %></div>
-                            <div class="sub-line">
-                              <div class="subtitle"><%= info.subtitle %></div>
-                              <div class="time"><%= info.time %></div>
-                            </div>
-                          </label>
-                        <% }); %>
-                      </div>
+            <% orderDetails.forEach((order) => { %>
+              <div class="card card-stepper mt-5" style="border-radius: 16px;">
+                <div class="card-header p-4">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <p class="text-muted mb-2"> Order ID <span class="fw-bold text-body"><%= order._id %></span></p>
+                      <p class="text-muted mb-0"> Place On <span class="fw-bold text-body"><%= order.OrderDate %></span> </p>
+
+                      <% if(order.Status !=="Canceled" ){ %>
+                        <p class="text-muted mb-0">Will be delivered on or before <span class="fw-bold text-body"><%= order.ExpectedDeliveryDate %></span></p>
+                      <% } else if(order.Status === "Canceled" ){ %>
+                        <p class="text-muted mb-0">Order Canceled<span class="fw-bold text-body"></p>
+                      <% } else { %>
+                        <p class=" text-muted mb-0">Order Rejected<span class="fw-bold text-body"></span></p>
+                      <% } %>
+
                     </div>
                   </div>
-                  In this modified code, the number of radio inputs and their checked state is generated dynamically based on the length of the imageUrls array. This way, it will work with any number of images in your carousel without needing manual adjustments.
-                  
-                  
-                  
-                  
-                  
-                  
                 </div>
-              </div>
-            </div>
-              
-            <div class="col">
 
-                      <div class="card card-stepper m-3" style="border-radius: 10px;">
-                        <div class="card-body p-4">
-                           <div class="d-flex justify-content-between alig  n-items-center">
-                            <div class="d-flex flex-column">
-                              <h4 >Your order is <%= order.Status %></h4>
-                              
-                             
-                            </div>
-                            <div>
-                              <a href="/orderProductView/<%= order._id%>">
-                                  <button class="btn btn-outline-success" type="button">Details</button>
-                              </a>
-                              <% if(order.Status == "Delivered"){%>
-                                <a href="#">
-                                  <button class="btn btn-outline-warning" type="button">Download Invoice</button>
-                              </a>
-                              <%}else if(order.Status == "Cancelled" || order.Status == "Rejected"){%>
-  
-                              <%}else{%>
-                              <a href="/cancelOrderData/<%= order._id%>">
-                                  <button class="btn btn-outline-danger" type="button">Cancel Order</button>
-                              </a>
-                              <%}%>
-                            </div>
-                          </div>
-                          <hr class="my-4">
-              
-                          
-                          <ul id="progressbar-2" class="d-flex justify-content-between mx-0 mt-0 mb-5 px-0 pt-0 pb-2">
-                            <% if (order.Status === "Pending") { %>
-                              <li class="step0 active text-center" id="step1"></li>
-                              <li class="step0 text-center" id="step2"></li>
-                              <li class="step0 text-center" id="step3"></li>
-                              <li class="step0 text-end" id="step4"></li>
-                            <% } else if (order.Status === "Order Placed") { %>
-                              <li class="step0 active text-center" id="step1"></li>
-                              <li class="step0 active text-center" id="step2"></li>
-                              <li class="step0 text-center" id="step3"></li>
-                              <li class="step0 text-end" id="step4"></li>
-                            <% } else if (order.Status === "Shipped") { %>
-                              <li class="step0 active text-center" id="step1"></li>
-                              <li class="step0 active text-center" id="step2"></li>
-                              <li class="step0 active text-center" id="step3"></li>
-                              <li class="step0 text-end" id="step4"></li>
-                            <% } else if (order.Status === "Delivered") { %>
-                              <li class="step0 active text-center" id="step1"></li>
-                              <li class="step0 active text-center" id="step2"></li>
-                              <li class="step0 active text-center" id="step3"></li>
-                              <li class="step0 active text-end" id="step4"></li>
-                            <% } %>
+                <div class="col">
 
-                          </ul>
-                          <div class="d-flex justify-content-between">
-                            <div class="d-lg-flex align-items-center">
-                              <i class="fas fa-clipboard-list fa-3x me-lg-4 mb-3 mb-lg-0"></i>
-                              <div>
-                                <p class="fw-bold mb-1">Order</p>
-                                <p class="fw-bold mb-0">Pending</p>
-                              </div>
-                            </div>
-                            <div class="d-lg-flex align-items-center">
-                              <i class="fas fa-box-open fa-3x me-lg-4 mb-3 mb-lg-0"></i>
-                              <div>
-                                <p class="fw-bold mb-1">Order</p>
-                                <p class="fw-bold mb-0">Placed</p>
-                              </div>
-                            </div>
-                            <div class="d-lg-flex align-items-center">
-                              <i class="fas fa-shipping-fast fa-3x me-lg-4 mb-3 mb-lg-0"></i>
-                              <div>
-                                <p class="fw-bold mb-1">Order</p>
-                                <p class="fw-bold mb-0">Shiped</p>
-                              </div>
-                            </div>
-                            <div class="d-lg-flex align-items-center">
-                              <i class="fas fa-home fa-3x me-lg-4 mb-3 mb-lg-0"></i>
-                              <div>
-                                <p class="fw-bold mb-1">Order</p>
-                                <p class="fw-bold mb-0">Delivered</p>
-                              </div>
-                            </div>
-                          </div>
-                              
-              
+                  <div class="card card-stepper m-3" style="border-radius: 10px;">
+                    <div class="card-body p-4">
+                      <div class="d-flex justify-content-between alig  n-items-center">
+                        <div class="d-flex flex-column">
+                          <h4>Your order is <%= order.Status %>
+                          </h4>
+                        </div>
+                        <div>
+                          <a href="/orderProductView/<%= order._id%>">
+                            <button class="btn btn-outline-success" type="button">Details</button>
+                          </a>
+                          <%if(order.Status==="Delivered" ){%>
+                            <a href="#">
+                              <button class="btn btn-outline-warning" type="button">Download Invoice</button>
+                            </a>
+                          <%} else if(order.Status==="Canceled" || order.Status==="Rejected" ){%>
+
+                          <%} else {%>
+                            <a href="/cancelOrderData/<%= order._id%>">
+                              <button class="btn btn-outline-danger" type="button">Cancel Order</button>
+                            </a>
+                          <%}%>
                         </div>
                       </div>
-                      
-            
-          </div>
-          
-          
-        </div>
-        <% }) %>
-        <%}else{%>
-          <h1 style="text-align: center;">Orders Data is Empty</h1>
+                      <hr class="my-4">
+
+                      <% if(order.Status !=="Canceled" || order.Status!=="Rejected" ){ %>
+
+                        <ul id="progressbar-2" class="d-flex justify-content-between mx-0 mt-0 mb-5 px-0 pt-0 pb-2">
+                          <% if (order.Status==="Pending" ) { %>
+                            <li class="step0 active text-center" id="step1"></li>
+                            <li class="step0 text-center" id="step2"></li>
+                            <li class="step0 text-center" id="step3"></li>
+                            <li class="step0 text-end" id="step4"></li>
+                          <% } else if (order.Status==="Order Placed" ) { %>
+                              <li class="step0 active text-center" id="step1"></li>
+                              <li class="step0 active text-center" id="step2"></li>
+                              <li class="step0 text-center" id="step3"></li>
+                              <li class="step0 text-end" id="step4"></li>
+                          <% } else if (order.Status==="Shipped" ) { %>
+                                <li class="step0 active text-center" id="step1"></li>
+                                <li class="step0 active text-center" id="step2"></li>
+                                <li class="step0 active text-center" id="step3"></li>
+                                <li class="step0 text-end" id="step4"></li>
+                          <% } else if (order.Status==="Delivered" ) { %>
+                                  <li class="step0 active text-center" id="step1"></li>
+                                  <li class="step0 active text-center" id="step2"></li>
+                                  <li class="step0 active text-center" id="step3"></li>
+                                  <li class="step0 active text-end" id="step4"></li>
+                          <% } %>
+
+                        </ul>
+                        <div class="d-flex justify-content-between">
+                          <div class="d-lg-flex align-items-center">
+                            <i class="fas fa-clipboard-list fa-3x me-lg-4 mb-3 mb-lg-0"></i>
+                            <div>
+                              <p class="fw-bold mb-1">Order</p>
+                              <p class="fw-bold mb-0">Pending</p>
+                            </div>
+                          </div>
+                          <div class="d-lg-flex align-items-center">
+                            <i class="fas fa-box-open fa-3x me-lg-4 mb-3 mb-lg-0"></i>
+                            <div>
+                              <p class="fw-bold mb-1">Order</p>
+                              <p class="fw-bold mb-0">Placed</p>
+                            </div>
+                          </div>
+                          <div class="d-lg-flex align-items-center">
+                            <i class="fas fa-shipping-fast fa-3x me-lg-4 mb-3 mb-lg-0"></i>
+                            <div>
+                              <p class="fw-bold mb-1">Order</p>
+                              <p class="fw-bold mb-0">Shiped</p>
+                            </div>
+                          </div>
+                          <div class="d-lg-flex align-items-center">
+                            <i class="fas fa-home fa-3x me-lg-4 mb-3 mb-lg-0"></i>
+                            <div>
+                              <p class="fw-bold mb-1">Order</p>
+                              <p class="fw-bold mb-0">Delivered</p>
+                            </div>
+                          </div>
+                        </div>
+                        <% } else if(order.Status==="Canceled" ){ %>
+                          <h1>Order Canceled</h1>
+                        <% } else if(order.Status==="Rejected" ){ %>
+                            <h1>Order Rejected</h1>
+                        <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <h1 style="text-align: center;">No Orders</h1>
           <% } %>
+        </div>
       </div>
     </div>
-    </div>
   </section>
-  <script>
-      $('input').on('change', function() {
-        $('body').toggleClass('blue');
-      });
-  </script>
 
-  <%-include('../layouts/user/footer')-%>
+  <%- include('../layouts/user/footer'); -%>
+
+
