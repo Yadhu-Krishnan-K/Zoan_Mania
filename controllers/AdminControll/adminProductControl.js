@@ -1,5 +1,5 @@
 const products = require('../../models/products')
-
+const category = require('../../models/category')
 
 
 
@@ -8,9 +8,10 @@ const products = require('../../models/products')
 
 //Add Product
 
-const getAdminAddProduct = (req,res)=>{
-    
-    res.render('supAdmin/admin-addProduct')  
+const getAdminAddProduct = async(req,res)=>{
+    const cate = await category.find()
+    console.log("category ===",cate)
+    res.render('supAdmin/admin-addProduct',{titel:"Admin|Add Product",cate})  
 
 }
 
@@ -19,6 +20,7 @@ const getAdminAddProduct = (req,res)=>{
 
 const deleteProduct = async(req,res)=>{
     const data = await products.findOne({_id: req.params.id})
+    
     if(data.visible===true){
         await products.updateOne({_id: req.params.id},{$set:{visible:false}})
     }else{

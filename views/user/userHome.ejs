@@ -64,34 +64,12 @@
           
             <div class="col-md-3 p-4">
               <div class="card" style="width: 18rem;margin-left: 25px;">
-                  <img class="card-img-top" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/<%=product.Image[0].mainimage%>" alt="Card image cap">
+                  <a href="/productDetail/<%= product._id %>"><img class="card-img-top" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/<%=product.Image[0].mainimage%>" alt="Card image cap"></a>
                   <div class="card-body">
                       <h6 class="card-title"><%=product.Name%></h6>
                       <% if(product.Stock >= 1 ){ %>
-                        <p class="card-text" style="font-weight: 700;">₹<%=product.Price%>/-</p>
-                        <% var match = false %>
-                       <% if(cartData){ %>
-                        <% cartData.Items.forEach(ele => { %>
-                          
-                          <% if(ele.ProductId._id === product._id){ %>
-                          <% var match = "true" %>
-                          
-                          <% console.log("if true check===",match); %>
-                         
-
-                          <% }else{ %>
-                           <% var match = "false" %>
-                          <% } %>
-                        <% }); %>
-                      <% }else{ %>
-                        <% var match = "false" %>
-                      <% } %>
-                        <% if(match === "false"){ %>
-                          <% console.log("the match====",match) %>
+                        <p class="card-text" style="font-weight: 700;">₹<%=product.Price%>/-</p>      
                         <a href="/addToCart/<%= product._id %>" class="btn btn-warning">Add To Cart</a>
-                        <% }else if(match === "true"){ %>
-                          <a href="/cart" class="btn btn-warning">Go To Cart</a>
-                        <% } %>
                       <% }else{ %>
                         
                         <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out of stock</p>

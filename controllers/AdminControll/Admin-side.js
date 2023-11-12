@@ -30,8 +30,8 @@ const getInventory = async(req,res)=>{
 
 
 const getAddProduct = async(req,res)=>{
-    const categorys = await Categories.find({})
-    res.render('supAdmin/admin-addProduct',{categorys,title:"Add Products"})
+    const cate = await Categories.find({})
+    res.render('supAdmin/admin-addProduct',{cate,title:"Add Products"})
 
     // res.send('hai')
 }
