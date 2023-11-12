@@ -5,10 +5,10 @@
         <main class="px-md-4 icons " style="margin-left: 5%;width: 90%; margin-top: 6%;">
 
             <h1 class="mt-5">Edit Product</h1>
-            <div class="row d-flex justify-content-between">
-                <div class="col-md-8 border p-3 mb-3">
-                    <br>
-                    <form action="/admin/update-productPage/<%- P_detail._id %>" method="post" id="sub" enctype="multipart/form-data" class="bg-white ">
+            <br>
+            <form action="/admin/update-productPage/<%- P_detail._id %>" method="post" id="sub" enctype="multipart/form-data" class="">
+                <div class="row d-flex justify-content-between">
+                    <div class="col-md-8 border p-3 mb-3">
                         <div class="form-group border p-3 mb-3">
                             <label for="productName">Name : </label>
                             <input type="text" name="ProductName" class="form-control bg-light" value="<%=P_detail.Name%>" id="productName"
@@ -35,12 +35,12 @@
                         </div>
                         <br>
                         <div class="border p-3 mb-3">
-                            <input type="file" name="mainimage" accept="image/*" style="width: 188px; height:188px;" onchange="Cimg(event)">
-                            <img src="/uploads/<%=P_detail.Image[0].mainimage %>" alt="" width="80px" id="mainImage">
-                            <input type="file" name="image2" accept="image/*" style="width: 188px; height:188px;" >
-                            <img src="/uploads/<%= P_detail.Image[0].image1 %>" alt="" width="80px">
-                            <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;" >
-                            <img src="/uploads/<%= P_detail.Image[0].image2 %>" alt="" width="80px">
+                            <input type="file" name="image1" accept="image/*" style="width: 188px; height:188px;" onchange="Cimg(event)">
+                            <img src="/uploads/<%=P_detail.Image[0].mainimage %>" alt="" width="80px" id="mainImage" >
+                            <input type="file" name="image2" accept="image/*" style="width: 188px; height:188px;" onchange="C2img(event)">
+                            <img src="/uploads/<%= P_detail.Image[0].image1 %>" alt="" width="80px" id="image1">
+                            <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;" onchange="C3img(event)">
+                            <img src="/uploads/<%= P_detail.Image[0].image2 %>" alt="" width="80px" id="image2">
                             <!-- <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;"> -->
                         </div>
         
@@ -81,14 +81,14 @@
                         <div class="form-group">
                             <br>
                             <label>Category:</label>
-                            <select class="form-select bg-light" id="category" name="Category" required>
-                                <option value="<%=P_detail.Category %>" selected disabled></option>
-                                    <%if(cate){%>
+                            <select class="form-select bg-light" id="category" name="Category" >
+                                <option value="" selected disabled><%= P_detail.Category %></option>
+                                    <%if(cate) {%>
                                         <%cate.forEach((data)=>{%>
                                             <option value="<%=data.catName%>">
                                                 <%=data.catName%>
                                             </option>
-                                        <%})%>
+                                        <% }) %>
                                     <%}%>   
                             </select>
                         </div><br>
@@ -96,8 +96,8 @@
                     <button type="submit" class="btn btn-primary" onclick="Clicked()">Edit Product</button>
                 </div>
                 
-                </form>
             </div>
+                </form>
         </main>
     </div>
     <script>
@@ -127,7 +127,13 @@
         }
         function Cimg(ev){
             document.getElementById('mainImage').src = URL.createObjectURL(ev.target.files[0]);
-
         }
+        function C2img(ev){
+            document.getElementById('image1').src = URL.createObjectURL(ev.target.files[0]);
+        }
+        function C3img(ev){
+            document.getElementById('image2').src = URL.createObjectURL(ev.target.files[0]);
+        }
+    
     </script>
 <%- include('../layouts/admin/footer'); -%>

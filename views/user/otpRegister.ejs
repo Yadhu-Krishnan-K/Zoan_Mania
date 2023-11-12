@@ -8,7 +8,7 @@
             <form action="/home" method="post">
                <% if(erro !== "" && erro){ %>
                
-                    <p class="alert alert-danger"><%=erro%></p>
+                    <p class="alert alert-danger" id="disapear"><%=erro%></p>
                
                <% }else{ %>
                     <p class="alert alert-danger" style="display: none;"><%=erro%></p>
@@ -36,36 +36,9 @@
 </section>
 
 <script>
-
-
-// function verify(){
-
-//     var number1 = document.getElementById('number1').value
-//     $.ajax({
-//         url:'/home',
-//         method:'POST',
-//         data:{
-//             number1
-//         }
-//     })
-
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ setTimeout(function () {
+            document.getElementById('disapear').style.display = "none";
+        }, 4000);
 
 
 
