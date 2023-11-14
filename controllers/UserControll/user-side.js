@@ -40,16 +40,30 @@ const getHome = async(req,res)=>{
     
     req.session.loggedIn = true;
     const name = req.session.name
-    const userId = req.session.userId
-    console.log(name)
-    const loger = await userModel.find({name:name})
+    const loger = await userModel.findOne({name:name})
+    const userId = loger._id
+    console.log("userId====",userId)
+    req.session.userId = userId
     const productModel = await products.find()
-    const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
-    // console.log("loger=====",loger)
-    req.session.userId = loger[0]._id
+    const cartData = await cartModel.findOne({userId:userId}).populate('userId')
+    let cartcount = 0
+    if (cartData === null || cartData.Items == (null||0)) {
+      
+      cartcount = 0
+
+    }else{
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
+    })
+    }
+    await cartModel.updateOne({userId:userId},{$set:{totalQuantity:cartcount}})
+    console.log("cartcount=====",cartcount)
+    console.log("cartData====",cartData);
+    // console.log("cartData.items[0].productId====",cartData.Items[0].ProductId._id);
+    // req.session.userId = loger[0]._id
     // console.log("req.session.userId=====",req.session.userId)
     
-    res.render('user/userHome',{title:"Zoan Home",productModel,name,cartData})
+    res.render('user/userHome',{title:"Zoan Home",productModel,name,cartData,cartcount})
     
 }
 
@@ -178,8 +192,13 @@ const logout = (req,res)=>{
 const productList1 = async(req,res)=>{
     const productsList = await products.find();
     const name = req.session.name
-
-    res.render('user/product-list',{name,productsList,title:"Zoan List" });
+    const userId = req.session.userId
+    const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
+    let cartcount = 0
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
+    })
+    res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount});
 }
 
 
@@ -189,13 +208,18 @@ const productList1 = async(req,res)=>{
 const producDetail = async(req,res)=>{
     const name = req.session.name
     const P_id = req.params.id
+    const userId = req.session.userId
     console.log("Product id=",P_id)
     const P_detail = await products.findOne({_id: P_id})
     console.log(P_detail)
-
+    const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
+    let cartcount = 0
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
+    })
 
     
-    res.render('user/product -page',{P_detail,name,title: 'Product Page'})
+    res.render('user/product-page',{P_detail,name,cartcount,title: 'Product Page'})
     
     
 }
@@ -219,6 +243,7 @@ const forgotOtp = async(req,res)=>{
     const email = req.body.email
     const user = await userModel.findOne({email: email})
     req.session.email=email
+    
     if(user==null){
         res.render('user/forgotten_pass',{title:'forgotten password',err:'user does not exist'})
     }else{
@@ -251,9 +276,8 @@ const userAddtoCart =  async (req, res) => {
       const userData = await userModel.findOne({ name: req.session.name });
       const productId = req.params.id;
       const userId = userData._id;
-      console.log("lefcjpifcjpifjpifjepi",userId)
       const userExist = await cartModel.findOne({ userId: userId });
-  const ProductId = new mongoose.Types.ObjectId(productId)
+      const ProductId = new mongoose.Types.ObjectId(productId)
       if (!userExist) {
         // Create a new cart and associate it with the user
         const cart = await cartModel.create({
@@ -264,7 +288,7 @@ const userAddtoCart =  async (req, res) => {
       } else {
         const product = await cartModel.findOne({userId: userId,'Items.ProductId':ProductId})
   
-        console.log("foooooooo product check",product)
+        // console.log("foooooooo product check",product)
         // console.log(productId)
   
         if(!product){
@@ -303,25 +327,26 @@ const userGetCart = async(req,res)=>{
       const cartDetail = await cartModel.findOne({userId: userId })
       .populate('Items.ProductId')
       // console.log("cart.Detail===",cartDetail);
-  
+      
   
       if(cartDetail){
-  
+        
         const carts=cartDetail.Items
         // console.log("carts = ",carts)   
         // console.log("carts.ProductId from /cart",carts.ProductId); 
         // let i=-1
         let sum=0
-  
+        let cartcount = 0
           carts.forEach(cart => {
             // console.log("==========================================================")
             // console.log("carts.cart=========================================================",cart)
+            cartcount += cart.Quantity
             sum+=(cart.Quantity * cart.ProductId.Price)
           });
           req.session.totalAmount = sum;
           const totalPrice = await  cartModel.updateOne({userId: userId}, {$set:{totalAmount: sum}})
   
-        res.render('user/cart-page',{title:'My cart',name,cartDetail,sum})
+        res.render('user/cart-page',{title:'My cart',name,cartDetail,sum,cartcount})
   
       }else{
           res.render('user/no-cart',{title:'No item found',name})
@@ -362,9 +387,10 @@ const cartQuantityUpdate = async(req,res)=>{
     req.session.totalAmount = cartDetail.totalAmount
     //newQuandity
     const newQuantity = cartItem.Quantity+Number(inc)
-  
+    
     //cart Items price
     if(newQuantity>=1 && newQuantity <= product.Stock){
+      cartDetail.totalQuantity+=Number(inc)
       cartItem.Price = newQuantity * product.Price
     
     //

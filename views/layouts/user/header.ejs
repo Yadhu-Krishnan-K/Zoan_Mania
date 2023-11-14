@@ -50,16 +50,20 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/Product-list" style="color: #92bfda;">
-                                    <i class="fa fa-shopping-cart" style="color: #23a6f0;"></i> Shop
+                                    <iconify-icon icon="mdi:shopping" style="color: #23a6f0;"></iconify-icon> Shop
                                 </a>
                             </li>
                             <li class="nav-item d-flex justify-content-center align-items-center me-1">
-                                <a class="nav-link" href="/cart" style="color: #92bfda; padding-right: 0px;">
+                                <a class="nav-link position-relative" href="/cart" style="color: #92bfda; padding-right: 0px; ">
                                     <i class="fa fa-shopping-cart" style="color: #23a6f0;"></i> Cart
-                                    <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        99+
-                                        <span class="visually-hidden">unread messages</span>
-                                      </span> -->
+                                    <% if (cartcount>0) { %>
+                                        
+                                        <span id="totalCartQuantity" class="position-absolute top-1 start-100 translate-middle badge rounded-pill bg-warning">
+                                            <%= cartcount %>
+                                            <span class="visually-hidden">unread messages</span>
+                                        </span> 
+                                    <%  } %>
+                                    
                                 </a>
                                 <!-- <%if(name){%>
                                     <span class="badge badge-success" style="background: greenyellow">No</span>
