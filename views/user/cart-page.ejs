@@ -29,7 +29,7 @@
                     <tbody>
                       <% cartDetail.Items.forEach((cart)=>{ %>
                         
-                         <tr>
+                         <tr >
                             <td>
                               <img style="display: inline;" src="/uploads/<%= cart.ProductId.Image[0].mainimage %>" width="80px" alt=""><h5 style="display: inline; margin-left: 10px;"><%= cart.ProductId.Name %></h5>
                             </td>
@@ -50,7 +50,7 @@
 
                             </td>
                             <td class="common">
-                                <button class="col d-flex justify-content-center align-items-center" style="width: 40px; height: 40px; border: 1px black solid;" onclick="deleteItem('<%= cart._id %>','<%= cart.ProductId.Name %>','<%= cartDetail._id %>')">x</button>
+                                <button class="col d-flex justify-content-center align-items-center" onclick="deleteItem('<%= cart._id %>','<%= cart.ProductId.Name %>','<%= cartDetail._id %>')">Remove</button>
                                 
                               </td>
                             <td id="price<%= cart.ProductId._id %>" class="common">
@@ -114,7 +114,7 @@ function disap(productId, Stock){
 
 
 
-
+  
   var qid = document.getElementById('')
   function updateQuandity(productId,number,Stock){
   const quantity = document.getElementById('quantity_'+productId).textContent

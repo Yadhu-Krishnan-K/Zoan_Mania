@@ -67,15 +67,31 @@
                   <a href="/productDetail/<%= product._id %>"><img class="card-img-top" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/<%=product.Image[0].mainimage%>" alt="Card image cap"></a>
                   <div class="card-body">
                       <h6 class="card-title"><%=product.Name%></h6>
-                      <% if(product.Stock >= 1 ){ %>
-                        <p class="card-text" style="font-weight: 700;">₹<%=product.Price%>/-</p>      
-                        <a href="/addToCart/<%= product._id %>" class="btn btn-warning">Add To Cart</a>
+                      <% if(product.Stock >= 1 && (cartData && cartData.Items.length !== 0 )){ %>
+                        <p class="card-text" style="font-weight: 700;">₹<%=product.Price%>/-</p>   
+                        <% console.log("checking product id form cart from userHOme.ejs =======",cartData.Items[0].ProductId._id) %>
+                        <% console.log("chcking if product Id from cart is equal to product id in userHOme.ejs",JSON.stringify(product._id) == JSON.stringify(cartData.Items[0].ProductId._id)) %>
+                        <% let isInCart = false %>
+                        <% for (let index = 0; index < cartData.Items.length; index++) { %>
+                          <% if(JSON.stringify(product._id) == JSON.stringify(cartData.Items[index].ProductId._id)){ %>
+                            <% isInCart = true %>
+                              <% break %>
+                            <% } %>
+                       <% } %>
+                       <% if(isInCart){ %>
+                        <a href="/cart" class="btn btn-warning">Go To Cart</a>
                       <% }else{ %>
+                        <a href="/addToCart/<%= product._id %>" class="btn btn-warning">Add To Cart</a>
+                      <% } %>
+
+                      <% }else if(product.Stock < 1){ %>
                         
                         <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out of stock</p>
                         <a href="" class="btn btn-warning" style="pointer-events: none">Add To Cart</a>
 
-                      <% } %>
+                      <% }else {%>
+                        <a href="/addToCart/<%= product._id %>" class="btn btn-warning">Add To Cart</a>
+                        <% } %>  
                       
                       <a href="/productDetail/<%= product._id %>" class="btn btn-primary">view Details</a>
 
@@ -117,7 +133,11 @@
             </div>
     </footer>
     
-
+    <script>
+      function cart(productId) {
+        console.log("hey");
+      }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
