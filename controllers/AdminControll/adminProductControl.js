@@ -11,7 +11,7 @@ const category = require('../../models/category')
 const getAdminAddProduct = async(req,res)=>{
     const cate = await category.find()
     console.log("category ===",cate)
-    res.render('supAdmin/admin-addProduct',{titel:"Admin|Add Product",cate})  
+    res.render('supAdmin/admin-addProduct',{titel:"Admin|Add Product",cate,currentPage:"Inventory"})  
 
 }
 

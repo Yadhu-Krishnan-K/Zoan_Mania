@@ -138,32 +138,12 @@ router.get('/logout',(req,res)=>{
         
 })
 
-//---------------------------------------------------------------------------------------------------------------------
-//multer test
- 
-
-
-
-// router.post("/upload",upload.single("profileImage"),(req,res)=>{
-//     console.log(req.body)
-//     console.log(req.file);
-//     return res.redirect('/')
-// })
-// router.get('/exampleForm',(req,res)=>{
-//     res.render('supAdmin/multerExample')
-// })
-
-
-
-
-
-//--------------------------------------------------------------------------------------------------------------------------
-
+//----------------------------------------------------------------------------------------------------------------------
 //user status------
 router.get('/userBUB/:id',adminUserControl.userStatus)
-//====================----------------------------------------------------------------------------------------------------------------
-//user edit
 
+//====================----------------------------------------------------------------------------------------------------------------
+//user edit--==--==--=-=-=
 router.get('/userEdit/:id',adminauth.adminLoggedinAuthguard,adminUserControl.userEdit)
 
 router.post('/userUpdate/:id',adminUserControl.userUpdate)
@@ -174,8 +154,8 @@ router.get('/userDelete/:id',adminUserControl.userDelete)
 //---------------------------------------------------------------------------------------------------------------------------
 //edit category
 
-router.route('/edit-category/:id',adminauth.adminLoggedinAuthguard)
-    .get(catController.editCategory)
+router.route('/edit-category/:id')
+    .get(adminauth.adminLoggedinAuthguard,catController.editCategory)
 
 //cat update
 router.route('/category-update/:id')
@@ -199,7 +179,7 @@ router.get('/edit-product/:id',adminauth.adminLoggedinAuthguard,async(req,res)=>
         const cate = await Cate.find()
         console.log("efef",cate);
         // console.log(P_detail);
-        res.render('supAdmin/admin-edit-product',{P_detail,cate,title:"Edit Product"});
+        res.render('supAdmin/admin-edit-product',{P_detail,cate,title:"Edit Product",currentPage:"Inventory"});
     })
 
     //updating product
@@ -264,7 +244,7 @@ router.get('/delete-product/:id',adminProductControl.deleteProduct)
 
 router.get('/Orders',adminauth.adminLoggedinAuthguard,async(req,res)=>{
     const ordersData = await orderModel.find()
-    res.render('supAdmin/admin-order-tracker',{title:"Orders",ordersData})
+    res.render('supAdmin/admin-order-tracker',{title:"Orders",ordersData,currentPage:"Orders"})
 })
 
 

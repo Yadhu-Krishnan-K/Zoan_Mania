@@ -8,7 +8,7 @@
         <h2 class="mt-2 mb-3">My Shopping Cart</h2>
        
         <main class="border rounded d-flex flex-column align-items-center" style="width: 85%; height: 80vh; background: #fff; overflow-y: scroll;   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-          <% if(cartDetail.Items.length == 0){ %>  
+          <% if(!cartDetail || cartDetail.Items.length == 0){ %>  
 
             <h3>NO cart item added</h3><br>
             <a href="/userHome">Back to home</a>
@@ -42,8 +42,7 @@
                                     <button style="border: 0;"  id="decBtn_<%= cart.ProductId._id %>" onclick="disap('<%= cart.ProductId._id %>','<%= cart.ProductId.Stock %>');updateQuandity('<%= cart.ProductId._id %>',-1,'<%= cart.ProductId.Stock %>')"><div class="col d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">-</div></button>
                                   <div class="col d-flex justify-content-center align-items-center " style="width: 30px; height: 30px; border: 1px black solid;" id="quantity_<%= cart.ProductId._id %>"><%= cart.Quantity %></div>
                                     <button style="border: 0;" id="incBtn_<%= cart.ProductId._id%>" onclick="disap('<%= cart.ProductId._id %>','<%= cart.ProductId.Stock %>');updateQuandity('<%= cart.ProductId._id %>',1,'<%= cart.ProductId.Stock %>')"><div class="col d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;  background: #f1efef;">+</div></button>
-                                    
-                                   
+                                  
                                
                                 
                                   </div>
@@ -114,7 +113,7 @@ function disap(productId, Stock){
 
 
 
-  
+
   var qid = document.getElementById('')
   function updateQuandity(productId,number,Stock){
   const quantity = document.getElementById('quantity_'+productId).textContent
@@ -148,7 +147,7 @@ function disap(productId, Stock){
         document.getElementById('totalPrice').innerHTML ="Total Price= ₹"+ Response.totalPrice+"/-"
 
         document.getElementById('price'+productId).innerHTML = "₹"+Response.price+"/-"
-
+        document.getElementById(`totalCartQuantity`).innerHTML = Response.totalQuantity
         
       }
     })

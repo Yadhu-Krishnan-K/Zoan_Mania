@@ -11,7 +11,8 @@ const getCustomer = async(req,res,next)=>{
     req.session.logged = true
     let i = 0;
     const userData = await db.find();
-    res.render('supAdmin/admin-control-user',{userData,i,title:"Customers"})
+
+    res.render('supAdmin/admin-control-user',{userData,i,title:"Customers",currentPage:"Customers"})
     // res.send('oky')
 }
 
@@ -20,7 +21,7 @@ const getInventory = async(req,res)=>{
     try {
         i=0
         const products = await productModel.find({})
-        res.render('supAdmin/admin-inventory',{products,i,title:"Inventory"})
+        res.render('supAdmin/admin-inventory',{products,i,title:"Inventory",currentPage:"Inventory"})
     } catch (error) {
         console.log(error)
     }
@@ -31,7 +32,7 @@ const getInventory = async(req,res)=>{
 
 const getAddProduct = async(req,res)=>{
     const cate = await Categories.find({})
-    res.render('supAdmin/admin-addProduct',{cate,title:"Add Products"})
+    res.render('supAdmin/admin-addProduct',{cate,title:"Add Products",currentPage:"Inventory"})
 
     // res.send('hai')
 }
@@ -62,13 +63,13 @@ const getCategory = async(req,res)=>{
     i=0
     const datas = await Categories.find()
     // console.log(datas)
-    res.render('supAdmin/admin-category',{datas,i,title:"Categories"})
+    res.render('supAdmin/admin-category',{datas,i,title:"Categories",currentPage:"Category"})
 
 }
 //===============================================================================================================
 //----const add-category
 const addCategory = (req,res)=>{
-    res.render('supAdmin/admin-category-add',{title:"Add category"})
+    res.render('supAdmin/admin-category-add',{title:"Add category",currentPage:"Category"})
 }
 
 

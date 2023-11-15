@@ -27,7 +27,7 @@ userStatus = async(req,res)=>{
  const userEdit = async(req,res)=>{
     const id = req.params.id
     const user_data = await db.findOne({_id : id})
-    res.render('supAdmin/adminUserEdit',{user_data})
+    res.render('supAdmin/adminUserEdit',{user_data,currentPage:"Customers"})
 }
 
 //user-update

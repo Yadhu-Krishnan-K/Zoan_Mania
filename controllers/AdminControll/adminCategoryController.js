@@ -29,7 +29,7 @@ const addCategory = async(req,res)=>{
 const editCategory = async(req,res)=>{
     const id = req.params.id;
     const category = await Cate.findOne({_id:id})
-    res.render('supAdmin/admin-category-edit',{category})
+    res.render('supAdmin/admin-category-edit',{title:"Admin-edit-Category",category,currentPage:"Category"})
 
 }
 
