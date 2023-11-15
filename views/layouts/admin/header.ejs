@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- <link rel="stylesheet" href="/Zoan_proto/public/adminCss/sidebar.css" type="text/css"> -->
     <link rel="stylesheet" href="/adminCss/mainLayout.css" type="text/css">
+   
 </head>
 <body>
 
@@ -20,15 +21,15 @@
                 </div>
                 <hr style="width: 80%; margin-left: 10%;" class="mb-3">
                 <div class="menubar">
-                    <a class="outer-link" href="/admin/Dashboard"><div class="sidnavButton"><p >Dashboard</p></div></a>
-                    <a class="outer-link" href="/admin/Orders"><div class="sidnavButton"><p>Orders</p></div></a>
-                    <a class="outer-link" href="/admin/Inventory"><div class="sidnavButton"><p>Inventory</p></div></a>
-                    <a class="outer-link" href="/admin/Admins"><div class="sidnavButton"><p>Admins</p></div></a>
-                    <a class="outer-link" href="/admin/Customers"><div class="sidnavButton"><p>Customers</p></div></a>
-                    <a class="outer-link" href="/admin/Category"><div class="sidnavButton"><p>Category</p></div></a>
-                    <a class="outer-link" href="/admin/Banner"><div class="sidnavButton"><p>Banner</p></div></a>
-                    <a class="outer-link" href="/admin/Payments"><div class="sidnavButton"><p>Payments</p></div></a>
-                    <a class="outer-link" href="/admin/Settings"><div class="sidnavButton"><p>Settings</p></div></a>
+                    <a class="outer-link <%= currentPage === 'Dashboard' ? 'active' : '' %>" href="/admin/Dashboard"><div class="sidnavButton"><p >Dashboard</p></div></a>
+                    <a class="outer-link <%= currentPage === 'Orders' ? 'active' : '' %>" href="/admin/Orders"><div class="sidnavButton"><p>Orders</p></div></a>
+                    <a class="outer-link <%= currentPage === 'Inventory' ? 'active' : '' %>" href="/admin/Inventory"><div class="sidnavButton"><p>Inventory</p></div></a>
+                    <a class="outer-link <%= currentPage === 'Admins' ? 'active' : '' %>" href="/admin/Admins"><div class="sidnavButton"><p>Admins</p></div></a>
+                    <a class="outer-link <%= currentPage === 'Customers' ? 'active' : '' %>" href="/admin/Customers"><div class="sidnavButton"><p>Customers</p></div></a>
+                    <a class="outer-link <%= currentPage === 'Category' ? 'active' : '' %>" href="/admin/Category"><div class="sidnavButton"><p>Category</p></div></a>
+                    <a class="outer-link <%= currentPage === 'Banner' ? 'active' : '' %>" href="/admin/Banner"><div class="sidnavButton"><p>Banner</p></div></a>
+                    <a class="outer-link <%= currentPage === 'Payments' ? 'active' : '' %>" href="/admin/Payments"><div class="sidnavButton"><p>Payments</p></div></a>
+                    <a class="outer-link <%= currentPage === 'Settings' ? 'active' : '' %>" href="/admin/Settings"><div class="sidnavButton"><p>Settings</p></div></a>
         
                 </div>
                

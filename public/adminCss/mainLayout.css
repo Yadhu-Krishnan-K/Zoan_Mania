@@ -56,6 +56,10 @@ body{
     background-color: #a3aee9;
     color: #fff;
 }
+.active .sidnavButton{
+    background: #157347;
+    color: #fff;
+    }
 
 .header{
     height: 67px;

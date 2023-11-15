@@ -236,7 +236,7 @@ router.post('/placeOrder',async(req,res)=>{
               }
           }
       }
-//just redired if code to some route
+//just redirect if code to some route
       if (paymentMethod === "cod") {
           req.session.visited = 0
           res.redirect('/placeOrder');
@@ -251,6 +251,7 @@ router.get('/placeOrder',authGuard.userLoginAuthGuard,userAccess,(req,res)=>{
   let name = req.session.name
   let orderId = req.session.orderID
   req.session.visited++
+
   if(req.session.visited < 2){
   res.render('user/userOrderConfirm',{name, title:"Oreder Confirmed",orderId})
 }else{res.redirect('/userHome')}
@@ -260,8 +261,21 @@ router.get('/placeOrder',authGuard.userLoginAuthGuard,userAccess,(req,res)=>{
 router.get('/orderDetails',authGuard.userLoginAuthGuard,userAccess,async(req,res)=>{
   try {
     const name = req.session.name;
+    const userId = req.session.userId
     const orderDetails = await  orderModel.find({UserId:req.session.userId})
-    res.render('user/orderTracker',{title:"Zoan | Track your orders",name,orderDetails})
+    const cartData = await cartModel.findOne({userId:userId})
+    let cartcount = 0
+    if (cartData === null || cartData.Items == (null||0)) {
+      
+      cartcount = 0
+
+    }else{
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
+    
+    })
+  }
+    res.render('user/orderTracker',{title:"Zoan | Track your orders",name,orderDetails,cartcount})
   } catch (error) {
     console.error(error)
   }

@@ -59,9 +59,6 @@ const getHome = async(req,res)=>{
     await cartModel.updateOne({userId:userId},{$set:{totalQuantity:cartcount}})
     console.log("cartcount=====",cartcount)
     console.log("cartData====",cartData);
-    // console.log("cartData.items[0].productId====",cartData.Items[0].ProductId._id);
-    // req.session.userId = loger[0]._id
-    // console.log("req.session.userId=====",req.session.userId)
     
     res.render('user/userHome',{title:"Zoan Home",productModel,name,cartData,cartcount})
     
@@ -105,12 +102,7 @@ const postEnteringHOme = async(req,res)=>{
 
 
     const logins = await userModel.findOne({email:email})
-    // if(newOtp!==undefined){
-    //     setTimeout(async()=>{
-    //         await otpModel.delete({})
-    //         newOtp = undefined
-    //     },60000)
-    // }
+
     if(!logins){
       if(userOtp == vaotp||userOtp == req.session.Pw){
           const hashPass = await bcrypt.hash(req.session.password,saltRounds)
@@ -132,29 +124,24 @@ const postEnteringHOme = async(req,res)=>{
           res.redirect('/otpsen')
       }
     }else{
-    // res.render('/signup',{text:"email already exist"})
-    // res.send('email already exists')
+
 }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const userLoginBackend = async(req,res)=>{
     const {email,password} = req.body;
-    // console.log(email);
     
     const logins = await userModel.findOne({email: email})
-    // console.log(logins)
-    // console.log(logins)
+
     if(!logins){
         req.session.txt ="No users found"
         res.redirect('/login')
-        // res.render('user/userLogin',{txt:"No users found",title: "Login"})
     }else{
         let isChecked = await bcrypt.compare(password,logins.password)
         
         req.session.name = logins.name
-        // const check = await userModel.findOne({email:email},{access:1})
-        // console.log(logins.access)
+   
         if(isChecked == true && logins.access){
             req.session.userAuth = true; 
             req.session.email = email
@@ -166,7 +153,6 @@ const userLoginBackend = async(req,res)=>{
             req.session.txt = "User is blocked"
             req.session.err = true
             res.redirect('/login')
-            // res.render('user/userLogin',{txt:"User not found",title:"login"})
         }else if(isChecked == false){
             req.session.txt = "Check your password"
             req.session.err = true
@@ -195,9 +181,16 @@ const productList1 = async(req,res)=>{
     const userId = req.session.userId
     const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
     let cartcount = 0
+    if (cartData === null || cartData.Items == (null||0)) {
+      
+      cartcount = 0
+
+    }else{
     cartData.Items.forEach((cart)=>{
       cartcount += cart.Quantity
+    
     })
+  }
     res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount});
 }
 
@@ -214,9 +207,16 @@ const producDetail = async(req,res)=>{
     console.log(P_detail)
     const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
     let cartcount = 0
+    if (cartData === null || cartData.Items == (null||0)) {
+      
+      cartcount = 0
+
+    }else{
     cartData.Items.forEach((cart)=>{
       cartcount += cart.Quantity
+    
     })
+  }
 
     
     res.render('user/product-page',{P_detail,name,cartcount,title: 'Product Page'})
@@ -257,7 +257,6 @@ const forgotOtp = async(req,res)=>{
 //confirmation password render
 
 const getConfirmPass = async(req,res)=>{
-    // console.log("your email is = ",req.session.email)
     const data = await userModel.findOne({email: req.session.email})
     const hashPass = await bcrypt.hash(req.body.password,10)
     await userModel.updateOne({email: req.session.email},{password: hashPass})
@@ -287,10 +286,7 @@ const userAddtoCart =  async (req, res) => {
   
       } else {
         const product = await cartModel.findOne({userId: userId,'Items.ProductId':ProductId})
-  
-        // console.log("foooooooo product check",product)
-        // console.log(productId)
-  
+
         if(!product){
   
           await cartModel.findByIdAndUpdate(userExist._id, {
@@ -319,37 +315,41 @@ const userGetCart = async(req,res)=>{
     try {
   
       const name = req.session.name
-      // console.log("username====",req.session.email);
-      // console.log("session.userId====",req.session.userId);
-      // console.log("heleleleooeloeo");
+      const id = req.session.userId
       const userId=new mongoose.Types.ObjectId(req.session.userId)
-      // console.log("oiwejofj=====",userId);
       const cartDetail = await cartModel.findOne({userId: userId })
       .populate('Items.ProductId')
-      // console.log("cart.Detail===",cartDetail);
+
+      let cartcount = 0
+      const cartData = await cartModel.findOne({userId:id})
+      if (cartData === null || cartData.Items == (null||0)) {
       
+        cartcount = 0
+  
+      }else{
+        cartData.Items.forEach((cart)=>{
+          cartcount += cart.Quantity 
+        })
+      }
   
       if(cartDetail){
         
         const carts=cartDetail.Items
-        // console.log("carts = ",carts)   
-        // console.log("carts.ProductId from /cart",carts.ProductId); 
-        // let i=-1
+  
         let sum=0
-        let cartcount = 0
+
           carts.forEach(cart => {
-            // console.log("==========================================================")
-            // console.log("carts.cart=========================================================",cart)
-            cartcount += cart.Quantity
+         
             sum+=(cart.Quantity * cart.ProductId.Price)
           });
+          console.log("cartcount when entering cartpage====",cartcount)
           req.session.totalAmount = sum;
           const totalPrice = await  cartModel.updateOne({userId: userId}, {$set:{totalAmount: sum}})
   
         res.render('user/cart-page',{title:'My cart',name,cartDetail,sum,cartcount})
   
       }else{
-          res.render('user/no-cart',{title:'No item found',name})
+          res.render('user/cart-page',{title:'No item found',cartDetail,name,cartcount})
       }
     } catch (error) {
   
@@ -366,10 +366,6 @@ const cartQuantityUpdate = async(req,res)=>{
     console.log(req.body);
     const {inc,productId} = req.body
   
-    // console.log("reached server updating.....")
-    // console.log("server side number ==",number)
-    // console.log("server side productId ==",productId)
-  
     //product detail
     const product = await products.findOne({_id: productId})
     const userId=new mongoose.Types.ObjectId(req.session.userId)
@@ -383,7 +379,6 @@ const cartQuantityUpdate = async(req,res)=>{
   
     //total amount
     cartDetail.totalAmount += inc*product.Price
-    // console.log("cartItem===",cartItem)
     req.session.totalAmount = cartDetail.totalAmount
     //newQuandity
     const newQuantity = cartItem.Quantity+Number(inc)
@@ -408,8 +403,8 @@ const cartQuantityUpdate = async(req,res)=>{
         Quantity:newQuantity,
         Stock:product.Stock,
         price:cartItem.Price,
-        totalPrice: cartDetail.totalAmount
-        
+        totalPrice: cartDetail.totalAmount,
+        totalQuantity: cartDetail.totalQuantity
       }
       )
   
@@ -424,7 +419,6 @@ const cartItemDeletion = async(req,res)=>{
       const cartId = req.params.cartId
       console.log("ParentId====",ParentId);
       console.log("cartId=====",cartId)
-      // await cartModel.updateOne({_id:ParentId},{Items: {$pull: {_id:cartId}}})
       await cartModel.updateOne({_id: ParentId},{
         $pull:{
             Items:{_id: cartId}
@@ -451,13 +445,26 @@ const cartItemDeletion = async(req,res)=>{
 
 const getUserProfile = async(req,res)=>{
     const name=req.session.name
+    const userId = req.session.userId
     // req.session.save()
     const userData = await userModel.findOne({name:name})
     req.session.email = userData.email
     req.session.save()
     console.log("email==="+userData.email);
+    const cartData = await cartModel.findOne({userId:userId})
+    let cartcount = 0
+    if (cartData === null || cartData.Items == (null||0)) {
+      
+      cartcount = 0
+
+    }else{
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
+    
+    })
+  }
     // console.log("name===",name)
-    res.render('user/userProfile',{name,userData,title:"Zoan | profile"})
+    res.render('user/userProfile',{name,userData,title:"Zoan | profile",cartcount})
   }
 
 
@@ -503,9 +510,22 @@ const updateUserProfile = async(req,res)=>{
 
 
 //get Password Change
-const passChange = (req,res)=>{
+const passChange = async(req,res)=>{
     const name = req.session.name
-    res.render('user/userPasswordChenge',{title:"Zoan | Change Password",name})
+    const userId = req.session.userId
+    const cartData = await cartModel.findOne({userId:userId})
+    let cartcount = 0
+    if (cartData === null || cartData.Items == (null||0)) {
+      
+      cartcount = 0
+
+    }else{
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
+    
+    })
+  }
+    res.render('user/userPasswordChenge',{title:"Zoan | Change Password",name,cartcount})
   }
 
 
@@ -633,13 +653,25 @@ const passwordChange2 = async(req,res)=>{
 
   //render manage address
   const renderManageAddress=async(req,res)=>{
-
+    const userId = req.session.userId
     const userData = await userModel.findOne({_id:req.session.userId})
   //  console.log("userdataaa",userData);
     const name = req.session.name
+    const cartData = await cartModel.findOne({userId:userId})
+    let cartcount = 0
+    if (cartData === null || cartData.Items == (null||0)) {
+      
+      cartcount = 0
+
+    }else{
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
     
-    res.render('user/userAddress',{title:"Zoan | Address",name, userData})
+    })
   }
+    res.render('user/userAddress',{title:"Zoan | Address",name, userData,cartcount})
+  }
+
 
   //add address
   const addAddress = async(req,res)=>{
@@ -723,7 +755,11 @@ const checkoutUser = async (req, res)=>{
   const userData= await userModel.findOne({name:name})
   const cartData = await cartModel.findOne({userId:userId})
   if(cartData){
-  res.render('user/userCheckout',{title:"Zoan | Checkout",userData,name})
+    let cartcount = 0
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
+    })
+  res.render('user/userCheckout',{title:"Zoan | Checkout",userData,name,cartcount})
   }else{
     res.redirect('/userHome')
   }
