@@ -174,24 +174,34 @@ const logout = (req,res)=>{
 
 
 
-//product list user-side
+//product list user-side==============
 const productList1 = async(req,res)=>{
-    const productsList = await products.find();
+
+    const listCount = await products.find().count()
     const name = req.session.name
     const userId = req.session.userId
+    let currentPage = 'Product-list'
     const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
     let cartcount = 0
-    if (cartData === null || cartData.Items == (null||0)) {
+  if (cartData === null || cartData.Items == (null||0)) {
       
       cartcount = 0
 
     }else{
     cartData.Items.forEach((cart)=>{
       cartcount += cart.Quantity
-    
     })
   }
-    res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount});
+  
+    let page = Number(req.query.page) || 1;
+    let perPage = 8
+    let pageNums = Math.ceil(listCount/perPage)
+  const productsList = await products.find().sort({_id: -1})
+  .skip((page-1)*perPage)
+  .limit(perPage)
+  
+  res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount,pageNums,listCount,page});
+
 }
 
 

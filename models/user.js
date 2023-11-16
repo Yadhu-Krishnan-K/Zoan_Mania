@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 const sch = mongoose.Schema({
     name:{
         type:String,
@@ -36,6 +38,9 @@ const sch = mongoose.Schema({
         default:true
     }
 })
+
+sch.plugin(mongoosePaginate);
+
 const monmodel = mongoose.model("user",sch);
 
 module.exports = monmodel
