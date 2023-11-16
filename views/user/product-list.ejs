@@ -42,7 +42,7 @@
         </div>
 
       </div>
-
+ 
       <!-- Left and right controls/icons -->
       <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
         <span class="carousel-control-prev-icon"></span>
@@ -97,16 +97,18 @@
     </div>
 
   </div>
-
+  <div class="col-12 d-flex justify-content-center">
+    <nav aria-label="Page navigation" class="m-3">
+      <ul class="pagination ">
+        <% for(i=1;i<=pageNums;i++){ %>
+        <li class="page-item"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
+        <% } %>
+      </ul>
+    </nav>
   </div>
-
-  </div>
-
-
-
-  </div>
-
-  <footer class="container mt-5" style="height: 300px;background: #000;">
+ 
+  
+  <footer class="container-fluid mt-5" style=" height: 300px;background: #000;">
     <div class="row">
       <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
         <h4 class="footer-head ">Get In Touch</h4>

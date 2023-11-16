@@ -39,7 +39,6 @@ router.get('/inventory',adminauth.adminLoggedinAuthguard,adminrouter.getInventor
         
 //----------------------------------------------------------------------------------------------
 //Category------------------------<%= ++i %>----------------
-
 router.get('/Category',adminauth.adminLoggedinAuthguard,adminrouter.getCategory)
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -243,8 +242,23 @@ router.get('/delete-product/:id',adminProductControl.deleteProduct)
 //============================================================================================================================================================
 
 router.get('/Orders',adminauth.adminLoggedinAuthguard,async(req,res)=>{
-    const ordersData = await orderModel.find()
-    res.render('supAdmin/admin-order-tracker',{title:"Orders",ordersData,currentPage:"Orders"})
+    // const ordersData = await orderModel.find()
+    // res.render('supAdmin/admin-order-tracker',{title:"Orders",ordersData,currentPage:"Orders"})
+    const page = parseInt(req.query.page) || 1;
+    const options = {
+      page: page,
+      limit: 6, // Adjust the limit as needed
+    };
+
+    const ordersData = await orderModel.paginate({}, options);
+
+    res.render('supAdmin/admin-order-tracker', {
+      title: "Orders",
+      ordersData: ordersData.docs, // Array of documents for the current page
+      currentPage: "Orders",
+      totalPages: ordersData.totalPages,
+      currentPage: ordersData.page,
+    });
 })
 
 

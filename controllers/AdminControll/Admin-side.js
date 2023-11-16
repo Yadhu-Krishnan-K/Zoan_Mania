@@ -1,3 +1,4 @@
+
 const admin = require('../../models/admin')
 const db = require('../../models/user')
 const productModel =require('../../models/products')
@@ -8,19 +9,33 @@ const getAdminLogin = (req,res)=>{
 
 
 const getCustomer = async(req,res,next)=>{
-    req.session.logged = true
+    req.session.logged = true;
     let i = 0;
-    const userData = await db.find();
 
-    res.render('supAdmin/admin-control-user',{userData,i,title:"Customers",currentPage:"Customers"})
-    // res.send('oky')
+    // Pagination logic
+    const page = parseInt(req.query.page) || 1;
+    const options = {
+      page: page,
+      limit: 5,
+    };
+
+    const userData = await db.paginate({}, options);
+
+    res.render('supAdmin/admin-control-user', {
+      userData: userData.docs, // Array of documents for the current page
+      i,
+      title: "Customers",
+      currentPage: "Customers",
+      totalPages: userData.totalPages,
+      currentPage: userData.page,
+    });
 }
 
 
 const getInventory = async(req,res)=>{
     try {
         i=0
-        const products = await productModel.find({})
+        const products = await productModel.find({}).sort({_id: -1})
         res.render('supAdmin/admin-inventory',{products,i,title:"Inventory",currentPage:"Inventory"})
     } catch (error) {
         console.log(error)

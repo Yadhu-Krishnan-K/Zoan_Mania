@@ -4,7 +4,7 @@
 
 // })
 const mongoose = require('mongoose');
-
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const { Schema, ObjectId } = mongoose;
 
@@ -32,6 +32,9 @@ const OrdersSchema = new Schema({
   CouponId: { type: Schema.Types.ObjectId },
   Address: { type: ShippedAddressSchema },
 });
+
+OrdersSchema.plugin(mongoosePaginate)
+ShippedAddressSchema.plugin(mongoosePaginate)
 
 const Orders = mongoose.model('Orders', OrdersSchema);
 
