@@ -172,31 +172,32 @@ router.get('/edit-product/:id',adminauth.adminLoggedinAuthguard,async(req,res)=>
         const cate = await Cate.find()
         console.log("efef",cate);
         // console.log(P_detail);
-        res.render('supAdmin/admin-edit-product',{P_detail,cate,title:"Edit Product",currentPage:"Inventory"});
+        res.render('supAdmin/admin-edit-product',{P_detail,cate,title:"Edit Product",Page:"Inventory"});
     })
 
     //updating product
     router.post('/update-productPage/:P_id',multi.fields([
         { name: 'image1', maxCount: 1 },
         { name: 'image2', maxCount: 1 },
-        { name: 'image3', maxCount: 1 }
+        { name: 'image3', maxCount: 1 },
+        { name: 'image4', maxCount: 1 }
     ]),async(req,res)=>{
 
         const P_id = req.params.P_id
         const productData = await products.findOne({_id:P_id})
-        // console.log("image1",productData.Image[0].mainimage)
-        // console.log("image1",productData.Image[0].image1)
-        // console.log("image1",productData.Image[0].image2)
-        const image1 = req.files && req.files['image1'] ? req.files['image1'][0] : { filename: productData.Image[0].mainimage };
-        const image2 = req.files && req.files['image2'] ? req.files['image2'][0] : { filename: productData.Image[0].image1 };
-        const image3 = req.files && req.files['image3'] ? req.files['image3'][0] : { filename: productData.Image[0].image2 };
+       
+        const image1 = req.files && req.files['image1'] ? req.files['image1'][0] : { filename: productData.Image[0].mainimage } ? { filename: productData.Image[0].mainimage } : {};
+        const image2 = req.files && req.files['image2'] ? req.files['image2'][0] : { filename: productData.Image[1].image1 } ? { filename: productData.Image[1].image1 } : {};
+        const image3 = req.files && req.files['image3'] ? req.files['image3'][0] : { filename: productData.Image[2].image2 } ? { filename: productData.Image[2].image2 } : {};
+        const image4 = req.files && req.files['image4'] ? req.files['image3'][0] : { filename: productData.Image[2].image3 } ? { filename: productData.Image[2].image3 } : {};
 
         console.log("image.filename===",image1)
-        const imageUrls = {
-            mainimage: image1.filename ,
-            image1: image2.filename ,
-            image2: image3.filename 
-        };
+        const imageUrls = [
+            {filename: image1.filename} ,
+            {filename: image2.filename} ,
+            {filename: image3.filename} ,
+            {filename: image4.filename}
+        ];
 
 
             // const {Description,ProductName,Category,Stock,Price} = req.body
@@ -207,7 +208,7 @@ router.get('/edit-product/:id',adminauth.adminLoggedinAuthguard,async(req,res)=>
             Category:req.body.Category,
             Stock:req.body.Stock,
             Price:req.body.Price,
-            Image:[imageUrls],
+            Image:imageUrls,
             Spec1:req.body.Spec1,
             Spec2:req.body.Spec2,
             Spec3:req.body.Spec3
