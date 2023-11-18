@@ -36,11 +36,29 @@
                         <br>
                         <div class="border p-3 mb-3">
                             <input type="file" name="image1" accept="image/*" style="width: 188px; height:188px;" onchange="Cimg(event)">
-                            <img src="/uploads/<%=P_detail.Image[0].mainimage %>" alt="" width="80px" id="mainImage" >
+                            <% if(P_detail.Image[0]){ %>                                
+                                <img src="/uploads/<%=P_detail.Image[0].filename %>" alt="" width="80px"  >
+                            <% }else{ %>
+                                <img src="" alt="" id="mainImage" style="display: none;" width="80px">
+                                <% } %>
                             <input type="file" name="image2" accept="image/*" style="width: 188px; height:188px;" onchange="C2img(event)">
-                            <img src="/uploads/<%= P_detail.Image[0].image1 %>" alt="" width="80px" id="image1">
+                            <% if(P_detail.Image[1]){ %>                                
+                                <img src="/uploads/<%= P_detail.Image[1].filename %>" alt="" width="80px">
+                            <% }else{ %>
+                                <img src="" alt="" id="image1" style="display: none;" width="80px">
+                                <% } %>
                             <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;" onchange="C3img(event)">
-                            <img src="/uploads/<%= P_detail.Image[0].image2 %>" alt="" width="80px" id="image2">
+                            <% if(P_detail.Image[2]){ %>                                
+                                <img src="/uploads/<%= P_detail.Image[2].filename %>" alt="" width="80px" >
+                            <% }else{ %>
+                                <img src="" alt="" id="image2" style="display: none;" width="80px">
+                                <% } %>
+                            <input type="file" name="image4" accept="image/*" style="width: 188px; height:188px;" onchange="C4img(event)">
+                            <% if(P_detail.Image[3]){ %>                                
+                                <img src="/uploads/<%= P_detail.Image[3].filename %>" alt="" width="80px" >
+                            <% }else{ %>
+                                <img src="" alt="" id="image3" style="display: none;" width="80px">
+                                <% } %>
                             <!-- <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;"> -->
                         </div>
         
@@ -127,12 +145,19 @@
         }
         function Cimg(ev){
             document.getElementById('mainImage').src = URL.createObjectURL(ev.target.files[0]);
+            document.getElementById('mainImage').style = 'block';
         }
         function C2img(ev){
             document.getElementById('image1').src = URL.createObjectURL(ev.target.files[0]);
+            document.getElementById('image1').style = 'block';
         }
         function C3img(ev){
             document.getElementById('image2').src = URL.createObjectURL(ev.target.files[0]);
+            document.getElementById('image2').style = 'block';
+        }
+        function C4img(ev){
+            document.getElementById('image3').src = URL.createObjectURL(ev.target.files[0]);
+            document.getElementById('image3').style = 'block';
         }
     
     </script>
