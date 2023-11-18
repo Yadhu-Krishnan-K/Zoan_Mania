@@ -25,7 +25,7 @@ const getCustomer = async(req,res,next)=>{
       userData: userData.docs, // Array of documents for the current page
       i,
       title: "Customers",
-      currentPage: "Customers",
+      Page: "Customers",
       totalPages: userData.totalPages,
       currentPage: userData.page,
     });
@@ -36,18 +36,18 @@ const getInventory = async(req,res)=>{
     try {
         i=0
         const products = await productModel.find({}).sort({_id: -1})
-        res.render('supAdmin/admin-inventory',{products,i,title:"Inventory",currentPage:"Inventory"})
+        products.Image
+        res.render('supAdmin/admin-inventory',{products,i,title:"Inventory",Page:"Inventory"})
     } catch (error) {
         console.log(error)
     }
-    
-    // res.send('hello')
+// res.send('hello')
 }
 
 
 const getAddProduct = async(req,res)=>{
-    const cate = await Categories.find({})
-    res.render('supAdmin/admin-addProduct',{cate,title:"Add Products",currentPage:"Inventory"})
+    const cate = await Categories.find().sort()
+    res.render('supAdmin/admin-addProduct',{cate,title:"Add Products",Page:"Inventory"})
 
     // res.send('hai')
 }
@@ -78,13 +78,13 @@ const getCategory = async(req,res)=>{
     i=0
     const datas = await Categories.find()
     // console.log(datas)
-    res.render('supAdmin/admin-category',{datas,i,title:"Categories",currentPage:"Category"})
+    res.render('supAdmin/admin-category',{datas,i,title:"Categories",Page:"Category"})
 
 }
 //===============================================================================================================
 //----const add-category
 const addCategory = (req,res)=>{
-    res.render('supAdmin/admin-category-add',{title:"Add category",currentPage:"Category"})
+    res.render('supAdmin/admin-category-add',{title:"Add category",Page:"Category"})
 }
 
 

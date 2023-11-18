@@ -7,6 +7,7 @@ const sch = mongoose.Schema({
         type:String,
         required:true
     },
+
     profileImage:{
         type:String
     },
@@ -19,6 +20,7 @@ const sch = mongoose.Schema({
     Gender: {
         type:String
     },
+
     password:{
         type:String,
         required:true
@@ -32,6 +34,7 @@ const sch = mongoose.Schema({
             Mobile: { type: Number },
         }
         ],
+        
     MobileNumber:{type:Number},
     access:{
         type:Boolean, 

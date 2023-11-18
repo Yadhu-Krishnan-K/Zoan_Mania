@@ -1,131 +1,160 @@
 <%- include('../layouts/admin/header'); -%>
-    <div class="col-md-12">
-        <!-- <div class="row gx-0"> -->
-            <!-- <h1>Submit Your Information and Images</h1> -->
-            <h1>Add Products</h1>
-            <form action="/admin/inventory/adding-product" id="sub" method="post" class="p-3 bg-white rounded" enctype="multipart/form-data">
-                <div class="details row gx-0" style="background: #fff;">
-                    
-                    <input type="text" name="Pname" id="Pname" placeholder="Product Name" class="mt-3 p-2 border rounded" required><br>
-                    <!-- <input type="" name="Description" id="Description" > -->
-                    <input type="text" name="Suffix" id="Suffix" placeholder="Suffix" class="mt-3 p-2 border rounded"><br>
-                    <textarea name="Description" class="mt-3" id="Description" placeholder="Add description" cols="50" rows="10" required></textarea>
+<div class="col-md-12">
+    <h1>Add Products</h1>
+    <form action="/admin/inventory/adding-product" id="sub" method="post" class="p-3 bg-white rounded" enctype="multipart/form-data">
+        <div class="details row gx-0" style="background: #fff;">
+            <input type="text" name="Pname" id="Pname" placeholder="Product Name" class="mt-3 p-2 border rounded" required><br>
+            <input type="text" name="Suffix" id="Suffix" placeholder="Suffix" class="mt-3 p-2 border rounded"><br>
+            <textarea name="Description" class="mt-3" id="Description" placeholder="Add description" cols="50" rows="10" required></textarea>
+        </div>
+        <div class="form-group border p-3 mt-3 mb-3" style="background: #fff;">
+            <label for="productSpecification">Specification:</label>
+            <textarea class="form-control bg-light p-2" name="Specification1" id="productSpecification1" placeholder="Enter product Specification" required></textarea>
+            <label for="productSpecification2">Specification:</label>
+            <textarea class="form-control bg-light" name="Specification2" id="productSpecification" placeholder="Enter product Specification" required></textarea>
+            <label for="productSpecification3">Specification:</label>
+            <textarea class="form-control bg-light" name="Specification3" id="productSpecification" placeholder="Enter product Specification" required></textarea>
+        </div>
+        <div class="details mt-3 border p-3" style="background: #fff;">
+            <p>Add image</p>
+            <div class="imgarea" style="width: 100%; height: 200px;">
+                <input type="file" name="images" id="image1" accept="image/*" onchange="limNpre()" multiple required><br>
+                <span id="doc" style="color: rgb(255, 2, 2); display: none;">Maximum 4 images allowed</span>
+                <div class="img-preview-container">
+                    <% for (let i = 1; i <= 4; i++) { %>
+                        <img id="image-preview-<%= i %>" class="img-preview" width="50px" alt="img<%= i %>">
+                    <% } %>
                 </div>
-                <div class="form-group border p-3 mt-3 mb-3" style="background: #fff; ">
-                    <label for="productSpecification">Specification:</label>
-                    <textarea class="form-control bg-light p-2" name="Specification1" id="productSpecification1"
-                        placeholder="Enter product Specification" required></textarea>
-                    <label for="productSpecification2">Specification:</label>
-                    <textarea class="form-control bg-light" name="Specification2" id="productSpecification"
-                        placeholder="Enter product Specification" required></textarea>
-                    <label for="productSpecification3">Specification:</label>
-                    <textarea class="form-control bg-light" name="Specification3" id="productSpecification"
-                        placeholder="Enter product Specification" required></textarea>
-                    
-                </div>
-                <div class="details mt-3 border p-3" style="background: #fff; ">
-                    <p>Add image</p>
-                    <div class="imgarea" style="width: 100%;height: 200px;">
-                        <!-- <input type="file" name="image1" id="image1" required>
-                        <input type="file" name="image2" id="image2" required>
-                        <input type="file" name="image3" id="image3" required> -->
-                        <input type="file" name="image1" id="image1" accept="image/*" onchange="previewImage(1)" required>
-                        <img id="image-preview-1" src="#" alt="Image Preview 1"  height="100px" />
-                        
-                        <input type="file" name="image2" id="image2" accept="image/*" onchange="previewImage(2)" required>
-                        <img id="image-preview-2" src="#" alt="Image Preview 2" height="100px" />
-                        
-                        <input type="file" name="image3" id="image3" accept="image/*" onchange="previewImage(3)" required>
-                        <img id="image-preview-3" src="#" alt="Image Preview 3" height="100px"/>
-                    </div>
-                </div>
-                <div class="pricing mt-3 border p-3" style="background: #fff; ">
-                    <p>pricing</p>
-                    <div id="priceErr" style="display: none;"></div>
-                    <input type="number" class="p-2 border rounded" name="price" id="price" required>
-                </div>
-                <div class="pricing mt-3 border p-3" style="background: #fff; ">
-                    <p>Category</p>
-                    <!-- <input type="text" name="Category" id="Category"> -->
-                    <div id="caterr" style="display: none;" ></div>
+            </div>
+        </div>
+        <div class="pricing mt-3 border p-3" style="background: #fff;">
+            <p>pricing</p>
+            <div id="priceErr" style="display: none;"></div>
+            <input type="number" class="p-2 border rounded" name="price" id="price" required>
+        </div>
+        <div class="pricing mt-3 border p-3" style="background: #fff;">
+            <p>Category</p>
+            <div id="caterr" style="display: none;"></div>
+            <select name="category" id="category" required>
+                <option value="">Select a category</option>
+                <% if(cate){ %>
+                    <% cate.forEach(cat => { %>
+                        <option value="<%= cat.catName %>"><%= cat.catName %></option>
+                    <% }) %>
+                <% } %>
+            </select>
+        </div>
+        <div class="stock mt-3 mb-5 border p-3" style="background: #fff; border: 1px solid black;">
+            <p>stock</p>
+            <div id="stocker" style="display: none;"></div>
+            <input type="number" class="p-2 border rounded" name="stock" id="stock" required>
+        </div>
+        <div class="d-flex justify-content-end" style="width: 100%;">
+            <div>
+                <a href="/admin/inventory"><button type="button" class="btn btn-danger">Cancel</button></a><button class="btn btn-success" type="submit" onclick="Clicked()">+addProduct</button>
+            </div>
+        </div>
+    </form>
+</div>
 
-                    <select name="category" id="category" required>
-                        <option value="">Select a category</option>
-                        <!-- <option value=""></option> -->
-                        <% if(cate){ %>
-                            <% cate.forEach(cat => { %>
-                                <option value="<%= cat.catName %>"><%= cat.catName %></option>
-                            <% }) %>
-                        <% } %>
-                    </select>
-                </div>
-                <div class="stock mt-3 mb-5 border p-3" style="background: #fff; border: 1px solid black;">
-                    <p>stock</p>
-                    <div id="stocker" style="display: none;" ></div>
-                    <input type="number" class="p-2 border rounded" name="stock" id="stock" required>
-                </div>
-                <div class="d-flex justify-content-end" style="width: 100%;">
-                    <div >
-                        <a href="/admin/inventory"><button type="button" class="btn btn-danger">Cancel</button></a><button class="btn btn-success" type="submit" onclick="Clicked()">+addProduct</button>
-                             
-                    </div>
-                </div>
-            </form>
-            
-        <!-- </div> --> 
-    </div>
+<script>
+    function limNpre() {
+        const selectedFiles = document.getElementById('image1').files;
+        console.log("selectedFiles====", selectedFiles)
+        const allowedExtensions = ['jpg', 'jpeg', 'png'];
 
-
-    <script>
-        function Clicked(){
-            document.getElementById('sub').addEventListener("submit",(e)=>{
-                let stock = document.getElementById('stock').value;
-                let price = document.getElementById('price').value;
-                let err = document.getElementById('stocker');
-                let prerr = document.getElementById('priceErr');
-                let cat = document.getElementById('category').textContent
-                let caterr = document.getElementById('caterr')
-                if(stock<0){
-                    e.preventDefault();
-                    err.style.display='block'
-                    err.innerHTML='stock should be greater than or equal to 0';
-                    setTimeout(()=>{
-                        err.style.display='none'
-                    },4000)
-                }
-                if(price<=0){
-                    e.preventDefault();
-                    prerr.style.display='block'
-                    prerr.innerHTML='price should be greater than 0';
-                    setTimeout(()=>{
-                        prerr.style.display='none'
-                    },4000)
-                }
-                if(category == 'Select a categoryt '){
-                    e.preventDefault();
-                    caterr.style.display='block'
-                    caterr.innerHTML='Select a category';
-                    setTimeout(()=>{
-                        caterr.style.display='none'
-                    },4000)
-                }
-            })
+        if (selectedFiles.length > 4) {
+            document.getElementById('doc').innerHTML = 'Maximum 4 images allowed';
+            document.getElementById('doc').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('doc').style.display = 'none';
+                const newInput = replaceFileInput();
+                newInput.addEventListener('change', limNpre);
+            }, 3000);
+            return;
         }
-        function previewImage(inputNumber) {
-            var fileInput = document.getElementById(`image${inputNumber}`);
-            var imagePreview = document.getElementById(`image-preview-${inputNumber}`);
 
-            if (fileInput.files && fileInput.files[0]) {
-                var reader = new FileReader();
+        const imgPreviewContainer = document.querySelector('.img-preview-container');
+        imgPreviewContainer.innerHTML = ''; // Clear previous previews
 
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                };
+        for (let i = 0; i < selectedFiles.length && i < 4; i++) {
 
-                reader.readAsDataURL(fileInput.files[0]);
+    const fileExtension = selectedFiles[i].name.split('.').pop().toLowerCase();
+    console.log('file extension====',fileExtension)
+
+    if (allowedExtensions.includes(fileExtension)) {
+        const imgPreview = document.getElementById(`image-preview-${i + 1}`);
+        if (imgPreview) {
+            const reader = new FileReader();
+            reader.readAsDataURL(selectedFiles[i]);
+            reader.onload = function (e) {
+                imgPreview.src = e.target.result;
+            };
+        }
+    } else {
+        document.getElementById('doc').innerHTML = 'Invalid file type. Please upload only images';
+        document.getElementById('doc').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('doc').style.display = 'none';
+            const newInput = replaceFileInput();
+            newInput.addEventListener('change', limNpre);
+        }, 3000);
+        return;
+    }
+}
+
+    }
+
+    function replaceFileInput() {
+        const oldInput = document.getElementById('image1');
+        const newInput = document.createElement('input');
+
+        newInput.type = 'file';
+        newInput.name = oldInput.name;
+        newInput.id = oldInput.id;
+        newInput.accept = oldInput.accept;
+        newInput.multiple = oldInput.multiple;
+        newInput.required = oldInput.required;
+
+        oldInput.parentNode.replaceChild(newInput, oldInput);
+
+        return newInput;
+    }
+
+    function Clicked() {
+        document.getElementById('sub').addEventListener("submit", (e) => {
+            let stock = document.getElementById('stock').value;
+            let price = document.getElementById('price').value;
+            let err = document.getElementById('stocker');
+            let prerr = document.getElementById('priceErr');
+            let cat = document.getElementById('category').textContent;
+            let caterr = document.getElementById('caterr');
+            if (stock < 0) {
+                e.preventDefault();
+                err.style.display = 'block';
+                err.innerHTML = 'stock should be greater than or equal to 0';
+                setTimeout(() => {
+                    err.style.display = 'none';
+                }, 4000);
             }
-        }
-    </script>
-
+            if (price <= 0) {
+                e.preventDefault();
+                prerr.style.display = 'block';
+                prerr.innerHTML = 'price should be greater than 0';
+                setTimeout(() => {
+                    prerr.style.display = 'none';
+                }, 4000);
+            }
+            if (cat === 'Select a category') {
+                e.preventDefault();
+                caterr.style.display = 'block';
+                caterr.innerHTML = 'Select a category';
+                setTimeout(() => {
+                    caterr.style.display = 'none';
+                }, 4000);
+            }
+        });
+    }
+</script>
 
 <%- include('../layouts/admin/footer'); -%>
