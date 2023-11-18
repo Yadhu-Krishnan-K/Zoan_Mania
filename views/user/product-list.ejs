@@ -42,7 +42,7 @@
         </div>
 
       </div>
- 
+
       <!-- Left and right controls/icons -->
       <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
         <span class="carousel-control-prev-icon"></span>
@@ -70,25 +70,28 @@
 
               <% if(product.Stock>= 1 ){ %>
                 <% let isInCart=false %>
-                  <% for (let index=0; index < cartData.Items.length; index++) { %>
-                    <% if(JSON.stringify(product._id)==JSON.stringify(cartData.Items[index].ProductId._id)){ %>
-                      <% isInCart=true %>
-                        <% break %>
-                          <% } %>
+                  <% if(cartData !==null){ %>
+                    <% for (let index=0; index < cartData.Items.length; index++) { %>
+                      <% if(JSON.stringify(product._id)==JSON.stringify(cartData.Items[index].ProductId._id)){ %>
+                        <% isInCart=true %>
+                          <% break %>
                             <% } %>
-                              <% if(isInCart){ %>
-                                <a href="/cart" class="btn btn-warning">Go To Cart</a>
-                                <% }else{ %>
-                                  <a href="/addToCart/<%= product._id %>" class="btn btn-warning">Add To Cart</a>
-                                  <% } %>
+                              <% } %>
+                                <% }else{isInCart=false} %>
+                                  <% if(isInCart){ %>
+                                    <a href="/cart" class="btn btn-warning">Go To Cart</a>
                                     <% }else{ %>
-                                      <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out of
-                                        stock</p>
-                                      <a href="" class="btn btn-warning" style="pointer-events: none">Add To Cart</a>
-
+                                      <a href="/addToCart/<%= product._id %>" class="btn btn-warning">Add To Cart</a>
                                       <% } %>
-                                        <a href="/productDetail/<%= product._id %>" class="btn btn-primary">view
-                                          Details</a>
+                                        <% }else{ %>
+                                          <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out
+                                            Of Stock</p>
+                                          <a href="" class="btn btn-warning" style="pointer-events: none">Add To
+                                            Cart</a>
+
+                                          <% } %>
+                                            <a href="/productDetail/<%= product._id %>" class="btn btn-primary">View
+                                              Details</a>
             </div>
           </div>
         </div>
@@ -101,13 +104,17 @@
     <nav aria-label="Page navigation" class="m-3">
       <ul class="pagination ">
         <% for(i=1;i<=pageNums;i++){ %>
-        <li class="page-item"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
-        <% } %>
+          <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+            <a class="page-link" href="?page=<%= i %>">
+              <%= i %>
+            </a>
+          </li>
+          <% } %>
       </ul>
     </nav>
   </div>
- 
-  
+
+
   <footer class="container-fluid mt-5" style=" height: 300px;background: #000;">
     <div class="row">
       <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">

@@ -80,30 +80,24 @@ router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,adminProduct
 
 //''''''''''''''''''''''''''''''''''''''''''''''''''''------------------------------------------------------------------------//
 //add product
-router.post('/inventory/adding-product',multi.fields([
-    { name: 'image1', maxCount: 1 },
-    { name: 'image2', maxCount: 1 },
-    { name: 'image3', maxCount: 1 }
-]),async(req,res)=>{
+router.post('/inventory/adding-product',multi.array('images',4),async(req,res)=>{
     // const name = req.body.name
 //    console.log(req.body);
 //    console.log(req.files,'files');
 
-   const image1 = req.files['image1'][0];
-   const image2 = req.files['image2'][0];
-   const image3 = req.files['image3'][0];
+   const images = req.files;
+   
 
-   const imageUrls = {
-    mainimage: image1.filename, // Use .path to get the file path
-    image1: image2.filename,
-    image2: image3.filename,
-   };
+   const imageUrls = images.map(image => ({
+    filename: image.filename,
+    // Other properties you want to store for each image
+}));
    const {Description,Pname,stock,price,category,Specification1,Specification2,Specification3,Suffix}=req.body
 //     // try {
         const product =await new products({
             Description:Description,
             Name:Pname,
-            Image:[imageUrls],
+            Image:imageUrls,
             Stock:stock,
             Category:category,
             Price:price,
@@ -250,15 +244,16 @@ router.get('/Orders',adminauth.adminLoggedinAuthguard,async(req,res)=>{
       limit: 6, // Adjust the limit as needed
     };
 
+    const orderDetails = await orderModel.find().sort({_id: -1})
     const ordersData = await orderModel.paginate({}, options);
 
     res.render('supAdmin/admin-order-tracker', {
       title: "Orders",
-      ordersData: ordersData.docs, // Array of documents for the current page
-      currentPage: "Orders",
+      ordersData: orderDetails,
+      Page: 'Orders',
       totalPages: ordersData.totalPages,
-      currentPage: ordersData.page,
-    });
+      currentPage: ordersData.page
+    }); 
 })
 
 
@@ -278,8 +273,7 @@ router.get('/orders/details/:orderId',adminauth.adminLoggedinAuthguard,async(req
     let order = await orderModel.findOne({_id: orderId}).populate('Items.productId')
     let ProductAllDetails = order.Items
     // console.log("Order items in adminside====",ProductAllDetails)
-    res.render('supAdmin/adminSide-order-detail-page',{title:"Order Detail",ProductAllDetails})
-    
+    res.render('supAdmin/adminSide-order-detail-page',{title:"Order Detail",ProductAllDetails, Page:"Orders"})    
 })
 
 

@@ -44,7 +44,13 @@ const getHome = async(req,res)=>{
     const userId = loger._id
     console.log("userId====",userId)
     req.session.userId = userId
-    const productModel = await products.find()
+    // const Pcount = await products.find().count()
+
+    // const page = Number(req.query.page) || 1
+    // const currentPage = page
+    // const pageNums = Math.ceil(Pcount/8)
+    const productModel = await products.find().sort({Selled: -1}).limit(8)
+   
     const cartData = await cartModel.findOne({userId:userId}).populate('userId')
     let cartcount = 0
     if (cartData === null || cartData.Items == (null||0)) {
@@ -57,8 +63,8 @@ const getHome = async(req,res)=>{
     })
     }
     await cartModel.updateOne({userId:userId},{$set:{totalQuantity:cartcount}})
-    console.log("cartcount=====",cartcount)
-    console.log("cartData====",cartData);
+    // console.log("cartcount=====",cartcount)
+    // console.log("cartData====",cartData);
     
     res.render('user/userHome',{title:"Zoan Home",productModel,name,cartData,cartcount})
     
@@ -180,27 +186,28 @@ const productList1 = async(req,res)=>{
     const listCount = await products.find().count()
     const name = req.session.name
     const userId = req.session.userId
-    let currentPage = 'Product-list'
     const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
     let cartcount = 0
-  if (cartData === null || cartData.Items == (null||0)) {
+    console.log("cartData====",cartData);
+    if (cartData === null || cartData.Items == (null||0)) {
       
       cartcount = 0
-
+      
     }else{
-    cartData.Items.forEach((cart)=>{
-      cartcount += cart.Quantity
-    })
-  }
-  
+      cartData.Items.forEach((cart)=>{
+        cartcount += cart.Quantity
+      })
+    }
+    
     let page = Number(req.query.page) || 1;
     let perPage = 8
     let pageNums = Math.ceil(listCount/perPage)
+    let currentPage = page;
   const productsList = await products.find().sort({_id: -1})
   .skip((page-1)*perPage)
   .limit(perPage)
   
-  res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount,pageNums,listCount,page});
+  res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount,pageNums,listCount,page,currentPage});
 
 }
 

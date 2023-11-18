@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
@@ -226,7 +227,7 @@ router.post('/placeOrder',async(req,res)=>{
 
           if (product) {
               const updateQuantity = product.Stock - quantity;
-
+              product.Selled += quantity
               if (updateQuantity < 0) {
                   product.Stock = 0;
                   product.Status = "Out of stock";
@@ -262,7 +263,7 @@ router.get('/orderDetails',authGuard.userLoginAuthGuard,userAccess,async(req,res
   try {
     const name = req.session.name;
     const userId = req.session.userId
-    const orderDetails = await  orderModel.find({UserId:req.session.userId})
+    const orderDetails = await  orderModel.find({UserId:req.session.userId}).sort({_id: -1})
     const cartData = await cartModel.findOne({userId:userId})
     let cartcount = 0
     if (cartData === null || cartData.Items == (null||0)) {
@@ -271,8 +272,8 @@ router.get('/orderDetails',authGuard.userLoginAuthGuard,userAccess,async(req,res
 
     }else{
     cartData.Items.forEach((cart)=>{
+      
       cartcount += cart.Quantity
-    
     })
   }
     res.render('user/orderTracker',{title:"Zoan | Track your orders",name,orderDetails,cartcount})
@@ -300,16 +301,27 @@ router.get('/cancelOrderData/:orderId',async(req,res)=>{
  }
 })
 
+
+
 //order products view
 router.get('/orderProductView/:orderId',authGuard.userLoginAuthGuard,userAccess,async(req,res)=>{
   const orderId = req.params.orderId
+  const userId = req.session.userId
   const orders = await orderModel.findById({_id:orderId}).populate('Items.productId')
-  
+  const cartData = await cartModel.findOne({userId:userId})
+    let cartcount = 0
+    if (cartData === null || cartData.Items == (null||0)) {
+      
+      cartcount = 0
+
+    }else{
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
+    })
+  }
   const name = req.session.name;
-  res.render('user/order-ProductDetails',{title:"Ordered Items",name,orders})
+  res.render('user/order-ProductDetails',{title:"Ordered Items",name,orders,cartcount})
 })
-
-
 
 
 
