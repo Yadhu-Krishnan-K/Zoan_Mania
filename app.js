@@ -3,6 +3,7 @@ const express = require("express")
 const nocache = require("nocache")
 const morgan = require('morgan')
 require('./auth/authentication')
+const mongoSanitize = require('express-mongo-sanitize')
 
 const path = require("path")
 
@@ -19,11 +20,24 @@ const sessionSecret = uuidv4();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
+mongoose.set('strictQuery', false);
+//no-sql sanitization====================================================-------
+app.use(mongoSanitize())
+
+// app.all('*', (req, res, next) => {
+//   next(new AppError(`Can't find ${req.originalUrl} on this Server!`, 404));
+// });
+
+// app.use(globalErrorHandler);
+//-----------------------------------------=====================================
+
+
 app.set('view engine','ejs')
 app.use(express.static(path.join(__dirname,'public')));
 
 app.use(morgan('tiny'))
 app.use(nocache())
+
 
 
 app.use(session({
@@ -69,21 +83,6 @@ app.get('/auth/google/callback',
     // Successful authentication, redirect home.
     res.redirect('/userHome');
   });
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
 
 
 

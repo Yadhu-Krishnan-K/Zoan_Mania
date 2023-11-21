@@ -7,6 +7,11 @@ const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
 const mongoose  = require('mongoose')
 const moment = require('moment')
+// const Razorpay = require('razorpay')
+// var instance = new Razorpay({
+//   key_id: process.env.RAZORPAY_KEY_ID,
+//   key_secret: process.env.RAZORPAY_KEY_SECRET,
+// });
 
 
 const us = require('../controllers/UserControll/user-side')
@@ -153,10 +158,11 @@ router.get('/buyTheProducts',authGuard.userLoginAuthGuard,userAccess,us.checkout
 
 //order confirmation page======================================================
 router.post('/placeOrder',async(req,res)=>{
-  
+  console.log("Entered to place order");
   const email = req.session.email;
   
   const Address = req.body.selectedAddress;
+  console.log("Selected Address====",Address)
   const paymentMethod = req.body.selectedPayment;
   const amount = req.session.totalAmount;
 
@@ -213,11 +219,11 @@ router.post('/placeOrder',async(req,res)=>{
           TotalPrice: amount,
           Address: add
       });
-
-
+      if(paymentMethod=='cod'){
+        console.log("inside payment method = cod and order model is creating")
       const order = await newOrder.save();
       req.session.orderID = order._id;
-      console.log("Order detail", order);
+      // console.log("Order detail", order);
       await cartModel.findByIdAndDelete(cartData._id);
 
       for (const item of order.Items) {
@@ -237,10 +243,19 @@ router.post('/placeOrder',async(req,res)=>{
               }
           }
       }
-//just redirect if code to some route
-      if (paymentMethod === "cod") {
+//just redirect if code to some rout
           req.session.visited = 0
-          res.redirect('/placeOrder');
+          console.log("order response back");
+          return res.json({ success: true, message: 'Order placed successfully' });
+      }else if(paymentMethod == 'online'){
+        // var options = {
+        //   amount: amount*100,  // amount in the smallest currency unit
+        //   currency: "INR",
+        //   receipt: "order_rcptid_11"
+        // };
+        // instance.orders.create(options, function(err, order) {
+        //   console.log(order);
+        // });
       }
   } catch (error) {
       console.error("An error occurred:", error);
@@ -295,7 +310,9 @@ router.get('/cancelOrderData/:orderId',async(req,res)=>{
     await products.findByIdAndUpdate({_id:P_id},{$inc:{Stock:count}})
   })
   console.log("ordermodel====",order)
-  res.redirect('/orderDetails')
+  res.json({
+    success:true
+  })
  } catch (error) {
   console.log(error)
  }
@@ -325,12 +342,21 @@ router.get('/orderProductView/:orderId',authGuard.userLoginAuthGuard,userAccess,
 
 
 
-
-
-
-
-
-
+//order return 
+router.post('/returnedItem',async(req,res)=>{
+  const productId = new mongoose.Types.ObjectId(req.body.P_id);
+  const P_qty = req.body.P_qty;
+  const O_id = new mongoose.Types.ObjectId(req.body.O_id);
+  console.log("reached post route", productId)
+  console.log(`data====P_id==${productId},P-qty=${P_qty},O_id = ${O_id}`);
+  const updatedOrder = await orderModel.findOneAndUpdate(
+    { _id: O_id, 'Items.productId': productId },
+    { $set: { 'Items.$.removed': true } },
+    { new: true }
+  );
+  const updateProduct = await products.findByIdAndUpdate({_id: productId},{$inc:{Stock:P_qty}})
+  res.json({success:true})
+})
 
 
 
@@ -346,37 +372,3 @@ router.get('/orderProductView/:orderId',authGuard.userLoginAuthGuard,userAccess,
 
 
 module.exports = router 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

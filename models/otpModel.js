@@ -1,20 +1,13 @@
-// const mongoose = require('mongoose')
+const mongoose = require('mongoose')
 
-// const otpSchema = mongoose.Schema({
-//     otp: "string"
-// })
+const modell = mongoose.Schema({
+    otp:{
+        type:String,
+    },
+    expiryDate:{
+        type:Date
+    }
+})
 
-// const otpModel = mongoose.model('otpModel',otpSchema)
-// module.exports = otpModel
-
-
-// const mongoose = require('mongoose')
-
-// const modell = mongoose.Schema({
-//     otp:{
-//         type:String
-//     }
-// })
-
-// const otpModel = mongoose.model("otpModel",modell);
-// module.exports = otpModel
+const otpModel = mongoose.model("otpModel",modell);
+module.exports = otpModel

@@ -2,17 +2,7 @@ const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const{Schema,object}=mongoose;
-// const imageSchema = new mongoose.Schema({
-//   mainimage:{
-//     type:String
-//   },
-//   image1:{
-//     type:String 
-//   },
-//   image2:{
-//     type:String
-//   }
-// })
+
 const sch = new mongoose.Schema({
   Name: { type: String },
   Suffix:{ type: String},

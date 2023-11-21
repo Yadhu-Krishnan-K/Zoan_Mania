@@ -48,7 +48,7 @@
                   <%= product.Price %>
                 </td>
                 <td>
-                  <img height="100px" style="border-radius: 12px;" width="100px" src="/uploads/<%= product.Image[0].filename %>" alt="img">
+                  <img height="100px" style="border-radius: 12px;" width="100px" src="/uploads/<%= product.Image[0] %>" alt="img">
                 </td>
                 <td>
                   <%if(product.visible == true){%>
@@ -66,6 +66,19 @@
             <% }) %>
           </tbody>
       </table>
+      <div class="col-12 d-flex justify-content-end">
+        <nav aria-label="Page navigation" class="m-3">
+          <ul class="pagination ">
+            <% for(i=1;i<=pageNums;i++){ %>
+              <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                <a class="page-link" href="?page=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } %>
+          </ul>
+        </nav>
+      </div>
   
   </div>
 </div>

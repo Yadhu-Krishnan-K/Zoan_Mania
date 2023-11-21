@@ -35,9 +35,15 @@ const getCustomer = async(req,res,next)=>{
 const getInventory = async(req,res)=>{
     try {
         i=0
-        const products = await productModel.find({}).sort({_id: -1})
-        products.Image
-        res.render('supAdmin/admin-inventory',{products,i,title:"Inventory",Page:"Inventory"})
+        const listCount = await productModel.find().count()
+        let page = Number(req.query.page) || 1;
+        let perPage = 3
+        let pageNums = Math.ceil(listCount/perPage)
+        let currentPage = page;
+        const products = await productModel.find().sort({_id: -1})
+        .skip((page-1)*perPage)
+        .limit(perPage)
+        res.render('supAdmin/admin-inventory',{products,i,title:"Inventory",Page:"Inventory",page,pageNums,currentPage})
     } catch (error) {
         console.log(error)
     }
@@ -58,10 +64,10 @@ const adminNpasswordCheck = async(req,res,next)=>{
     const {email,password}=req.body
     // const logged = await admin.create({adminGmail:email,adminPassword:password})
 
-    const Demail = await admin.findOne({email})
+    const Demail = await admin.findOne({adminGmail: email})
     // console.log(Demail.adminGmail);
 
-    const Dpassword = await admin.findOne({password})
+    const Dpassword = await admin.findOne({adminPassword: password})
     // console.log(Dpassword.adminPassword);
 
     if(req.body.email===Demail.adminGmail && req.body.password==Dpassword.adminPassword){
