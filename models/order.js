@@ -22,7 +22,11 @@ const OrdersSchema = new Schema({
   Status: { type: String, default:"Pending"},
   Items: [{
      productId: { type: Schema.Types.ObjectId , ref: "products" },
-     quantity: { type: Number }
+     quantity: { type: Number },
+     removed: {
+      type:Boolean,
+      default:false
+     }
   }],
   PaymentMethod: {type: String},
   OrderDate: { type: String },

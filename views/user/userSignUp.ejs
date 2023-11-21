@@ -19,11 +19,24 @@
                             <% } %>
 
                     <form id="for-password"  action="/otpsend" method="post" >
-                        <input type="text" class=" box p-3" name="name" id="name" placeholder="Name" required><br>
-                        <input type="email" class="mt-3 p-3 box" name="email" id="email" placeholder="Email" required><br>
-                        <input type="password" class="mt-3 p-3 box" name="password" id="password" placeholder="Password" required><br>
-                        <input type="password" class="mt-3 p-3 box" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required><br>
-                        <div style="width: 100%; display: flex; justify-content: center;"><input type="submit" class="mt-5 btn" value="Sign up" onclick="checkPass()" id="submit"></div>
+                        <input type="text" class=" box p-3" name="name" id="name" placeholder="Name" required style="outline: none;"><br>
+                        <input type="email" class="mt-3 p-3 box" name="email" id="email" placeholder="Email" required style="outline: none;"><br>
+                        
+                        <div class="d-flex align-items-center box mt-3 pe-3">
+                            <input type="password" class=" box mt-1 ps-3 pe-3" name="password" id="password"
+                                placeholder="Password" style="outline: none;" required>
+                            <span toggle="#password-field"
+                                class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                        </div><br>
+
+                        <div class="d-flex align-items-center box  pe-3">
+                            <input type="password" class=" box mt-1 ps-3 pe-3" name="confirmPassword" id="confirmPassword"
+                                placeholder="confirmPassword" style="outline: none;" required>
+                            <span toggle="#password-field"
+                                class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                        </div><br>
+                        
+                        <div style="width: 100%; display: flex; justify-content: center;"><input type="submit" class="mt-5 btn" value="Sign up" onclick="checkPass()" id="submit" ></div>
                         <!-- <div class="mt-3" style="width: 100%; display: flex; justify-content: center;"><a href="/auth/google">Login with google</a></div> -->
                     </form>
                 </div>
@@ -36,6 +49,26 @@
 </section>
 
 <script>
+       $(document).ready(function () {
+            $(".toggle-password").click(function () {
+                $(this).toggleClass("fa-eye fa-eye-slash");
+                var input = $(this).siblings("input");
+                if (input.attr("type") == "password") {
+                    input.attr("type", "text");
+                } else {
+                    input.attr("type", "password");
+                }
+            });
+
+            var disappearElement = document.getElementById('disapear');
+            if (disappearElement) {
+                setTimeout(function () {
+                    disappearElement.style.display = "none";
+                }, 4000);
+            }
+        });
+
+        
     function checkPass(){
         document.getElementById("for-password").addEventListener("submit", function (event) {
         

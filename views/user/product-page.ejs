@@ -10,11 +10,12 @@
 
                 <div class="row">
                     <div class="col-md-5 d-flex flex-column align-items-center">
-                        <div class="mt-4" style=" width: 350px; z-index: 1;" id="img-container"><img src="/uploads/<%=P_detail.Image[0].mainimage%>" class="img-fluid rounded-top" alt=""  height="300px"></div>
-                        <div class="mt-5 d-flex justify-content-evenly" style="width: 100%;">
-                          <div style="height: 100px; width: 100px; border-radius: 12px; background: rgb(27, 187, 73);"><img src="/uploads/<%=P_detail.Image[0].mainimage%>" height="100px" width="100px" alt=""></div>
-                          <div style="height: 100px; width: 100px; border-radius: 12px; background: cadetblue;"><img src="/uploads/<%=P_detail.Image[0].image1%>" height="100px" width="100px" alt=""></div>
-                          <div style="height: 100px; width: 100px; border-radius: 12px; background: chocolate;"><img src="/uploads/<%=P_detail.Image[0].image2%>" height="100px" width="100px" alt=""></div>
+                        <div class="mt-4" style=" width: 350px; z-index: 1;" id="img-container"><img src="/uploads/<%=P_detail.Image[0]%>" class="img-fluid rounded-top" alt=""  height="300px"></div>
+                        <div class="mt-5 d-flex justify-content-evenly" style="width: 100%; flex-wrap: wrap;">
+                          <% for(i=0;i<P_detail.Image.length;i++){ %>
+                            <div style="height: 100px; width: 100px; border: 0;"><img src="/uploads/<%=P_detail.Image[i]%>" height="100px" width="100px" style=" border-radius: 12px;" alt=""></div>
+                          <% } %>
+                           
                         </div>
                     </div>
                     <div class="col-md-7 Description">
@@ -35,13 +36,13 @@
                               <h4 class="text-danger mt-4">Out Of Stock!!!</h4>
                             
                             <div class="Options mt-5 d-flex">
-                              <a class="ms-3"><button style="height: 40px; width: 200px; border-radius: 20px;" disabled>Buy Now</button></a>
+                              <a class="ms-3 btn btn-primary"><button class="btn btn-primary" style="height: 40px; width: 200px; border-radius: 20px;" disabled>Buy Now</button></a>
                               <a href="" class="ms-3"><img src="/icons/like.png" alt=""></a>
                               <a href="" class="ms-3"><img src="/icons/basket.png" alt=""></a>
                             </div>  
                             <% }else{ %>
                               <div class="Options mt-5 d-flex">
-                                <a href="" class="ms-3"><button style="height: 40px; width: 200px; border-radius: 20px;">Buy Now</button></a>
+                                <a href="" class="ms-3 btn btn-success">Buy Now</a>
                                 <!-- <a href="" class="ms-3"><img src="/icons/like.png" alt=""></a> -->
                                 <a href="/addToCart/<%= P_detail._id %>" class="ms-3"><img src="/icons/basket.png" alt=""></a>
                               </div>  
@@ -60,7 +61,7 @@
 
                     </div>
                 </div>
-                <footer class="container mt-5" style="height: 300px;background: #000;">
+                <footer class="container-fluid mt-5" style="height: 300px;background: #000;">
                   <div class="row">
                     <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
                       <h4 class="footer-head ">Get In Touch</h4>

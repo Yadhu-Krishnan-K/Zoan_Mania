@@ -83,15 +83,14 @@ router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,adminProduct
 router.post('/inventory/adding-product',multi.array('images',4),async(req,res)=>{
     // const name = req.body.name
 //    console.log(req.body);
-//    console.log(req.files,'files');
+   console.log("req.files====",req.files,'files');
 
    const images = req.files;
+   console.log("images===",images)
    
-
-   const imageUrls = images.map(image => ({
-    filename: image.filename,
-    // Other properties you want to store for each image
-}));
+    const imageUrls = images.map(file=>file.filename)
+   
+console.log("when adding product, img==",imageUrls);
    const {Description,Pname,stock,price,category,Specification1,Specification2,Specification3,Suffix}=req.body
 //     // try {
         const product =await new products({
@@ -171,12 +170,13 @@ router.get('/edit-product/:id',adminauth.adminLoggedinAuthguard,async(req,res)=>
         const P_detail = await products.findOne({_id: id})
         const cate = await Cate.find()
         console.log("efef",cate);
-        // console.log(P_detail);
+        console.log(P_detail.Image);
         res.render('supAdmin/admin-edit-product',{P_detail,cate,title:"Edit Product",Page:"Inventory"});
     })
 
+
     //updating product
-    router.post('/update-productPage/:P_id',multi.fields([
+router.post('/update-productPage/:P_id',multi.fields([
         { name: 'image1', maxCount: 1 },
         { name: 'image2', maxCount: 1 },
         { name: 'image3', maxCount: 1 },
@@ -185,33 +185,34 @@ router.get('/edit-product/:id',adminauth.adminLoggedinAuthguard,async(req,res)=>
 
         const P_id = req.params.P_id
         const productData = await products.findOne({_id:P_id})
-       
-        const image1 = req.files && req.files['image1'] ? req.files['image1'][0] : { filename: productData.Image[0].mainimage } ? { filename: productData.Image[0].mainimage } : {};
-        const image2 = req.files && req.files['image2'] ? req.files['image2'][0] : { filename: productData.Image[1].image1 } ? { filename: productData.Image[1].image1 } : {};
-        const image3 = req.files && req.files['image3'] ? req.files['image3'][0] : { filename: productData.Image[2].image2 } ? { filename: productData.Image[2].image2 } : {};
-        const image4 = req.files && req.files['image4'] ? req.files['image3'][0] : { filename: productData.Image[2].image3 } ? { filename: productData.Image[2].image3 } : {};
+        const image1 = req.files && req.files.image1 ? req.files.image1[0].filename : (productData.Image[0] ? productData.Image[0] : '0');
+        const image2 = req.files && req.files.image2 ? req.files.image2[0].filename : (productData.Image[1] ? productData.Image[1] : '0');
+        const image3 = req.files && req.files.image3 ? req.files.image3[0].filename : (productData.Image[2] ? productData.Image[2] : '0');
+        const image4 = req.files && req.files.image4 ? req.files.image4[0].filename : (productData.Image[3] ? productData.Image[3] : '0');
 
         console.log("image.filename===",image1)
         const imageUrls = [
-            {filename: image1.filename} ,
-            {filename: image2.filename} ,
-            {filename: image3.filename} ,
-            {filename: image4.filename}
+            image1,
+            image2,
+            image3,
+            image4
         ];
+        const images = imageUrls.filter(img=>img!=='0')
+        console.log("/update-product=======",images)
 
 
             // const {Description,ProductName,Category,Stock,Price} = req.body
 
         const data = {
-            Name:req.body.ProductName,
-            Description:req.body.Description,
-            Category:req.body.Category,
-            Stock:req.body.Stock,
-            Price:req.body.Price,
-            Image:imageUrls,
-            Spec1:req.body.Spec1,
-            Spec2:req.body.Spec2,
-            Spec3:req.body.Spec3
+            Name: req.body.ProductName,
+            Description: req.body.Description,
+            Category: req.body.Category,
+            Stock: req.body.Stock,
+            Price: req.body.Price,
+            Image: images,
+            Spec1: req.body.Spec1,
+            Spec2: req.body.Spec2,
+            Spec3: req.body.Spec3
 
         }
         const updatedProduct = await products.findByIdAndUpdate(P_id, data);
@@ -242,25 +243,25 @@ router.get('/Orders',adminauth.adminLoggedinAuthguard,async(req,res)=>{
     const page = parseInt(req.query.page) || 1;
     const options = {
       page: page,
-      limit: 6, // Adjust the limit as needed
+      limit: 6,
+      sort: { _id: -1 }
     };
 
-    const orderDetails = await orderModel.find().sort({_id: -1})
     const ordersData = await orderModel.paginate({}, options);
 
     res.render('supAdmin/admin-order-tracker', {
       title: "Orders",
-      ordersData: orderDetails,
+      ordersData: ordersData.docs,
       Page: 'Orders',
       totalPages: ordersData.totalPages,
       currentPage: ordersData.page
     }); 
+    
 })
 
 
 
 //admin order update
-
 router.put('/orders/updateStatus/:orderId',async(req,res)=>{
     const orderId = req.params.orderId
     const newStatus = req.body.newStatus
@@ -273,7 +274,6 @@ router.get('/orders/details/:orderId',adminauth.adminLoggedinAuthguard,async(req
     let orderId=req.params.orderId;
     let order = await orderModel.findOne({_id: orderId}).populate('Items.productId')
     let ProductAllDetails = order.Items
-    // console.log("Order items in adminside====",ProductAllDetails)
     res.render('supAdmin/adminSide-order-detail-page',{title:"Order Detail",ProductAllDetails, Page:"Orders"})    
 })
 

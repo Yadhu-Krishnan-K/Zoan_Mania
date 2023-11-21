@@ -7,12 +7,13 @@ const bcrypt = require('bcrypt')
 // const { password } = require('../../util/passwordValidator')
 //c//onst products = require('../../models/products')
 const saltRounds = 10
-
+const Fotp = require('../../util/forgotPassword')
 const pValidator = require('../../util/passwordValidator')
 const userModel = require('../../models/user')
 // const productInHome = require('./home-page-products')
 const products = require('../../models/products')
 const cartModel = require('../../models/cartModel')
+const category = require('../../models/category')
 const controller = require('../../util/for-otp')
 
 
@@ -137,12 +138,15 @@ const postEnteringHOme = async(req,res)=>{
 
 const userLoginBackend = async(req,res)=>{
     const {email,password} = req.body;
-    
+    console.log('email===',email,"    passord===",password);
     const logins = await userModel.findOne({email: email})
 
     if(!logins){
         req.session.txt ="No users found"
-        res.redirect('/login')
+        res.json({
+          success:false,
+          err:"No users found"
+        })
     }else{
         let isChecked = await bcrypt.compare(password,logins.password)
         
@@ -154,15 +158,21 @@ const userLoginBackend = async(req,res)=>{
             req.session.userId = logins._id
             req.session.save()
             console.log('userId='+req.session.userId)
-            res.redirect('/userHome')
-        }else if(logins.access == false){
-            req.session.txt = "User is blocked"
-            req.session.err = true
-            res.redirect('/login')
-        }else if(isChecked == false){
-            req.session.txt = "Check your password"
-            req.session.err = true
-            res.redirect('/login')
+            res.json({
+              success:true
+            })
+        }else if(logins.access === false){
+           
+            res.json({
+              success:false,
+              err:"User is blocked"
+            })
+        }else if(isChecked === false){
+           
+            res.json({
+              success:false,
+              err:"Check your password"
+            })
         }
     }
 }
@@ -188,6 +198,7 @@ const productList1 = async(req,res)=>{
     const userId = req.session.userId
     const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
     let cartcount = 0
+    let categories = await category.find()
     console.log("cartData====",cartData);
     if (cartData === null || cartData.Items == (null||0)) {
       
@@ -207,7 +218,7 @@ const productList1 = async(req,res)=>{
   .skip((page-1)*perPage)
   .limit(perPage)
   
-  res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount,pageNums,listCount,page,currentPage});
+  res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount,pageNums,listCount,page,currentPage,categories});
 
 }
 
@@ -295,7 +306,7 @@ const userAddtoCart =  async (req, res) => {
       const userExist = await cartModel.findOne({ userId: userId });
       const ProductId = new mongoose.Types.ObjectId(productId)
       if (!userExist) {
-        // Create a new cart and associate it with the user
+
         const cart = await cartModel.create({
           userId: userId,
           Items: [{ ProductId: ProductId }]
@@ -320,7 +331,10 @@ const userAddtoCart =  async (req, res) => {
         }
       }
   
-      res.redirect('/Product-list');
+      // res.redirect('/Product-list');
+      res.json({
+        success:true
+      })
     } catch (error) {
       console.error("error=",error);
     }
@@ -395,14 +409,14 @@ const cartQuantityUpdate = async(req,res)=>{
     })
   
     //total amount
-    cartDetail.totalAmount += inc*product.Price
+    cartDetail.totalAmount += Number(inc)*product.Price
     req.session.totalAmount = cartDetail.totalAmount
     //newQuandity
     const newQuantity = cartItem.Quantity+Number(inc)
     
     //cart Items price
     if(newQuantity>=1 && newQuantity <= product.Stock){
-      cartDetail.totalQuantity+=Number(inc)
+      cartDetail.totalQuantity += Number(inc)
       cartItem.Price = newQuantity * product.Price
     
     //
@@ -772,7 +786,7 @@ const checkoutUser = async (req, res)=>{
   const userData= await userModel.findOne({name:name})
   const cartData = await cartModel.findOne({userId:userId})
   if(cartData){
-    let cartcount = 0
+    var cartcount = 0
     cartData.Items.forEach((cart)=>{
       cartcount += cart.Quantity
     })
