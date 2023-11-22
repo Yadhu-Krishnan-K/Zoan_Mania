@@ -23,10 +23,37 @@ const { default: mongoose } = require('mongoose');
 router.get('/',adminauth.adminLoginAuthguard,adminrouter.getAdminLogin)
 // router.get('',)
 //-image upload----------------------------------------------------------------------------------------------------------------///
+router.post('/check',adminauth.adminLoggedinAuthguard,async(req,res)=>{
+    try {
+        let email = req.body.email;
+        let password = req.body.password;
+        
+        // Hash the password and then query the database
+        let adminL = await admin.findOne({ adminGmail: email, adminPassword: password });
+        
+        if (!adminL) {
+            res.json({
+                success: false
+            });
+        } else {
+            console.log("Success");
+            req.session.adminAuth = true;
+            res.json({
+                success: true
+            });
+        }
+    } catch (error) {
+        console.error("Error during login:", error);
+        res.status(500).json({
+            success: false,
+            error: "Internal Server Error"
+        });
+    }
+})
 
 
-
-
+//dasboard
+// router.get('/dashboard',adminauth.adminLoggedinAuthguard,adminrouter.getDashboard)
 
 
 //----------------------------------------------------------------------------------
@@ -44,7 +71,6 @@ router.get('/Category',adminauth.adminLoggedinAuthguard,adminrouter.getCategory)
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 //add category
-
 router.get('/addCatgory',adminauth.adminLoggedinAuthguard,adminrouter.addCategory)
 
 ///add-category
@@ -68,7 +94,7 @@ router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,adminrouter.
 //admin email&password check----------------------------------------------------------------------------------------------//
 
 
-router.post('/check',adminrouter.adminNpasswordCheck) 
+// router.post('/check',adminrouter.adminNpasswordCheck) 
 
 
 // ------------------------------------------------------------------------------------------------------------//
@@ -120,17 +146,8 @@ console.log("when adding product, img==",imageUrls);
         const newProduct = await product.save();
         // console.log(newProduct);
 
-
-
         res.redirect('/admin/inventory')
         
-        
-        
-        
-        // res.send('success')
-    // } catch (error) {
-    //     res.status(500).json({error:'Error adding data to the collection'})
-    // }
 })
 
 
