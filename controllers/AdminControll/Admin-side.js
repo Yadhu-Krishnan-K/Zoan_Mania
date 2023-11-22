@@ -58,25 +58,7 @@ const getAddProduct = async(req,res)=>{
     // res.send('hai')
 }
 
-const adminNpasswordCheck = async(req,res,next)=>{
-    // console.log(req.body);
-    // res.send('okx')
-    const {email,password}=req.body
-    // const logged = await admin.create({adminGmail:email,adminPassword:password})
 
-    const Demail = await admin.findOne({adminGmail: email})
-    // console.log(Demail.adminGmail);
-
-    const Dpassword = await admin.findOne({adminPassword: password})
-    // console.log(Dpassword.adminPassword);
-
-    if(req.body.email===Demail.adminGmail && req.body.password==Dpassword.adminPassword){
-        req.session.adminAuth = true;
-        res.redirect('/admin/Customers')
-    }else{
-        res.render('supAdmin/admin-login',{error:"Check your email and password"})
-    }
-}
 //================================================================================================================
 //admin-category---------------------------
 const getCategory = async(req,res)=>{
@@ -100,7 +82,7 @@ module.exports = {
     getCustomer,
     getInventory,
     getAddProduct,
-    adminNpasswordCheck,
+    // adminNpasswordCheck,
     getCategory,
     addCategory
 }

@@ -655,7 +655,7 @@ const pwSendOtp=async(req,res)=>{
 const passwordChange2 = async(req,res)=>{
   console.log("inside check password")
   // checking validator
-    const user = await userModel.findOnd({_id:req.session.userId})
+    const user = await userModel.findOne({_id:req.session.userId})
     const Pass = req.body.Pass
     const oldPass = req.body.oldPass
     bcrypt.compare(oldPass,user.password,(err,res)=>{
