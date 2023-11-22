@@ -655,7 +655,17 @@ const pwSendOtp=async(req,res)=>{
 const passwordChange2 = async(req,res)=>{
   console.log("inside check password")
   // checking validator
+    const user = await userModel.findOnd({_id:req.session.userId})
     const Pass = req.body.Pass
+    const oldPass = req.body.oldPass
+    bcrypt.compare(oldPass,user.password,(err,res)=>{
+      if(err){
+        res.json({
+          success:false,
+          notfound:true
+        })
+      }
+    })
    
     const errors = pValidator.validate(Pass,{details:true})
   
@@ -673,7 +683,8 @@ const passwordChange2 = async(req,res)=>{
       const errorMessage = errors[0].message
      
       console.log("error:===",errorMessage);
-      res.status(400).json({ 
+      resjson({ 
+        success:false,
         errors: errorMessage
        });
     }

@@ -15,7 +15,8 @@ const { fileLoader } = require('ejs');
 const catController = require('../controllers/AdminControll/adminCategoryController')
 const adminUserControl = require('../controllers/AdminControll/adminUserControl')
 const adminProductControl = require('../controllers/AdminControll/adminProductControl')
-const orderModel = require('../models/order')
+const orderModel = require('../models/order');
+const { default: mongoose } = require('mongoose');
 
 
 
@@ -243,6 +244,22 @@ router.post('/update-productPage/:P_id',multi.fields([
     
     
     )
+
+
+
+//product image delete==================
+router.put('/deleteImage/:P_id',async(req,res)=>{
+    const P_id = new mongoose.Types.ObjectId(req.params.P_id)
+    const num = req.body.num
+
+    const productDetail = await products.findOneAndUpdate({_id:P_id},{})
+    let removed = productDetail.Image.splice(num,1)
+    console.log("productDetail after deleting an image from an array")
+    console.log(removed)
+    await productDetail.save()
+    res.json({success:true})    
+    
+})
 
 //----------------------------------
 //product delete
