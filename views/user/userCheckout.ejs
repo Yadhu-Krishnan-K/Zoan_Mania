@@ -1,5 +1,22 @@
 <%- include('../layouts/user/header') -%>
 
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6">
+                <h3>Add Address</h3>
+                    <form id="addAddress">
+                        <div class="mb-3">
+                        <label for="" class="form-label">Name</label>
+                        <input type="text"
+                            class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
+                        <small id="helpId" class="form-text text-muted">Help text</small>
+                        </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+    
+   </div>
     <form id="orderForm">
         <!-- action="/placeOrder" method="post" -->
         <div class="container p-3">
@@ -61,8 +78,7 @@
     </form>
     <script>
         // JavaScript to handle the radio button selections and form submission
-        const addressRadios = document.querySelectorAll('.address-radio');
-        const paymentRadios = document.querySelectorAll('.payment-radio');
+        
         const confirmOrderButton = document.getElementById('confirmOrderButton');
         const orderForm = document.getElementById('orderForm');
         
@@ -110,28 +126,7 @@
             }
         });
 
-        addressRadios.forEach(addressRadio => {
-            addressRadio.addEventListener('change', () => {
-                // Unselect other address radios
-                addressRadios.forEach(radio => {
-                    if (radio !== addressRadio) {
-                        radio.checked = false;
-                    }
-                });
-            });
-        });
-
-        paymentRadios.forEach(paymentRadio => {
-            paymentRadio.addEventListener('change', () => {
-                // Unselect other payment radios
-                paymentRadios.forEach(radio => {
-                    if (radio !== paymentRadio) {
-                        radio.checked = false;
-                    }
-                });
-            });
-        });
-
+        
         // Function to get the selected value
 
     </script>

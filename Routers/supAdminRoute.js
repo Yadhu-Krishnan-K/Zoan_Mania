@@ -23,14 +23,15 @@ const { default: mongoose } = require('mongoose');
 router.get('/',adminauth.adminLoginAuthguard,adminrouter.getAdminLogin)
 // router.get('',)
 //-image upload----------------------------------------------------------------------------------------------------------------///
-router.post('/check',adminauth.adminLoggedinAuthguard,async(req,res)=>{
+router.post('/check',adminauth.adminLoginAuthguard,async(req,res)=>{
     try {
+        console.log("reached /check")
         let email = req.body.email;
         let password = req.body.password;
         
         // Hash the password and then query the database
         let adminL = await admin.findOne({ adminGmail: email, adminPassword: password });
-        
+        console.log('adminL===',adminL)
         if (!adminL) {
             res.json({
                 success: false
