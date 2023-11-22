@@ -61,7 +61,7 @@
       <div class="row me-5">
         <% productModel.forEach(product => {  %>
           <% console.log("Product Stock:", product.Stock); %>
-          
+          <% if(product.Image.length !== 0){ %>
             <div class="col-md-3 p-4">
               <div class="card" style="width: 18rem;margin-left: 25px;">
                   <a href="/productDetail/<%= product._id %>"><img class="card-img-top" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/<%= product.Image[0] %>" alt="Card image cap"></a>
@@ -82,7 +82,7 @@
                         <a href="/cart" class="btn btn-warning">Go To Cart</a>
                       <% }else{ %>
                         <!-- <a href="/addToCart/" class="btn btn-warning">Add To Cart</a> -->
-                        <button class="btn btn-warning" onclick="addToCart('<%= product._id %>')">Add To Cart</button>
+                        <button class="btn btn-warning" id="buton<%= product._id %>" onclick="addToCart('<%= product._id %>')">Add To Cart</button>
                       <% } %>
 
                       <% }else if(product.Stock < 1){ %>
@@ -102,7 +102,7 @@
                   </div>
               </div>     
             </div>
-        
+        <% } %>
         <% }) %>
       </div>
     </div>
@@ -147,12 +147,9 @@
           .then((data)=>{
             console.log("dat======",data)
             if(data.success){
-              console.log("test passed")
-              let count = $('#totalCartQuantity').value()
-              console.log(count)
-              $('#totalCartQuantity').html(count+1)
-              console.log(count)
+              //add sweet alert
               alert('one item add to cart')
+              location.reload()
             }
           })
         })
