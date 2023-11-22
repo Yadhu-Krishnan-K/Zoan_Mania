@@ -89,7 +89,18 @@ router.post('/inventory/adding-product',multi.array('images',4),async(req,res)=>
    console.log("images===",images)
    
     const imageUrls = images.map(file=>file.filename)
-   
+   let arr =[]
+
+    for(i=0;i<imageUrls.length;i++){
+       let ar=imageUrls[i].split('.')
+       arr.push(ar[1])
+    }
+    for(i=0;i<arr.length;i++){
+        if(!(arr[i].includes("jpg","jpeg","png"))){
+            return res.render('supAdmin/422error')
+        }
+    }
+
 console.log("when adding product, img==",imageUrls);
    const {Description,Pname,stock,price,category,Specification1,Specification2,Specification3,Suffix}=req.body
 //     // try {
@@ -107,7 +118,14 @@ console.log("when adding product, img==",imageUrls);
         })
         const newProduct = await product.save();
         // console.log(newProduct);
+
+
+
         res.redirect('/admin/inventory')
+        
+        
+        
+        
         // res.send('success')
     // } catch (error) {
     //     res.status(500).json({error:'Error adding data to the collection'})

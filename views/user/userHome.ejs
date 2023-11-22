@@ -145,6 +145,7 @@
           fetch(`/addToCart/${P_id}`)
           .then(res=>res.json())
           .then((data)=>{
+            console.log("dat======",data)
             if(data.success){
               console.log("test passed")
               let count = $('#totalCartQuantity').value()
