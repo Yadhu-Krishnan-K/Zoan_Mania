@@ -1,8 +1,8 @@
 <%- include('../layouts/user/header') -%>
 
-    <div class="container-fluid">
+    <!-- <div class="container-fluid">
         <div class="row">
-            <div class="col-6">
+            <div class="col-6 border round">
                 <h3>Add Address</h3>
                     <form id="addAddress">
                         <div class="mb-3">
@@ -14,9 +14,9 @@
                     </form>
             </div>
         </div>
+    </div> -->
+
     </div>
-    
-   </div>
     <form id="orderForm">
         <!-- action="/placeOrder" method="post" -->
         <div class="container p-3">
@@ -49,9 +49,88 @@
                             <% if (userData.address.length===0) { %>
                                 <p class="text-center">No saved addresses. Please add a new address.</p>
                                 <% } %>
+
+
+
+
+
+
+
+
+
+
+                                    <!-- modal for adding address -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Add
+                                        Address</button>
+
+                                    <div class="modal fade" id="exampleModal" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content bg-secondary">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Address</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form>
+                                                        <div class="form-group">
+                                                            <label class="col-form-label">Name:</label>
+                                                            <input type="text" class="form-control" id="recipient-name">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-form-label">Addrss:</label>
+                                                            <textarea class="form-control"
+                                                                id="recipient-address"></textarea>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-form-label">City:</label>
+                                                            <input type="text" class="form-control" id="recipient-City">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-form-label">Pincode:</label>
+                                                            <input type="number" class="form-control"
+                                                                id="recipient-Pincode">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-form-label">State:</label>
+                                                            <input type="text" class="form-control"
+                                                                id="recipient-State">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="recipient-name"
+                                                                class="col-form-label">Mobile:</label>
+                                                            <input type="number" class="form-control"
+                                                                id="recipient-Mobile">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="button" onclick="saveAddress()"
+                                                    class="btn btn-primary">Add Address</button>
+                                            </div>
+                                        </div>
+                                    </div>
                 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <div class="col-md-4 mt-5">
-                    <div class="card">
+                    <div class="card position-sticky">
                         <div class="card-body">
                             <h5 class="card-title">Payment Methods</h5>
                             <div class="form-check">
@@ -65,8 +144,8 @@
                                 <label class="form-check-label" for="payment_online">Online Payment</label>
                             </div>
                             <div class="text-center mt-4">
-                                <button class="btn btn-warning mt-4" onclick="placeOrder()" id="confirmOrderButton"
-                                    type="button">Confirm Order</button>
+                                <button class="btn btn-warning mt-4" id="confirmOrderButton" type="button">Confirm
+                                    Order</button>
                                 <a href="/userHome"><button class="btn btn-success mt-4" type="button">Back to
                                         Shop</button></a>
                             </div>
@@ -76,57 +155,198 @@
             </div>
         </div>
     </form>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         // JavaScript to handle the radio button selections and form submission
-        
+
         const confirmOrderButton = document.getElementById('confirmOrderButton');
-        const orderForm = document.getElementById('orderForm');
-        
-       
+
         confirmOrderButton.addEventListener('click', async () => {
             const selectedAddressElement = document.querySelector('input[name="selectedAddress"]:checked');
             const selectedAddress = selectedAddressElement ? selectedAddressElement.value : null;
-                function getSelectedPayment() {
-                for (const radio of paymentRadios) {
-                    if (radio.checked) {
-                        return radio.value;
-                    }
-                }
-            }
-            const selectedPayment = getSelectedPayment();
-            console.log('selected address ====', selectedAddress, ", selected payment ====", selectedPayment)
+
+            const selectedPaymentElement = document.querySelector('input[name="selectedPayment"]:checked');
+            const selectedPayment = selectedPaymentElement ? selectedPaymentElement.value : null;
+
 
             if (!selectedAddress) {
                 alert('Please select a delivery address before confirming your order.');
             } else {
-                // Submit the form
-                orderForm.submit();
-                const res = await fetch('/placeOrder', {
+                console.log("Selected Addrss===", selectedAddress)
+                console.log("Selected Payment===", selectedPayment)
+                fetch('placeOrder', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        selectedAddress,
-                        selectedPayment
+                        selectedAddress: selectedAddress,
+                        selectedPayment: selectedPayment
                     })
                 })
-                const data = await res.json();
-                if(data.success){
-                    console.log("success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================success===================================================================================================")
-                    if(selectedPayment == "cod"){
-                    window.location.href = '/placeOrder';
-                    }else if(selectedPayment == 'online' && data.orderId){
-                        console.log("razorpayId===",data.orderId);
-                    }
-                }
-                const orderId = data.orderId;
-                console.log(orderId);
-                $("button").show();
-            }
-        });
+                    .then(res => res.json())
+                    .then((data) => {
+                        if (data.success && data.method == 'cod') {
+                            // console.log(data.success)
+                            window.location.replace('/placeOrder')
+                        }
+                        if (data.success && data.method == 'online') {
+                            var orderId = data.orderId
+                            console.log("orderDetail=====",orderId)
+                            razorpayPayment(orderId)
 
-        
+                        }
+                    })
+            }
+
+
+
+
+           
+
+
+        })
+
+        function razorpayPayment(orderId){
+            console.log(orderId)
+                var options = {
+                "key": "rzp_test_4ak8LzPSG56Ssl",
+                "amount": orderId.amount, 
+                "currency": "INR",
+                "name": "Zoan Mania",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": orderId.id,
+                "handler": function (response) {
+                    console.log("response of razor ==== ",response)
+                    verifyPayment(response,orderId)
+                    alert(response.razorpay_payment_id)
+                    alert(response.razorpay_order_id)
+                    alert(response.razorpay_signature)
+                },
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+
+            var rzp1 = new Razorpay(options);
+
+            rzp1.on('payment.failed', function (response){
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+        })
+            rzp1.open();
+
+            }
+            function verifyPayment( payment,orderId){
+                console.log("inside verify payment")
+                fetch('/verify-payment',{
+                    method: 'POST',
+                    headers:{
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        payment,orderId
+                    })
+                })
+                .then(res=>res.json)
+                .then((data)=>{
+                    console.log(data);
+                })
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        const orderForm = document.getElementById('orderForm');
+
+
+
+        const saveAddress = async () => {
+            const Name = document.getElementById('recipient-name').value
+            const Address = document.getElementById('recipient-address').value
+            const City = document.getElementById('recipient-City').value
+            const Pincode = document.getElementById('recipient-Pincode').value
+            const State = document.getElementById('recipient-State').value
+            const Mobile = document.getElementById('recipient-Mobile').value
+
+            console.log("Name=", Name,
+                "AddressLine=", Address,
+                "City=", City,
+                "Pincode=", Pincode,
+                "State=", State,
+                "Mobile=", Mobile)
+
+            const res = await fetch('/saveAddress', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    Name, Address, City, Pincode, State, Mobile
+                })
+            })
+            const data = await res.json()
+            // console.log(data)
+            if (data.success) {
+                // Address saved successfully
+                // Display a success message
+
+                // Clear form fields (optional)
+                document.getElementById('recipient-name').value = "";
+                document.getElementById('recipient-address').value = "";
+                document.getElementById('recipient-City').value = "";
+                document.getElementById('recipient-Pincode').value = "";
+                document.getElementById('recipient-State').value = "";
+                document.getElementById('recipient-Mobile').value = "";
+
+                // Close the modal (assuming you're using Bootstrap modal)
+                $('#exampleModal').modal('hide');
+
+                // Optionally, you can update the address list on the page.
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Your address has been saved',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                setTimeout(() => {
+                    location.reload();
+                }, 1800)
+
+            }
+
+
+        }
+
+
         // Function to get the selected value
 
     </script>

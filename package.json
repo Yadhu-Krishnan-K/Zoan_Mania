@@ -37,7 +37,7 @@
     "passport-google-oauth2": "^0.2.0",
     "passport-google-oauth20": "^2.0.0",
     "password-validator": "^5.3.0",
-    "razorpay": "^0.0.0",
+    "razorpay": "^2.9.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

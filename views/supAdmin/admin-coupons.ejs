@@ -1,0 +1,144 @@
+<%- include('../layouts/admin/header'); -%>
+
+
+<h1>Coupons</h1>
+<div class=" d-flex justify-content-end align-items-center" style="height: 50px;">
+    <!-- <input type="search" name="" id="search">
+    <button for="search">search</button> -->
+</div>
+<div class="container-fluid ">
+    <div class="row d-flex justify-content-center ">
+        <div class="col-md-10 p-3  rounded shadow ">
+            <div class="row">
+                <button type="button" class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#exampleModal">Add coupons</button>
+
+                <% couponModel.forEach((coupon)=>{ %>
+
+               
+                <div class="col-md-6 rounded mt-3 shadow p-3">
+                    <div class="Coupon name">
+                        <%= coupon.name %>
+                    </div>
+                    <div class="Coupon Code">
+                        <%= coupon.code %>
+                    </div>
+                    <div class="Discount">
+                        <%= coupon.discount %>
+                    </div>
+                    <div class="PAmount">
+                        <%= coupon.forPurchase %>
+                    </div>
+                    <div class="Expory Date">
+                        <%= coupon.Expiry %>
+                    </div>
+
+                </div>
+
+                <% }) %>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Create coupon</h1>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Coupon Name:</label>
+              <input id="Cname" type="text" class="form-control" >
+            </div>
+            <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">Coupon Code:</label>
+                <input id="Ccode" type="text" class="form-control" >
+              </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Discount amount:</label>
+              <input id="Discount" type="Number" class="form-control" >
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">For Puchase Above:</label>
+              <input  type="Number" class="form-control" id="PAmount">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Expiry Date:</label>
+              <input type="date" class="form-control" id="Edate">
+            </div>
+            
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button id="clicker" type="button" class="btn btn-primary">Add coupon</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+
+</div>
+    
+</div>
+
+<script>
+
+
+    $(document).ready(()=>{
+        $('#clicker').click(()=>{
+            let Cname = $('#Cname').val()
+            let Ccode = $('#Ccode').val()
+            let Discount = $('#Discount').val()
+            let PAmount = $('#PAmount').val()
+            let Edate = $('#Edate').val()
+            // console.log("Cname:",Cname,"\n Discount:",Discount,"\n PAmout:",PAmount,"\n Edate:",Edate)
+            fetch('/admin/addCoupons',{
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({
+                    Cname,Ccode,Discount,PAmount,Edate
+                })
+            }).then(res=>res.json())
+            .then((data)=>{
+                // console.log("data====",data)
+               if(data.success){
+                $('#Cname').val("")
+                $('#Ccode').val("")
+                $('#Discount').val("")
+                $('#PAmount').val("")
+                $('#Edate').val("")
+                 // Optionally, you can update the address list on the page.
+
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Coupon Saved',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
+                setTimeout(()=>{
+                    location.reload();
+                },1800)
+               }
+         })
+        })
+    })
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<%- include('../layouts/admin/footer'); -%>

@@ -7,11 +7,6 @@ const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
 const mongoose  = require('mongoose')
 const moment = require('moment')
-// const Razorpay = require('razorpay')
-// var instance = new Razorpay({
-//   key_id: process.env.RAZORPAY_KEY_ID,
-//   key_secret: process.env.RAZORPAY_KEY_SECRET,
-// });
 
 
 const us = require('../controllers/UserControll/user-side')
@@ -26,6 +21,7 @@ const userAccess = require('../middlewares/userSession')
 const cartModel = require('../models/cartModel')
 const pValidator = require('../util/passwordValidator')
 const cart = require('../models/cartModel')
+const razor = require('../middlewares/razorpay')
 
 
 
@@ -162,15 +158,15 @@ router.post('/placeOrder',async(req,res)=>{
   const email = req.session.email;
   
   const Address = req.body.selectedAddress;
-  console.log("Selected Address====",Address)
+  // console.log("Selected Address====",Address)
   const paymentMethod = req.body.selectedPayment;
+
   const amount = req.session.totalAmount;
 
   try {
       const userData = await userModel.findOne({ email: email });
       
       if (!userData) {
-
           return;
       }
 
@@ -192,7 +188,7 @@ router.post('/placeOrder',async(req,res)=>{
       if (addressNew) {
         var addressObjIndex = addressNew.address.findIndex(addr=>addr._id == Address)
       } 
-      
+
     
 
       const add = {
@@ -243,25 +239,42 @@ router.post('/placeOrder',async(req,res)=>{
               }
           }
       }
-//just redirect if code to some rout
+//just redirect if code to some route
           req.session.visited = 0
           console.log("order response back");
-          return res.json({ success: true, message: 'Order placed successfully' });
+          res.json({ success: true, method:'cod' });
       }else if(paymentMethod == 'online'){
-        // var options = {
-        //   amount: amount*100,  // amount in the smallest currency unit
-        //   currency: "INR",
-        //   receipt: "order_rcptid_11"
-        // };
-        // instance.orders.create(options, function(err, order) {
-        //   console.log(order);
-        // });
-      }
+        const orderId =await razor.createOrder(req.session.totalAmount)
+        console.log("order Id=====",orderId)
+        console.log("id of order===",orderId.id);
+        req.session.orderID = orderId.id;
+        res.json({
+          success:true,
+          method:'online',
+          orderId: orderId,
+          totalAmount:req.session.totalAmount
+      })
+      }//else if(paymentMetod == 'wallet'){
+      //   res.json({success:true, method: 'wallet'})
+      // }
   } catch (error) {
       console.error("An error occurred:", error);
       console.log("cart data note available 01--");
   }
 })
+
+
+router.post('/verify-payment',async(req,res)=>{
+  console.log("data from body==== in verify payment====",req.body,"orderId from sesssion=========",req.session.orderID)
+  razor.verifyPayment(req.body,req.session.orderID).then(()=>{
+    console.log("payment success")
+  }).catch((err)=>{
+    res.json({status:'payment failed'})
+  })
+})  
+
+
+
 
 router.get('/placeOrder',authGuard.userLoginAuthGuard,userAccess,(req,res)=>{
   let name = req.session.name
@@ -272,6 +285,8 @@ router.get('/placeOrder',authGuard.userLoginAuthGuard,userAccess,(req,res)=>{
   res.render('user/userOrderConfirm',{name, title:"Oreder Confirmed",orderId})
 }else{res.redirect('/userHome')}
 })
+
+
 
 
 router.get('/orderDetails',authGuard.userLoginAuthGuard,userAccess,async(req,res)=>{

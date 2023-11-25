@@ -16,6 +16,8 @@ const catController = require('../controllers/AdminControll/adminCategoryControl
 const adminUserControl = require('../controllers/AdminControll/adminUserControl')
 const adminProductControl = require('../controllers/AdminControll/adminProductControl')
 const orderModel = require('../models/order');
+const couponsModel = require('../models/coupons');
+const couponController = require('../controllers/AdminControll/admin-coupon-management')
 const { default: mongoose } = require('mongoose');
 
 
@@ -334,6 +336,30 @@ router.get('/orders/details/:orderId',adminauth.adminLoggedinAuthguard,async(req
 
 
 
+
+
+
+
+//coupon management=======================================000000000000000000000000000000000----------------
+router.get('/Coupons', couponController.getCoupons)
+
+router.post('/addCoupons',async(req,res)=>{
+    console.log(req.body)
+    let coupon = await couponsModel.create({
+        name: req.body.Cname,
+        code: req.body.Ccode,
+        discount: req.body.Discount,
+        forPuchace: req.body.PAmount,
+        Expiry: req.body.Edate,
+        userId:req.session.userId,
+    })
+    console.log("daved Data")
+    if(coupon){
+        res.json({
+            success:true
+        })
+    }
+})
 
 
 
