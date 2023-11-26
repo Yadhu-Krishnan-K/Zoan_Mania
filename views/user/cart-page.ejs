@@ -69,8 +69,11 @@
                     <div class="col-md-3 d-flex justify-content-center align-items-center border" style="height: 80px;"><div style="height: 90%; width: 90%; display: flex; justify-content: center; align-items: center;">Total Price=₹ <div  id="totalPrice"> <%= sum %> </div>/-</div></div>
                 </div>
                <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-                <div><input type="text" class="p-2 rounded border" placeholder="apply coupon" name="" id="couponCode">
+                <div id="couponDiv"><input type="text" class="p-2 rounded border" placeholder="apply coupon" name="" id="couponCode">
                   <button class="btn btn-warning" id="coupon">apply</button></div>
+                <div class="text-success" id="couponStatus" style="display: none;">
+                  Coupon applied
+                </div>
                 <button class="btn btn-success" type="submit" style="height: 50px; width: 200px;">Buy now</button>
                </div> 
             </form>
@@ -84,7 +87,7 @@
 
 <script>
 
-
+ 
 //coupon apply
 $('#coupon').click(()=>{
   let code = $('#couponCode').val()
@@ -102,6 +105,13 @@ $('#coupon').click(()=>{
   }).then(res=>res.json())
   .then((data)=>{
     console.log(data)
+    if(data.success){
+      $('#couponDiv').hide()
+      $('couponStatus').show()
+
+    }else{
+      alert(data.message)
+    }
   })
 })
 

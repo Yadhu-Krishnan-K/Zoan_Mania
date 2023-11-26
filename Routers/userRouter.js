@@ -390,7 +390,7 @@ router.get('/manageCoupons',async(req,res)=>{
 //apply coupons
 router.post('/applyCoupon',async(req,res)=>{
   let code =req.body.code
-  let totalAmount = req.body.totalAmount
+  let totalAmount = req.session.totalAmount
   console.log("total Amount===",totalAmount)
   let coupons = await coupon.findOne({code:code})
   // if(coupon == 
@@ -401,7 +401,11 @@ router.post('/applyCoupon',async(req,res)=>{
       message:'Invalid Coupon'
     })
   }else{
-    
+    if(totalAmount>=coupons.forPuchace){
+      res.json({success:true, message:"Coupon applied"})
+    }else{
+      res.json({success:false, message:'Cannot apply this coupon'})
+    }
   }
 })
 

@@ -6,11 +6,7 @@ const schema = new mongoose.Schema({
     discount: Number,
     forPuchace: Number,
     Expiry: Date,
-    userId:[{type: mongoose.Schema.Types.ObjectId }],
-    used:{
-        type:Boolean,
-        default:false
-    }
+    userId:{type: Array},
      
 })
 

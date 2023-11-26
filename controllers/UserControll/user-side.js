@@ -402,7 +402,7 @@ const cartQuantityUpdate = async(req,res)=>{
     const userId=new mongoose.Types.ObjectId(req.session.userId)
     const productItem = new mongoose.Types.ObjectId(product._id)
     const cartDetail = await cartModel.findOne({userId: userId})
-  
+    console.log("cartDetail===",cartDetail)
     //cart detail
     const cartItem = cartDetail.Items.find((item)=>{
       return item.ProductId.equals(productItem)
