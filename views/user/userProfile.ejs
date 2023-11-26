@@ -13,21 +13,16 @@
                 <div class="card-body text-center">
                   <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                     class="rounded-circle img-fluid" style="width: 150px;">
-                  <h5 class="my-3">Hello<%= name %></h5>
-                  <!-- <p class="text-muted mb-1">Full Stack Developer</p>
-                  <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
-                  <div class="d-flex justify-content-center mb-2">
-                    <button type="button" class="btn btn-primary">Follow</button>
-                    <button type="button" class="btn btn-outline-primary ms-1">Message</button>
-                  </div> -->
+                  <h5 class="my-3">Hello <%= name %></h5>
                 </div>
               </div>
+             
               <div class="card mb-4 mb-lg-0">
                 <div class="card-body p-0">
                   <ul class="list-group list-group-flush rounded-3">
                     <a href="/profile" style="text-decoration: none;">
                         <li class="list-group-item d-flex align-items-center p-3">
-                            <i class="fa-regular fa-user" style="color: #357af3;"></i>                      
+                            <i class="fa-regular fa-user" style="color: #282f3b;"></i>                      
                             <p class="mb-0 ms-3">Profile Info</p>
                         </li>
                     </a>
@@ -42,13 +37,13 @@
                             <iconify-icon icon="teenyicons:address-book-outline" style="color: #357af3;"></iconify-icon>
                             <p class="mb-0 ms-3">Manage Address</p>
                         </li>
-                    </a>
-                    <!-- <a href="/WishList" style="text-decoration: none;">
-                        <li class="list-group-item d-flex  align-items-center p-3">
-                            <iconify-icon icon="mdi:heart-outline" style="color: #357af3;"></iconify-icon>
-                            <p class="mb-0 ms-3">Wishlist</p>
-                        </li>
-                    </a> -->
+                      </a>
+                    <a href="/manageCoupons" style="text-decoration: none;">
+                      <li class="list-group-item d-flex  align-items-center p-3">
+                        <iconify-icon icon="mdi:coupon-outline" style="color: #357af3;"></iconify-icon>
+                        <p class="mb-0 ms-3">Coupons</p>
+                      </li>
+                  </a>
                     <a href="/changePassword" style="text-decoration: none;">
                         <li class="list-group-item d-flex  align-items-center p-3">
                             <iconify-icon icon="solar:password-broken" style="color: #357af3;"></iconify-icon>
@@ -80,16 +75,7 @@
                     <div class="col-sm-9">
                       <p class="text-muted mb-0"><%= userData.email%></p>
                     </div>
-                  </div>
-                  <!-- <hr> -->
-                  <!-- <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Phone</p>
-                    </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0">(097) 234-5678</p>
-                    </div>
-                  </div> -->
+                
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
@@ -141,28 +127,21 @@
 </div>
 
             </div>
+            <div class="card mb-4 p-3">
+              <h3>Wallet</h3>
+              <p>Available balance : <%= userData.Wallet %></p>
+            </div>
+
+         
+
+          
           </div>
         </div>
       </section>
 
 <script>
-    // const exampleModal = document.getElementById('editModal')
-    //   exampleModal.addEventListener('show.bs.modal', event => {
-    //     // Button that triggered the modal
-    //     const button = event.relatedTarget
-    //     // Extract info from data-bs-* attributes
-    //     const recipient = button.getAttribute('data-bs-whatever')
-    //     // If necessary, you could initiate an AJAX request here
-    //     // and then do the updating in a callback.
     
-    //     // Update the modal's content.
-    //     const modalTitle = exampleModal.querySelector('.modal-title')
-    //     const modalBodyInput = exampleModal.querySelector('.modal-body input')
-    //     })
-
-
     function openEditModal() {
-        // console.log("id===",addressId)
         console.log("edit button clicked")
                 $('#editModal').modal('show');
     }

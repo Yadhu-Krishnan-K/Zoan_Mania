@@ -130,7 +130,18 @@
   </section>
 
   <%- include('../layouts/user/footer'); -%>
+  <script src="/socket.io/socket.io.js"></script>
 <script>
+
+const socket = io()
+
+socket.on('OrderStatusUpdated',({orderId,newStatus})=>{
+  // console.log(`Order ${orderId} status updated to ${newStatus}`);
+  location.reload()
+})
+
+
+
   function cancelOrder(orderId){
           Swal.fire({
         title: "Are you sure?",

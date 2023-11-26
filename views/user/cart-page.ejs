@@ -61,14 +61,16 @@
 
                     </tbody>
                 </table>    
-              <form style="width: 100%;" action="/buyTheProducts">
+              <!-- <form style="width: 100%;" action="/buyTheProducts"> -->
+                <form style="width: 100%;">
 
                 <div class="row d-flex justify-content-end border">
                     
-                    <div id="totalPrice" class="col-md-3 d-flex justify-content-center align-items-center border" style="height: 80px;"><div style="height: 90%; width: 90%; display: flex; justify-content: center; align-items: center;">Total Price=₹<%= sum %>/-</div></div>
+                    <div class="col-md-3 d-flex justify-content-center align-items-center border" style="height: 80px;"><div style="height: 90%; width: 90%; display: flex; justify-content: center; align-items: center;">Total Price=₹ <div  id="totalPrice"> <%= sum %> </div>/-</div></div>
                 </div>
-               <div class="d-flex justify-content-end align-items-center mt-4 mb-3">
-               
+               <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                <div><input type="text" class="p-2 rounded border" placeholder="apply coupon" name="" id="couponCode">
+                  <button class="btn btn-warning" id="coupon">apply</button></div>
                 <button class="btn btn-success" type="submit" style="height: 50px; width: 200px;">Buy now</button>
                </div> 
             </form>
@@ -81,6 +83,37 @@
 </div>
 
 <script>
+
+
+//coupon apply
+$('#coupon').click(()=>{
+  let code = $('#couponCode').val()
+  let totalAmount = $('#totalPrice').val()
+  console.log("totalAmount===",totalAmount)
+  fetch('/applyCoupon',{
+    method:'POST',
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      code,
+      totalAmount
+    })
+  }).then(res=>res.json())
+  .then((data)=>{
+    console.log(data)
+  })
+})
+
+
+
+
+
+
+
+
+
+
   //onloading
 
 function disap(productId, Stock){
@@ -98,7 +131,7 @@ function disap(productId, Stock){
     incElement.disabled = false
 
   }
-} 
+}
 
 
 

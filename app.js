@@ -3,6 +3,7 @@ const express = require("express")
 const nocache = require("nocache")
 const morgan = require('morgan')
 require('./auth/authentication')
+
 const mongoSanitize = require('express-mongo-sanitize')
 
 const path = require("path")
@@ -17,6 +18,14 @@ const {v4:uuidv4} = require('uuid')
 const passport = require('passport')
 const sessionSecret = uuidv4();
 
+
+//web socket setup
+const httpServer = require('http').createServer(app);
+const io = require('socket.io')(httpServer);
+const socketManager = require('./util/socket');
+socketManager.initialize(io);
+
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
@@ -24,12 +33,6 @@ mongoose.set('strictQuery', false);
 //no-sql sanitization====================================================-------
 app.use(mongoSanitize())
 
-// app.all('*', (req, res, next) => {
-//   next(new AppError(`Can't find ${req.originalUrl} on this Server!`, 404));
-// });
-
-// app.use(globalErrorHandler);
-//-----------------------------------------=====================================
 
 
 app.set('view engine','ejs')
@@ -90,7 +93,7 @@ app.get('/auth/google/callback',
 const port = process.env.port || 8080
 
 mongoose.connect(process.env.DB_URI).then(()=>{
-    app.listen(port, () => {
+    httpServer.listen(port, () => {
         console.log(`http://localhost:${port}`)
     })
 }).catch((error)=>{

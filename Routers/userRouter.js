@@ -22,6 +22,9 @@ const cartModel = require('../models/cartModel')
 const pValidator = require('../util/passwordValidator')
 const cart = require('../models/cartModel')
 const razor = require('../middlewares/razorpay')
+const coupon = require('../models/coupons')
+const cartHelper = require('../helpers/cartHelper')
+// const coupon = require('../models/coupons')
 
 
 
@@ -374,9 +377,33 @@ router.post('/returnedItem',async(req,res)=>{
 })
 
 
+//coupons
+//get
+router.get('/manageCoupons',async(req,res)=>{
+  const cartcount = cartHelper 
+  const coupons = await coupon.find()
+  console.log("Cpns===",coupons)
+  const name = req.session.name
+  res.render('user/userCoupons',{title:"Coupons",cartcount,name,coupons})
+})
 
-
-
+//apply coupons
+router.post('/applyCoupon',async(req,res)=>{
+  let code =req.body.code
+  let totalAmount = req.body.totalAmount
+  console.log("total Amount===",totalAmount)
+  let coupons = await coupon.findOne({code:code})
+  // if(coupon == 
+  // console.log("check inside apply coupon====",coupons)
+  if(coupons == null){
+    res.json({
+      success:false,
+      message:'Invalid Coupon'
+    })
+  }else{
+    
+  }
+})
 
 
 

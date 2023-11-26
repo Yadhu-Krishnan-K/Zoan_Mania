@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer');
+// const socketIO = require('socket.io')
 
 
 const category = require('../models/category')
@@ -18,7 +19,8 @@ const adminProductControl = require('../controllers/AdminControll/adminProductCo
 const orderModel = require('../models/order');
 const couponsModel = require('../models/coupons');
 const couponController = require('../controllers/AdminControll/admin-coupon-management')
-const { default: mongoose } = require('mongoose');
+const { default: mongoose, isObjectIdOrHexString } = require('mongoose');
+const socketManager = require('../util/socket')
 
 
 
@@ -269,7 +271,8 @@ router.post('/update-productPage/:P_id',multi.fields([
 
 //product image delete==================
 router.put('/deleteImage/:P_id',async(req,res)=>{
-    const P_id = new mongoose.Types.ObjectId(req.params.P_id)
+    try {
+        const P_id = new mongoose.Types.ObjectId(req.params.P_id)
     const num = req.body.num
 
     const productDetail = await products.findOneAndUpdate({_id:P_id},{})
@@ -278,6 +281,9 @@ router.put('/deleteImage/:P_id',async(req,res)=>{
     console.log(removed)
     await productDetail.save()
     res.json({success:true})    
+    } catch (error) {
+        console.log(error)
+    }
     
 })
 
@@ -321,6 +327,9 @@ router.put('/orders/updateStatus/:orderId',async(req,res)=>{
     const orderId = req.params.orderId
     const newStatus = req.body.newStatus
     await orderModel.findByIdAndUpdate(orderId,{Status:newStatus})
+    socketManager.getIO().emit('OrderStatusUpdated', { orderId, newStatus });
+    res.json({success:true})
+    
 })
 
 
@@ -353,7 +362,7 @@ router.post('/addCoupons',async(req,res)=>{
         Expiry: req.body.Edate,
         userId:req.session.userId,
     })
-    console.log("daved Data")
+    console.log("saved Data")
     if(coupon){
         res.json({
             success:true
