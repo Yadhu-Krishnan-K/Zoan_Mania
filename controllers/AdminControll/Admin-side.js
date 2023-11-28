@@ -8,6 +8,37 @@ const getAdminLogin = (req,res)=>{
     res.render('supAdmin/admin-login')}
 
 
+
+const AdminCheck = async(req,res)=>{
+    try {
+        console.log("reached /check")
+        let email = req.body.email;
+        let password = req.body.password;
+        
+        // Hash the password and then query the database
+        let adminL = await admin.findOne({ adminGmail: email, adminPassword: password });
+        console.log('adminL===',adminL)
+        if (!adminL) {
+            res.json({
+                success: false
+            });
+        } else {
+            console.log("Success");
+            req.session.adminAuth = true;
+            res.json({
+                success: true
+            });
+        }
+    } catch (error) {
+        console.error("Error during login:", error);
+        res.status(500).json({
+            success: false,
+            error: "Internal Server Error"
+        });
+    }
+}
+
+
 const getCustomer = async(req,res,next)=>{
     req.session.logged = true;
     let i = 0;
@@ -80,6 +111,7 @@ const addCategory = (req,res)=>{
 
 
 module.exports = {
+    AdminCheck,
     getAdminLogin,
     getCustomer,
     getInventory,

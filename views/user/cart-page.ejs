@@ -48,7 +48,8 @@
                                   </div>
 
                             </td>
-                            <td class="common">
+                            <td 
+                            class="common">
                                 <button class="col d-flex justify-content-center align-items-center btn btn-danger" onclick="deleteItem('<%= cart._id %>','<%= cart.ProductId.Name %>','<%= cartDetail._id %>')">Remove</button>
                                 
                               </td>
@@ -61,19 +62,19 @@
 
                     </tbody>
                 </table>    
-              <!-- <form style="width: 100%;" action="/buyTheProducts"> -->
-                <form style="width: 100%;">
+              <form style="width: 100%;" action="/buyTheProducts">
+                <!-- <form style="width: 100%;"> -->
 
                 <div class="row d-flex justify-content-end border">
                     
-                    <div class="col-md-3 d-flex justify-content-center align-items-center border" style="height: 80px;"><div style="height: 90%; width: 90%; display: flex; justify-content: center; align-items: center;">Total Price=₹ <div  id="totalPrice"> <%= sum %> </div>/-</div></div>
+                    <div class="col-md-3 d-flex justify-content-center align-items-center border" style="height: 80px;"><div style="height: 90%; width: 90%; display: flex; justify-content: center; align-items: center;" id="totalPrice">Total Price=₹<%= sum %>/-</div></div>
                 </div>
-               <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-                <div id="couponDiv"><input type="text" class="p-2 rounded border" placeholder="apply coupon" name="" id="couponCode">
-                  <button class="btn btn-warning" id="coupon">apply</button></div>
+               <div class="d-flex justify-content-end align-items-center mt-4 mb-3">
+                <!-- <div id="couponDiv"><input type="text" class="p-2 rounded border" placeholder="apply coupon" name="" id="couponCode">
+                  <button type="button" class="btn btn-warning" id="coupon">apply</button></div>
                 <div class="text-success" id="couponStatus" style="display: none;">
                   Coupon applied
-                </div>
+                </div> -->
                 <button class="btn btn-success" type="submit" style="height: 50px; width: 200px;">Buy now</button>
                </div> 
             </form>
@@ -89,31 +90,29 @@
 
  
 //coupon apply
-$('#coupon').click(()=>{
-  let code = $('#couponCode').val()
-  let totalAmount = $('#totalPrice').val()
-  console.log("totalAmount===",totalAmount)
-  fetch('/applyCoupon',{
-    method:'POST',
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-      code,
-      totalAmount
-    })
-  }).then(res=>res.json())
-  .then((data)=>{
-    console.log(data)
-    if(data.success){
-      $('#couponDiv').hide()
-      $('couponStatus').show()
+// $('#coupon').click(()=>{
+//   let code = $('#couponCode').val()
 
-    }else{
-      alert(data.message)
-    }
-  })
-})
+//   fetch('/applyCoupon',{
+//     method:'POST',
+//     headers:{
+//       "Content-Type":"application/json"
+//     },
+//     body:JSON.stringify({
+//       code,
+//     })
+//   }).then(res=>res.json())
+//   .then((data)=>{
+//     console.log(data)
+//     if(data.success){
+//       $('#couponDiv').hide()
+//       $('#couponStatus').show()
+
+//     }else{
+//       alert(data.message)
+//     }
+//   })
+// })
 
 
 

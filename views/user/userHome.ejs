@@ -63,7 +63,7 @@
           <% console.log("Product Stock:", product.Stock); %>
           <% if(product.Image.length !== 0){ %>
             <div class="col-md-3 p-4">
-              <div class="card" style="width: 18rem;margin-left: 25px;">
+              <div class="card shadow border" style="width: 18rem;margin-left: 25px;">
                   <a href="/productDetail/<%= product._id %>"><img class="card-img-top" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/<%= product.Image[0] %>" alt="Card image cap"></a>
                   <div class="card-body">
                       <h6 class="card-title"><%=product.Name%></h6>

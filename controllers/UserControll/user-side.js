@@ -14,6 +14,8 @@ const userModel = require('../../models/user')
 const products = require('../../models/products')
 const cartModel = require('../../models/cartModel')
 const category = require('../../models/category')
+const Categories = require('../../models/category')
+
 const controller = require('../../util/for-otp')
 
 
@@ -186,6 +188,54 @@ const logout = (req,res)=>{
             res.redirect('/')
         
 }
+
+
+
+
+const searchOptions = async(req,res)=>{
+  let value = req.body.value
+  let categories = await Categories.find()
+  const listCount = await products.find({
+    Name:{$regex: "^"+value, $options: "i"}
+  }).count()
+
+  let name = req.session.name
+  const cartData = await cartModel.findOne({userId:req.session.userId})
+    let cartcount = 0
+    if (cartData === null || cartData.Items == (null||0)) {
+      
+      cartcount = 0
+
+    }else{
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
+    })
+  }
+  let page = Number(req.query.page) || 1;
+    let perPage = 8
+    let pageNums = Math.ceil(listCount/perPage)
+    let currentPage = page;
+    const productsList = await products.find({
+      Name:{$regex: "^"+value, $options: "i"}
+    }).sort({_id: -1})
+  .skip((page-1)*perPage)
+  .limit(perPage)
+  
+  
+  res.render('user/product-list',{
+    productsList,categories,name, title:'Product List',cartcount,cartData, pageNums,currentPage
+  })
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -683,8 +733,9 @@ const passwordChange2 = async(req,res)=>{
       const errorMessage = errors[0].message
      
       console.log("error:===",errorMessage);
-      resjson({ 
+      res.json({ 
         success:false,
+        errMsg:true,
         errors: errorMessage
        });
     }
@@ -801,7 +852,7 @@ const checkoutUser = async (req, res)=>{
     cartData.Items.forEach((cart)=>{
       cartcount += cart.Quantity
     })
-  res.render('user/userCheckout',{title:"Zoan | Checkout",userData,name,cartcount})
+  res.render('user/userCheckout',{title:"Zoan | Checkout",userData,name,cartcount,cartData})
   }else{
     res.redirect('/userHome')
   }
@@ -852,5 +903,6 @@ module.exports = {
     addAddress,
     updateAddress,
     deleteAddress,
-    checkoutUser
+    checkoutUser,
+    searchOptions
 }

@@ -53,12 +53,6 @@
 
 
 
-
-
-
-
-
-
                                     <!-- modal for adding address -->
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Add
@@ -143,7 +137,21 @@
                                     id="payment_online" value="online" />
                                 <label class="form-check-label" for="payment_online">Online Payment</label>
                             </div>
-                            <div class="text-center mt-4">
+
+                            <div class="d-flex border rounded mt-4 justify-content-center align-items-center">
+                                <p id="TAmount">Total Amount: <%= cartData.totalAmount %></p>
+                            </div>
+                            
+                            <div id="couponDiv" class="d-flex mt-2"><input type="text" class="p-2 coups rounded border"
+                                    placeholder="apply coupon" name="" id="couponCode" style="width: 75%;">
+                                <button type="button" class="btn btn-warning coups" id="coupon">apply</button>
+                            </div>
+                            <div class="text-success" id="couponStatus" style="display: none;">
+                                Coupon applied
+                            </div>
+                            
+
+                            <div class="text-center mt-3">
                                 <button class="btn btn-warning mt-4" id="confirmOrderButton" type="button">Confirm
                                     Order</button>
                                 <a href="/userHome"><button class="btn btn-success mt-4" type="button">Back to
@@ -159,11 +167,39 @@
     <script>
         // JavaScript to handle the radio button selections and form submission
 
+        $('#coupon').click(()=>{
+  let code = $('#couponCode').val()
+
+  fetch('/applyCoupon',{
+    method:'POST',
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      code,
+    })
+  }).then(res=>res.json())
+  .then((data)=>{
+    console.log(data)
+    if(data.success){
+      $('.coups').hide()
+      $('#couponStatus').show()
+
+      $('#TAmount').text("Total Amount: "+data.amount)
+      console.log(data.amount);
+    }else{
+      alert(data.message)
+    }
+  })
+})
+
+
         const confirmOrderButton = document.getElementById('confirmOrderButton');
 
         confirmOrderButton.addEventListener('click', async () => {
             const selectedAddressElement = document.querySelector('input[name="selectedAddress"]:checked');
             const selectedAddress = selectedAddressElement ? selectedAddressElement.value : null;
+            const amount = $('#TAmount').val()
 
             const selectedPaymentElement = document.querySelector('input[name="selectedPayment"]:checked');
             const selectedPayment = selectedPaymentElement ? selectedPaymentElement.value : null;
@@ -174,14 +210,15 @@
             } else {
                 console.log("Selected Addrss===", selectedAddress)
                 console.log("Selected Payment===", selectedPayment)
-                fetch('placeOrder', {
+                fetch('/placeOrder', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
                         selectedAddress: selectedAddress,
-                        selectedPayment: selectedPayment
+                        selectedPayment: selectedPayment,
+                        amount
                     })
                 })
                     .then(res => res.json())
@@ -192,7 +229,7 @@
                         }
                         if (data.success && data.method == 'online') {
                             var orderId = data.orderId
-                            console.log("orderDetail=====",orderId)
+                            console.log("orderDetail=====", orderId)
                             razorpayPayment(orderId)
 
                         }
@@ -202,27 +239,27 @@
 
 
 
-           
+
 
 
         })
 
-        function razorpayPayment(orderId){
+        function razorpayPayment(orderId) {
             console.log(orderId)
-                var options = {
+            var options = {
                 "key": "rzp_test_4ak8LzPSG56Ssl",
-                "amount": orderId.amount, 
+                "amount": orderId.amount,
                 "currency": "INR",
                 "name": "Zoan Mania",
                 "description": "Test Transaction",
                 "image": "https://example.com/your_logo",
                 "order_id": orderId.id,
                 "handler": function (response) {
-                    console.log("response of razor ==== ",response)
-                    verifyPayment(response,orderId)
+                    console.log("response of razor ==== ", response)
                     alert(response.razorpay_payment_id)
                     alert(response.razorpay_order_id)
                     alert(response.razorpay_signature)
+                    verifyPayment(response, orderId)
                 },
                 "prefill": {
                     "name": "Gaurav Kumar",
@@ -239,34 +276,39 @@
 
             var rzp1 = new Razorpay(options);
 
-            rzp1.on('payment.failed', function (response){
-            alert(response.error.code);
-            alert(response.error.description);
-            alert(response.error.source);
-            alert(response.error.step);
-            alert(response.error.reason);
-            alert(response.error.metadata.order_id);
-            alert(response.error.metadata.payment_id);
-        })
+            rzp1.on('payment.failed', function (response) {
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
+            })
             rzp1.open();
 
-            }
-            function verifyPayment( payment,orderId){
-                console.log("inside verify payment")
-                fetch('/verify-payment',{
-                    method: 'POST',
-                    headers:{
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        payment,orderId
-                    })
+        }
+        function verifyPayment(payment, orderId) {
+            console.log("inside verify payment")
+            fetch('/verify-payment', {
+                method: 'POST',
+                headers: {
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({
+                    payment, orderId
                 })
-                .then(res=>res.json)
-                .then((data)=>{
-                    console.log(data);
+            })
+                .then(res => res.json())
+                .then((data) => {
+                    console.log(data.status == 'payment success');
+                    if(data.status){
+                        window.location.replace('/placeOrder')
+                    }else if(data.status == 'payment failed'){
+                        alert('payment failed')
+                    }
                 })
-            }
+        }
 
 
 
