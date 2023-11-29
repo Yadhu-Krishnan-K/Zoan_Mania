@@ -2,7 +2,7 @@ const userModel = require('../../models/user')
 const cartModel = require('../../models/cartModel')
 const orderModel = require('../../models/order')
 const products = require('../../models/products')
-const razor = require('../middlewares/razorpay')
+const razor = require('../../middlewares/razorpay')
 
 
 const getPlaceOrder = (req,res)=>{

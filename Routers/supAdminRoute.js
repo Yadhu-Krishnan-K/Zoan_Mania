@@ -180,7 +180,7 @@ router.get('/orders/details/:orderId',adminauth.adminLoggedinAuthguard,ordercont
 //coupon management=======================================000000000000000000000000000000000----------------
 router.get('/Coupons', adminauth.adminLoggedinAuthguard, couponController.getCoupons)
 
-router.post('/addCoupons',couponController.getCoupons)
+router.post('/addCoupons',couponController.addCoupons)
 
 
 
