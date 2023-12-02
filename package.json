@@ -2,10 +2,12 @@
   "name": "week_8",
   "version": "1.0.0",
   "main": "index.js",
+
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js"
   },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -42,6 +44,9 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@babel/core": "^7.23.5",
+    "@babel/node": "^7.22.19",
+    "@babel/preset-env": "^7.23.5",
+    "nodemon": "^3.0.2"
   }
 }

@@ -44,14 +44,16 @@ const updateReturnStatus = async(req,res)=>{
   // console.log('typeof(P-id)==',typeof(P_id),", typeof(O_id)==",typeof(O_id))
   // console.log("req.body===",req.body)
   let order = await orderModel.findOne({_id:O_id}).populate('Items.productId')
-  let item = order.Items.find((item)=>item.productId == P_id)
-  // console.log(order)
+  console.log("order === ",order)
+  let item = order.Items.find((item)=>item.productId._id == P_id)
+  console.log("item in updateReturnStatus===",order.Items)
+  console.log("num from updateReturnStatus===",num)
   if (num == 0) {
     item.returnStatus = 'returned';
     await order.save();
     let Wamount = item.quantity * item.productId.Price
     await userModel.findByIdAndUpdate({_id: order.UserId},{$inc:{Wallet:Wamount}})
-
+    
     res.json({
       response:"accepted"
     })
@@ -65,10 +67,7 @@ const updateReturnStatus = async(req,res)=>{
 
   }
 
-  console.log("num from updateReturnStatus===",num)
-  // res.json({
-  //   success:true
-  // })
+
 }
 
 

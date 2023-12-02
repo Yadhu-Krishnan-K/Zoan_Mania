@@ -65,7 +65,7 @@ const getCustomer = async(req,res,next)=>{
 
 const getInventory = async(req,res)=>{
     try {
-        i=0
+        let i=0
         const listCount = await productModel.find().count()
         let page = Number(req.query.page) || 1;
         let perPage = 3
