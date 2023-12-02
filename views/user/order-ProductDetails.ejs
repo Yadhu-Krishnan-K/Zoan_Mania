@@ -1,127 +1,246 @@
-<%- include('../layouts/user/header'); -%>
+    <%- include('../layouts/user/header'); -%>
 
 
-    <section class="h-100 gradient-custom">
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-lg-10 col-xl-8">
-                    <div class="card" style="border-radius: 10px;">
-                        <div class="card-header px-4 py-5">
-                            <h5 class="text-muted mb-0">Thanks for your Order, <span style="color: rgb(0, 0, 0);">
-                                    <%= name %>
-                                </span>!</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <p class="lead fw-normal mb-0" style="color: #923d7b;">Receipt</p>
-                                <!-- <p class="small text-muted mb-0">Receipt Voucher : 1KAU9-84UIL</p> -->
+        <section class="h-100 gradient-custom">
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-lg-10 col-xl-8">
+                        <div class="card" style="border-radius: 10px;">
+                            <div class="card-header px-4 py-5">
+                                <h5 class="text-muted mb-0">Thanks for your Order, <span style="color: rgb(0, 0, 0);">
+                                        <%= name %>
+                                    </span>!</h5>
                             </div>
-                            <div>
-                                <hr>
-                                <h5>Order Address :</h5>
-                                <p>Name : <%=orders.Address.Name%>
-                                </p>
-                                <p>Address : <%=orders.Address.Address%> , <%=orders.Address.City%> ,
-                                            <%=orders.Address.State%> , <%=orders.Address.Pincode%>
-                                </p>
-                            </div>
-                            <br>
-                            <div class="card shadow-0 border mb-4">
-                                <div class="card-body">
-                                    <% if (orders){%>
-                                        <% orders.Items.forEach((data)=> { %>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <img src="/uploads/<%= data.productId.Image[0] %>" class="img-fluid"
-                                                        alt="Phone">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <p class="lead fw-normal mb-0" style="color: #923d7b;">Receipt</p>
+                                    <!-- <p class="small text-muted mb-0">Receipt Voucher : 1KAU9-84UIL</p> -->
+                                </div>
+                                <div>
+                                    <hr>
+                                    <h5>Order Address :</h5>
+                                    <p>Name : <%=orders.Address.Name%>
+                                    </p>
+                                    <p>Address : <%=orders.Address.Address%> , <%=orders.Address.City%> ,
+                                                <%=orders.Address.State%> , <%=orders.Address.Pincode%>
+                                    </p>
+                                </div>
+                                <br>
+                                <div class="card shadow-0 border mb-4">
+                                    <div class="card-body">
+                                        <% if (orders){%>
+                                            <% orders.Items.forEach((data)=> { %>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <img src="/uploads/<%= data.productId.Image[0] %>" class="img-fluid"
+                                                            alt="Phone">
+                                                    </div>
+                                                    <div
+                                                        class="col text-center d-flex justify-content-center align-items-center">
+                                                        <p class="text-muted mb-0">
+                                                            <%=data.productId.Name%>
+                                                        </p>
+                                                    </div>
+                                                    <div
+                                                        class="col text-center d-flex justify-content-center align-items-center">
+                                                        <p class="text-muted mb-0 small">
+                                                            <%=data.productId.Spec1%>
+                                                        </p>
+                                                    </div>
+                                                    <div
+                                                        class="col text-center d-flex justify-content-center align-items-center">
+                                                        <p class="text-muted mb-0 small">Category:
+                                                            <%=data.productId.Category%>
+                                                        </p>
+                                                    </div>
+                                                    <div
+                                                        class="col text-center d-flex justify-content-center align-items-center">
+                                                        <p class="text-muted mb-0 small">Qty: <%=data.quantity%>
+                                                        </p>
+                                                    </div>
+                                                    <div
+                                                        class="col text-center d-flex justify-content-center align-items-center">
+                                                        <p class="text-muted mb-0 small">₹<%=data.productId.Price%>
+                                                        </p>
+                                                    </div>
+                                                    <% if(orders.Status === 'Delivered' && !(data.needToRemoved)){ %>
+                                                        <div
+                                                            class="col text-center d-flex justify-content-center align-items-center">
+
+                                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal<%= data.productId._id %>">
+                                                                Return Item
+                                                            </button>
+
+                                                            <!-- <div class="btn btn-danger"
+                                                                onclick="remove('data.productId._id %>',' data.quantity %>',' orders._id %>')">
+                                                                Return Item
+                                                            </div> -->
+
+                                                        </div>
+                                                        <% }else { %>
+                                                            <% if(data.needToRemoved && data.returnStatus == ''){ %>
+                                                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                                                <h2 class="text-danger">Requested for return</h2>
+                                                            </div>
+                                                            <% }else if(data.needToRemoved && data.returnStatus == 'returned'){ %>
+                                                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                                                <h2 class="text-danger">Return Accepted</h2>
+                                                            </div>
+                                                            <% }else if(data.needToRemoved && data.returnStatus == 'rejected'){ %>
+                                                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                                                <h2 class="text-danger">Rejected by Admin</h2>
+                                                            </div>
+                                                            <% } %>
+
+                                                        <% } %>
                                                 </div>
-                                                <div
-                                                    class="col text-center d-flex justify-content-center align-items-center">
-                                                    <p class="text-muted mb-0">
-                                                        <%=data.productId.Name%>
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    class="col text-center d-flex justify-content-center align-items-center">
-                                                    <p class="text-muted mb-0 small">
-                                                        <%=data.productId.Spec1%>
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    class="col text-center d-flex justify-content-center align-items-center">
-                                                    <p class="text-muted mb-0 small">Category:
-                                                        <%=data.productId.Category%>
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    class="col text-center d-flex justify-content-center align-items-center">
-                                                    <p class="text-muted mb-0 small">Qty: <%=data.quantity%>
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    class="col text-center d-flex justify-content-center align-items-center">
-                                                    <p class="text-muted mb-0 small">₹<%=data.productId.Price%>
-                                                    </p>
-                                                </div>
-                                                <% if(orders.Status === 'Delivered' && data.removed == false){ %>
-                                                <div
-                                                    class="col text-center d-flex justify-content-center align-items-center">
-                                                    <div class="btn btn-danger"
-                                                        onclick="remove('<%= data.productId._id %>','<%= data.quantity %>','<%= orders._id %>')">Return Item
+                                                <br>
+
+                                                <hr>
+
+
+
+
+
+
+                                                <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModal" data-bs-whatever="@mdo">Open modal for
+                                                    @mdo</button>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModal" data-bs-whatever="@fat">Open modal for
+                                                    @fat</button>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Open
+                                                    modal for @getbootstrap</button> -->
+
+                                                <div class="modal fade" id="exampleModal<%= data.productId %>" tabindex="-1"
+                                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Return
+                                                                    Item</h1>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>  
+                                                            <div class="modal-body">
+                                                                <form id="returnForm">
+                                                                    <div class="mb-3">
+                                                                        <label for="return-reason"
+                                                                            class="col-form-label">Select a reason for
+                                                                            return:</label>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="checkbox"
+                                                                                value="damaged" id="return-damaged"
+                                                                                onchange="updateCheckboxes('return-damaged')" >
+                                                                            <label class="form-check-label"
+                                                                                for="return-damaged">Damaged</label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="checkbox"
+                                                                                value="wrong-item" id="return-wrong-item"
+                                                                                onchange="updateCheckboxes('return-wrong-item')" >
+                                                                            <label class="form-check-label"
+                                                                                for="return-wrong-item">Wrong Item</label>
+                                                                        </div>
+                                                                        <!-- Add more reasons as needed -->
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="return-comment"
+                                                                            class="col-form-label">Additional comments (if
+                                                                            any):</label>
+                                                                        <textarea class="form-control"
+                                                                            id="return-comment"></textarea>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-primary"
+                                                                    onclick="submitReturn('<%= data.productId._id %>','<%= data.quantity %>','<%= orders._id %>')">Submit Return</button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <% }else if(data.removed == true){ %>
-                                                    <div class="col-12 d-flex justify-content-center align-items-center"><h2 class="text-danger">Returned</h2></div>
-                                                <% } %>
-                                            </div>
-                                            <br>
 
-                                            <hr>
 
-                                            <% }); %>
-                                                <% }else{%>
-                                                    <h3>No data available</h3>
-                                                    <% } %>
+
+
+
+                                                <% }); %>
+                                                    <% }else{%>
+                                                        <h3>No data available</h3>
+                                                        <% } %>
+                                    </div>
                                 </div>
-                            </div>
 
 
-                            <div class="card-footer border-0 px-4 py-5"
-                                style="background-color: #72a887; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-                                <h5
-                                    class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">
-                                    Total
-                                    Price: <span class="h2 mb-0 ms-2">₹ <%= orders.TotalPrice %></span></h5>
+                                <div class="card-footer border-0 px-4 py-5"
+                                    style="background-color: #72a887; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                                    <h5
+                                        class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">
+                                        Total
+                                        Price: <span class="h2 mb-0 ms-2">₹ <%= orders.TotalPrice %></span></h5>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-    </section>
-    <script>
-        
-       async function remove(P_id,P_qty,O_id){
-        console.log('clicked')
-            const res = await fetch('/returnedItem',{
-                method:'POST',
-                headers:{
-                    "Content-Type": "application/json"
-                },
-                body:JSON.stringify({
-                    P_id,P_qty,O_id
-                })
-            })
-            
-            const result = await res.json()
-            if(result.success){
-                location.reload();
-            }
+        </section>
+        <script>
 
-            
+
+        function updateCheckboxes(checkboxId) {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.id !== checkboxId) {
+                    checkbox.checked = false;
+                }
+            });
         }
 
+        function submitReturn(P_id, P_qty, O_id) {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const comments = document.getElementById('return-comment').value;
 
+            if (checkboxes.length === 0 && comments.trim() === '') {
+                alert('Please select a return reason or provide a valid reason in the comments.');
+                return;
+            }
 
-    </script>
+            let returnReason = '';
+            if (checkboxes.length > 0) {
+                returnReason = checkboxes[0].value;
+            }
 
-    <%- include('../layouts/user/footer'); -%>
+            // Now you can send 'returnReason' and 'comments' to your server using AJAX
+            // Update the following lines based on your server-side implementation
+            // const P_id = 'your_product_id';
+            // const P_qty = 'your_product_quantity';
+            // const O_id = 'your_order_id';
+
+            fetch('/returnedItem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    P_id,
+                    P_qty,
+                    O_id,
+                    returnReason,
+                    comments,
+                }),
+            })
+                .then((res) => res.json())
+                .then((result) => {
+                    if (result.success) {
+                        location.reload();
+                    }
+                });
+        }
+
+        </script>
+
+        <%- include('../layouts/user/footer'); -%>

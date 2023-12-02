@@ -34,7 +34,7 @@
               </div>
               <div class="buttons d-flex justify-content-between align-items-center">
                 <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#EditModal<%= coupon._id %>"
-                  id="Edit<%=coupon._id %>" onclick="editCoupn('<%= coupon._id %>')">Edit</button>
+                  id="Edit<%=coupon._id %>">Edit</button>
                 <button class="btn btn-danger" id="Delete<%=coupon._id %>"
                   onclick="deleteCoupn('<%= coupon._id %>')">Delete</button>
               </div>
@@ -49,36 +49,43 @@
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create coupon</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit coupon</h1>
                   </div>
                   <div class="modal-body">
                     <form>
                       <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Coupon Name:</label>
+                        <label class="col-form-label">Coupon Name:</label>
+                        <span class="text-danger" id="CnameEdrr"></span>
                         <input id="CnameEd" value="<%= coupon.name %>" type="text" class="form-control">
                       </div>
                       <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Coupon Code:</label>
+                        <label class="col-form-label">Coupon Code:</label>
+                        <span class="text-danger" id="CcodeEdrr"></span>
                         <input id="CcodeEd" type="text" value="<%= coupon.code %>" class="form-control">
                       </div>
                       <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Discount amount:</label>
+                        <label class="col-form-label">Discount amount:</label>
+                        <span class="text-danger" id="DiscountEdrr"></span>
                         <input id="DiscountEd" type="Number" value="<%= coupon.discount %>" class="form-control">
                       </div>
                       <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">For Puchase Above:</label>
-                        <input type="NumberEd" class="form-control" value="<%= coupon.forPuchace %>" id="PAmount">
+                        <label class="col-form-label">For Puchase Above:</label>
+                        <span class="text-danger" id="PAmountEdrr"></span>
+                        <input type="number" class="form-control" value="<%= coupon.forPuchace %>" id="PAmountEd">
                       </div>
                       <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Expiry Date:</label>
-                        <input type="date" class="form-control" value="<%= coupon.Expiry %>" id="Edate">
+                        <label class="col-form-label">Expiry Date:</label>
+                        <span class="text-danger" id="EdateEdrr"></span>
+                        <input type="date" class="form-control" value="<%= coupon.Expiry.toISOString().split('T')[0] %>"
+                          id="EdateEd">
                       </div>
 
                     </form>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button id="EdButton" type="button" class="btn btn-primary">Edit Coupon</button>
+                    <button id="EdButton" onclick="editCoup('<%= coupon._id %>')" type="button"
+                      class="btn btn-primary">Edit Coupon</button>
                   </div>
                 </div>
               </div>
@@ -123,27 +130,27 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Coupon Name:</label>
+              <label class="col-form-label">Coupon Name:</label>
               <span class="text-danger" id="CnameErr"></span>
               <input id="Cname" type="text" class="form-control" required>
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Coupon Code:</label>
+              <label class="col-form-label">Coupon Code:</label>
               <span class="text-danger" id="CcodeErr"></span>
               <input id="Ccode" type="text" class="form-control" required>
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Discount amount:</label>
+              <label class="col-form-label">Discount amount:</label>
               <span class="text-danger" id="DiscountErr"></span>
-              <input id="Discount" type="Number" class="form-control" required>
+              <input id="Discount" type="number" class="form-control" required>
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">For Puchase Above:</label>
+              <label class="col-form-label">For Puchase Above:</label>
               <span class="text-danger" id="PAmountErr"></span>
-              <input type="Number" class="form-control" id="PAmount" required>
+              <input id="PAmount" type="number" class="form-control" required>
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Expiry Date:</label>
+              <label class="col-form-label">Expiry Date:</label>
               <span class="text-danger" id="EdateErr"></span>
               <input type="date" value="<%= formattedDate %>" class="form-control" id="Edate" required>
             </div>
@@ -171,29 +178,18 @@
 
 
 
-
-
-
-
-
-  </div>
-
-  </div>
-
   <script>
+
+
 
 
     $(document).ready(() => {
 
-
-
-
       $('#clicker').click(() => {
-        // console.log("clicked")
         let Cname = $('#Cname').val()
         let spacePattern = /\s{2,}/;
-        if (spacePattern.test(Cname)) {
-          $('#CnameErr').text('Coupon name should not contain two spaces together');
+        if (spacePattern.test(Cname) || Cname == '' || Cname == ' ') {
+          $('#CnameErr').text('Coupon should not be blank or Coupon name should not contain two spaces together');
           setTimeout(() => {
             $('#CnameErr').text('');
           }, 3000);
@@ -202,29 +198,29 @@
 
         let Ccode = $('#Ccode').val()
         let CcodePattern = /^(?=.*[A-Z])(?=.*\d)(?=.*-).*$/;
-        if (!CcodePattern.test(Ccode)) {
+        if (!CcodePattern.test(Ccode) || Ccode == '') {
           $('#CcodeErr').text('Ccode must have one capital letter, one number, and one "-" sign.');
           setTimeout(() => {
-            $('#CnameErr').text('');
+            $('#CcodeErr').text('');
           }, 3000);
           return;
         }
 
         let Discount = $('#Discount').val()
-        if(Discount<=0){
+        if (Discount <= 0 || Discount == '') {
           $('#DiscountErr').text('Should be positive')
-          setTimeout(()=>{
+          setTimeout(() => {
             $('#DiscountErr').text('')
-          },3000)
+          }, 3000)
           return
         }
 
         let PAmount = $('#PAmount').val()
-        if(PAmount <= 0){
+        if (PAmount <= 0 || PAmount == '') {
           $('#PAmountErr').text('Should be positive')
-          setTimeout(()=>{
-            $('#PAmount').text('')
-          },3000)
+          setTimeout(() => {
+            $('#PAmountErr').text('')
+          }, 3000)
           return
         }
 
@@ -232,13 +228,13 @@
         let modDate = new Date(Edate)
         let currentDate = new Date()
         if (modDate.getTime() < currentDate.getTime()) {
-          $('#EdateErr').text('should be greater than current date')   
-          setTimeout(()=>{
+          $('#EdateErr').text('should be greater than current date')
+          setTimeout(() => {
             $('#EdateErr').text('')
-          },3000)
+          }, 3000)
           return
         }
-        // console.log("Cname:", Cname, "\nCcode:", Ccode, "\n Discount:", Discount, "\n PAmout:", PAmount, "\n Edate:", Edate)
+        console.log("Cname:", Cname, "\nCcode:", Ccode, "\n Discount:", Discount, "\n PAmout:", PAmount, "\n Edate:", Edate)
         fetch('/admin/addCoupons', {
           method: 'POST',
           headers: {
@@ -273,8 +269,134 @@
             }
           })
       })
+
     })
 
+
+    function editCoup(couponId) {
+      console.log('Clicked')
+      let Cname = $('#CnameEd').val()
+      let spacePattern = /\s{2,}/;
+      if (spacePattern.test(Cname) || Cname == '' || Cname == ' ') {
+        $('#CnameEdrr').text('Coupon should not be blank or Coupon name should not contain two spaces together');
+        setTimeout(() => {
+          $('#CnameEdrr').text('');
+        }, 3000);
+        return
+      }
+
+      let Ccode = $('#CcodeEd').val()
+      let CcodePattern = /^(?=.*[A-Z])(?=.*\d)(?=.*-).*$/;
+      if (!CcodePattern.test(Ccode) || Ccode == '') {
+        $('#CcodeEdrr').text('Ccode must have one capital letter, one number, and one "-" sign.');
+        setTimeout(() => {
+          $('#CcodeEdrr').text('');
+        }, 3000);
+        return;
+      }
+
+      let Discount = $('#DiscountEd').val()
+      if (Discount <= 0 || Discount == '') {
+        $('#DiscountEdrr').text('Should be positive')
+        setTimeout(() => {
+          $('#DiscountEdrr').text('')
+        }, 3000)
+        return
+      }
+
+      let PAmount = $('#PAmountEd').val()
+      if (PAmount <= 0 || PAmount == '') {
+        $('#PAmountEdrr').text('Should be positive')
+        setTimeout(() => {
+          $('#PAmountEdrr').text('')
+        }, 3000)
+        return
+      }
+
+      let Edate = $('#EdateEd').val()
+      let modDate = new Date(Edate)
+      let currentDate = new Date()
+      if (modDate.getTime() <= currentDate.getTime()) {
+        $('#EdateEdrr').text('should be greater than current date')
+        setTimeout(() => {
+          $('#EdateEdrr').text('')
+        }, 3000)
+        return
+      }
+
+
+      fetch(`/admin/CouponEdit/${couponId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          Cname, Ccode, Discount, PAmount, Edate
+        })
+      }).then(res => res.json())
+        .then((data) => {
+          // console.log("data====",data)
+          if (data.success) {
+            $('#CnameEd').val("")
+            $('#CcodeEd').val("")
+            $('#DiscountEd').val("")
+            $('#PAmountEd').val("")
+            $('#EdateEd').val("")
+
+
+            // Optionally, you can update the address list on the page.
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Coupon Edited',
+              showConfirmButton: false,
+              timer: 1500
+            })
+
+            setTimeout(() => {
+              location.reload();
+            }, 1800)
+          }
+        })
+
+
+    }
+
+
+    function deleteCoupn(couponId) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(async(result) => {
+        if (result.isConfirmed) {
+          let res = await fetch(`/admin/deleteCoupon/${couponId}`, {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      let data = await res.json()
+      if (data.success) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Coupon Deleted',
+          showConfirmButton: false,
+          timer: 1500
+        })
+        setTimeout(()=>{
+          location.reload()
+        },2000)
+      }
+        }
+      });
+      
+    }
 
   </script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

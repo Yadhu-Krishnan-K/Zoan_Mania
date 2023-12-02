@@ -97,7 +97,7 @@ router.get('/logout',(req,res)=>{
     req.session.adminAuth = false
     req.session.logged = false
         res.redirect('/admin');
-        
+
 })
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -170,10 +170,7 @@ router.put('/orders/updateStatus/:orderId',ordercontroller.updateOrderStatus)
 router.get('/orders/details/:orderId',adminauth.adminLoggedinAuthguard,ordercontroller.orderDetailPage)
 
 
-
-
-
-
+router.put('/updatReturnStatus/:orderId',ordercontroller.updateReturnStatus)
 
 
 
@@ -182,12 +179,9 @@ router.get('/Coupons', adminauth.adminLoggedinAuthguard, couponController.getCou
 
 router.post('/addCoupons',couponController.addCoupons)
 
+router.put('/CouponEdit/:couponId',adminauth.adminLoggedinAuthguard,couponController.EditCoupon)
 
-
-
-
-
-
+router.delete('/deleteCoupon/:couponId',couponController.deleteCoupon)
 
 
 

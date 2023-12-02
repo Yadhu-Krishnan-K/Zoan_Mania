@@ -14,12 +14,16 @@ const sch = new mongoose.Schema({
   Size : {type: String},
   Description: { type: String},
   Rating: {type: String},
+  Offer:{
+    type:Number,
+    default:0
+  },
   // Specification: [{ type: String, required: true,  }],
   Stock: { type: Number},
   Selled: {
-          type: Number,
-          default: 0
-          },
+    type: Number,
+    default: 0
+  },
   Stamp: { type: Date },
   Review: { type: String }, 
   BrandId: {type: Schema.Types.ObjectId},

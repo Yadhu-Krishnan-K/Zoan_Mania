@@ -75,11 +75,10 @@ const getHome = async(req,res)=>{
 
 
 const otpForm = (req,res)=>{
-    // otp timer-----------------
+    
     req.session.vaotp = controller.vaotp() 
     let time = new Date()
-    // let time1 = new Date(time)
-    // let diff = Math.floar((time-time1)/1000)
+   
     console.log("signup otp ==",req.session.vaotp)
     const timer =  setTimeout(() => {
         req.session.vaotp = null

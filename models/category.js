@@ -7,7 +7,11 @@ const CategoriesSchema = new Schema({
   visible:{
              type:Boolean,
              default:true
-          }
+          },
+  catOffer:{
+    type:Number,
+    default:0
+  }
 },{timestamps:true});
 
 const Categories = mongoose.model('Categories', CategoriesSchema);

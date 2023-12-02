@@ -20,12 +20,21 @@ const ShippedAddressSchema = new Schema({
 const OrdersSchema = new Schema({
   UserId: { type: Schema.Types.ObjectId },
   Status: { type: String, default:"Pending"},
+  //status=pending, orderplaced, shiped, delivered, rejected
   Items: [{
      productId: { type: Schema.Types.ObjectId , ref: "products" },
      quantity: { type: Number },
-     removed: {
+     returnMessage:{
+      type:Array 
+     },
+     needToRemoved: {
       type:Boolean,
       default:false
+     },
+     returnStatus:{
+      type: String,
+      default:''
+      // returned, rejected,
      }
   }],
   PaymentMethod: {type: String},

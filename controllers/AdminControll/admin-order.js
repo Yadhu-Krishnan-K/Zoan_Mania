@@ -1,5 +1,7 @@
 const orderModel = require('../../models/order');
 const socketManager = require('../../util/socket')
+const mongoose = require('mongoose')
+const userModel = require('../../models/user')
 
 
 
@@ -34,11 +36,47 @@ const updateOrderStatus = async(req,res)=>{
     res.json({success:true})
 }
 
+
+const updateReturnStatus = async(req,res)=>{
+  const num = req.body.num
+  const P_id = req.body.productId
+  const O_id = req.params.orderId
+  // console.log('typeof(P-id)==',typeof(P_id),", typeof(O_id)==",typeof(O_id))
+  // console.log("req.body===",req.body)
+  let order = await orderModel.findOne({_id:O_id}).populate('Items.productId')
+  let item = order.Items.find((item)=>item.productId == P_id)
+  // console.log(order)
+  if (num == 0) {
+    item.returnStatus = 'returned';
+    await order.save();
+    let Wamount = item.quantity * item.productId.Price
+    await userModel.findByIdAndUpdate({_id: order.UserId},{$inc:{Wallet:Wamount}})
+
+    res.json({
+      response:"accepted"
+    })
+
+  } else if (num == 1) {
+    item.returnStatus = 'rejected';
+    await order.save();
+    res.json({
+      response:"rejected"
+    })
+
+  }
+
+  console.log("num from updateReturnStatus===",num)
+  // res.json({
+  //   success:true
+  // })
+}
+
+
 const orderDetailPage = async(req,res)=>{
     let orderId=req.params.orderId;
     let order = await orderModel.findOne({_id: orderId}).populate('Items.productId')
     let ProductAllDetails = order.Items
-    res.render('supAdmin/adminSide-order-detail-page',{title:"Order Detail",ProductAllDetails, Page:"Orders"})    
+    res.render('supAdmin/adminSide-order-detail-page',{title:"Order Detail", ProductAllDetails, order,Page:"Orders"})    
 }
 
 
@@ -50,5 +88,7 @@ const orderDetailPage = async(req,res)=>{
 module.exports = {
     getOrder,
     updateOrderStatus,
-    orderDetailPage
+    updateReturnStatus,
+    orderDetailPage,
+
 }

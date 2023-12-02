@@ -16,7 +16,7 @@ const getAdminAddProduct = async(req,res)=>{
 
 }
 
-const postAddProduct = async(req,res)=>{
+const   postAddProduct = async(req,res)=>{
   
     console.log("req.files====",req.files,'files');
  
@@ -42,8 +42,12 @@ const postAddProduct = async(req,res)=>{
      }
  
  console.log("when adding product, img==",imageUrls);
-    const {Description,Pname,stock,price,category,Specification1,Specification2,Specification3,Suffix}=req.body
- //     // try {
+    const {Description,Pname,stock,price,category,offer,Specification1,Specification2,Specification3,Suffix}=req.body
+    console.log(Description,Pname,stock,price,category,"offer====",offer,Specification1,Specification2,Specification3,Suffix)
+
+
+
+    //     // try {
          const product = new products({
              Description:Description,
              Name:Pname,
@@ -51,6 +55,7 @@ const postAddProduct = async(req,res)=>{
              Stock:stock,
              Category:category,
              Price:price,
+             Offer:req.body.offer,
              Spec1:Specification1,
              Spec2:Specification2,
              Spec3:Specification3,

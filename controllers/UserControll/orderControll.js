@@ -1,8 +1,10 @@
 const userModel = require('../../models/user')
+const mongoose = require('mongoose')
 const cartModel = require('../../models/cartModel')
 const orderModel = require('../../models/order')
 const products = require('../../models/products')
 const razor = require('../../middlewares/razorpay')
+const moment = require('moment')
 
 
 const getPlaceOrder = (req,res)=>{
@@ -204,6 +206,8 @@ const postPlaceOrder = async(req,res)=>{
    }
   }
 
+
+
   const getOrderProductView = async(req,res)=>{
     const orderId = req.params.orderId
     const userId = req.session.userId
@@ -211,9 +215,7 @@ const postPlaceOrder = async(req,res)=>{
     const cartData = await cartModel.findOne({userId:userId})
       let cartcount = 0
       if (cartData === null || cartData.Items == (null||0)) {
-        
         cartcount = 0
-  
       }else{
       cartData.Items.forEach((cart)=>{
         cartcount += cart.Quantity
@@ -224,19 +226,39 @@ const postPlaceOrder = async(req,res)=>{
   }
 
 
+
+
+
   const returnedItem = async(req,res)=>{
+    try {
+      console.log("data from body = ",req.body);
     const productId = new mongoose.Types.ObjectId(req.body.P_id);
     const P_qty = req.body.P_qty;
     const O_id = new mongoose.Types.ObjectId(req.body.O_id);
-    console.log("reached post route", productId)
-    console.log(`data====P_id==${productId},P-qty=${P_qty},O_id = ${O_id}`);
+    const reasons = []
+    if(req.body.returnReason && req.body.comments){
+      reasons.push(req.body.returnReason)
+      reasons.push(req.body.comments)
+    }else if(req.body.returnReason){
+      reasons.push(req.body.returnReason)
+    }
+    else{
+      reasons.push(req.body.comments)
+    }
+
     const updatedOrder = await orderModel.findOneAndUpdate(
       { _id: O_id, 'Items.productId': productId },
-      { $set: { 'Items.$.removed': true } },
+      { $set: { 
+        'Items.$.needToRemoved': true,
+        'Items.$.returnMessage': reasons
+     } },
       { new: true }
     );
     const updateProduct = await products.findByIdAndUpdate({_id: productId},{$inc:{Stock:P_qty}})
     res.json({success:true})
+    } catch (error) {
+      console.log(error)
+    }
   }
 
 
@@ -256,5 +278,6 @@ module.exports = {
     orderDetail,
     cancelOrder,
     getOrderProductView,
-    returnedItem
+    returnedItem,
+
 }

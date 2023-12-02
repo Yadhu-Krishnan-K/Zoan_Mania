@@ -11,7 +11,6 @@ const getCoupons = async(req,res) => {
 
 
 const addCoupons = async(req,res)=>{
-    console.log(req.body)
     let coupon = await coupons.create({
         name: req.body.Cname,
         code: req.body.Ccode,
@@ -28,7 +27,38 @@ const addCoupons = async(req,res)=>{
     }
 }
 
+const EditCoupon = async(req,res) => {
+    try {
+        console.log("Edit coupon====",req.body)
+    // Cname, Ccode, Discount, PAmount, Edate
+    await coupons.findByIdAndUpdate({_id: req.params.couponId},
+        {
+            name:req.body.Cname,
+            code:req.body.Ccode,
+            discount:req.body.Discount,
+            forPuchace:req.body.PAmount,
+            Expiry:req.body.Edate,
+        },{new:true}
+        )
+        res.json({
+            success: true
+        })
 
+    } catch (error) {
+        console.error("error: ",error)   
+    }
+}
+
+const deleteCoupon = async(req,res) => {
+    try {
+        await coupons.findByIdAndDelete(req.params.couponId)
+        res.json({
+            success: true
+        })
+    } catch (error) {
+        console.error("error: ",error)
+    }
+}
 
 
 
@@ -38,5 +68,7 @@ const addCoupons = async(req,res)=>{
 
 module.exports = {
     getCoupons,
-    addCoupons
+    addCoupons,
+    EditCoupon,
+    deleteCoupon
 }

@@ -1,28 +1,38 @@
 const category = require('../../models/category')
 const Cate = require('../../models/category')
-
+const validator = require('../../helpers/textValidator')
+const moneyVal = require('../../helpers/numberValidator')
 
 
 //add category
 const addCategory = async(req,res)=>{
-    // console.log(req.body.cate)
-    // const categ = await new category({
+    
         const catName = req.body.cate
-    // })
-    // console.log(catName);
+        const catOffer = req.body.offer
+        const ofer = moneyVal.categoryOffer(catOffer)
+        const name = validator.categoryValidator(catName)
+        
     const cat = await category.find({catName:{$regex: "^" + catName, $options: "i"}})
     console.log(cat)
-    if(cat == "[]"){
-        res.redirect('admin/addCatgory')
+    if(cat.length == 0){
+        if(ofer && name){
+            const colleeeection = await category.create({
+                catName:catName,
+                catOffer:catOffer
+            })
+            res.json({
+                status:true
+            })
+        }
+    // res.redirect('/admin/Category') 
     }
-    else if (cat.length>0) {
-        //    console.log(req.files,'files');
-        res.render('supAdmin/admin-category-add', { error: 'The category already exists' });
+    else if(cat.length > 0) {
+        res.json({
+            status:false,
+            message:'category already exist'
+        })
 
-    } else {
-        const colleeeection = await category.create({catName:catName})
-    res.redirect('/admin/Category') 
-    }
+    } 
 }
 //====================================================================================================================================
 //edit Category

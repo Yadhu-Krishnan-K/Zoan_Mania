@@ -153,7 +153,7 @@ router.post('/updateAddress/:userId',us.updateAddress)
 router.get('/deleteAddress/:userId/:addresId',us.deleteAddress)
 
 //=====================================================================================================================================================
-//================================================
+//====================================================
 //user checkout
 router.get('/buyTheProducts',authGuard.userLoginAuthGuard,userAccess,us.checkoutUser)
 
@@ -207,4 +207,4 @@ router.post('/search',authGuard.userLoginAuthGuard,userAccess,us.searchOptions)
 
 
 
-module.exports = router 
+module.exports = router

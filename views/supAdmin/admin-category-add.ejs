@@ -2,17 +2,41 @@
 
     <div class="col-12">
         <h1>Add Category</h1>
-        <% if (locals.error) { %>
-            <div class="alert alert-success" id="disap" style="display: none;">
-                <%= error %>
+            <div class="text-danger" id="disap">
             </div>
-        <% } %>
-        <form action="/admin/add-category" method="post">
-            <input type="text" placeholder="Category Name" name="cate">
-            <button type="submit" class="btn btn-primary">Submit</button>
+        <form>
+            <input type="text" placeholder="Category Name" id="cate" name="cate">
+            <input type="number" placeholder="offer(optional)" id="cateOffer">
+            <button type="button" id="sumit" class="btn btn-primary">Submit</button>
         </form>
     </div>
     <script>
+        $('#sumit').click(async()=>{
+            console.log("Entered")
+            let cate = $('#cate').val()
+            let offer = $('#cateOffer').val()
+            
+            
+            let res = await fetch('/admin/add-category',{
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body:{
+                    cate,offer
+                }
+            })
+            let data = await res.json()
+            console.log(data);
+            if(data.status){
+                window.location.replace('/admin/addCatgory')
+            }else if(data.status == false){
+                $('#disap').text(data.message)
+                setTimeout(()=>{
+                    $('#disap').text('')
+                },3000)
+            }
+        })
         const err = document.getElementById('disap')
         if(err){
             err.style.display = 'block'
