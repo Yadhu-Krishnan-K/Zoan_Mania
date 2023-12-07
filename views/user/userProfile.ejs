@@ -88,7 +88,7 @@
                   <hr>
                   <div class="row d-flex justify-content-end ">
                     <div>
-                  <button type="button" onclick="openEditModal()" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal" id="modalBtn">Edit</button>
+                  <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal" id="modalBtn">Edit</button>
                     </div>
                   </div>
                 </div>
@@ -141,10 +141,10 @@
 
 <script>
     
-    function openEditModal() {
-        console.log("edit button clicked")
-                $('#editModal').modal('show');
-    }
+    // function openEditModal() {
+    //     console.log("edit button clicked")
+    //             $('#editModal').modal('show');
+    // }
 
 
     function saveDetail(){
@@ -153,7 +153,6 @@
         console.log("name==",name)
         const email = document.getElementById('recipient-email').value
         console.log("email==",email)
-
         const phone = document.getElementById('recipient-Pnumber').value
         console.log("phone==",phone)
 

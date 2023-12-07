@@ -27,7 +27,7 @@ const sch = new mongoose.Schema({
   Stamp: { type: Date },
   Review: { type: String }, 
   BrandId: {type: Schema.Types.ObjectId},
-  Category: {type: String},
+  Category: {type: Array},
   Price: {type:Number},
   visible:{
     type:Boolean,

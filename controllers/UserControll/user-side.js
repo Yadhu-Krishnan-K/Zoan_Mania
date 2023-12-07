@@ -214,9 +214,10 @@ const searchOptions = async(req,res)=>{
     let perPage = 8
     let pageNums = Math.ceil(listCount/perPage)
     let currentPage = page;
-    const productsList = await products.find({
-      Name:{$regex: "^"+value, $options: "i"}
-    }).sort({_id: -1})
+    const productsList = await products.find({$or:[
+      {Name:{$regex: "^"+value, $options: "i"}},
+      {Category:{$regex: "^"+value, $options: "i"}} 
+    ]}).sort({_id: -1})
   .skip((page-1)*perPage)
   .limit(perPage)
   

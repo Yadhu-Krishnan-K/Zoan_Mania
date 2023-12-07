@@ -16,16 +16,16 @@ const getAdminAddProduct = async(req,res)=>{
 
 }
 
-const   postAddProduct = async(req,res)=>{
+const postAddProduct = async(req,res)=>{
   
-    console.log("req.files====",req.files,'files');
+    // console.log("req.files====",req.files,'files');
  
     const images = req.files;
-    console.log("images===",images)
+    // console.log("images===",images)
     
      const imageUrls = images.map(file=>file.filename)
     let arr =[]
-    console.log("imageUrls====",imageUrls)
+    // console.log("imageUrls====",imageUrls)
  
      for(i=0;i<imageUrls.length;i++){
         let ar=imageUrls[i].split('.')
@@ -42,9 +42,10 @@ const   postAddProduct = async(req,res)=>{
      }
  
  console.log("when adding product, img==",imageUrls);
-    const {Description,Pname,stock,price,category,offer,Specification1,Specification2,Specification3,Suffix}=req.body
-    console.log(Description,Pname,stock,price,category,"offer====",offer,Specification1,Specification2,Specification3,Suffix)
-
+    const {Description,Pname,stock,price,offer,Specification1,Specification2,Specification3,Suffix}=req.body
+    const categories = Array.isArray(req.body.categories) ? req.body.categories : req.body.categories.split(',');
+    // console.log(Description,Pname,stock,price,category,"offer====",offer,Specification1,Specification2,Specification3,Suffix)
+     console.log("categories from adding products====",categories)
 
 
     //     // try {
@@ -53,7 +54,7 @@ const   postAddProduct = async(req,res)=>{
              Name:Pname,
              Image:imageUrls,
              Stock:stock,
-             Category:category,
+             Category:categories,
              Price:price,
              Offer:req.body.offer,
              Spec1:Specification1,
@@ -65,7 +66,10 @@ const   postAddProduct = async(req,res)=>{
          // console.log(newProduct);
          console.log(newProduct)
 
-         res.redirect('/admin/inventory')
+        //  res.json(('/admin/inventory')
+        res.json({
+            success:true
+        })
          
  }
 

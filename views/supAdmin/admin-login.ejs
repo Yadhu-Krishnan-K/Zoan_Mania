@@ -7,7 +7,7 @@
         
     </div>
     
-        <div class="alert alert-success text-center" style="display: none;" id="disapear">
+        <div class="alert alert-danger text-center" style="display: none;" id="disapear">
         </div>
 
     <!-- <form action="/admin/check" method="post" style="width: 100%;" class="mt-5"> -->
@@ -45,7 +45,7 @@
             .then((data)=>{
                 // console.log(data);
                 if(data.success){
-                    window.location.replace('/admin/Customers')
+                    window.location.replace('/admin/DashBoard')
                     console.log(data);
                 }else if(!(data.success)){
                     let dis = $('#disapear')

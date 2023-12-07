@@ -1,8 +1,106 @@
 <%- include('../layouts/admin/header'); -%>
+    <div class="col-md-12">
     <h1>Edit Category</h1>
-    <form class="mt-5 ms-5" action="/admin/category-update/<%- category._id %>" method="post">
-        <input type="text" name="catName" value="<%- category.catName %>" id="">
-        <button type="submit">Submit</button>
-    </form>
+    <!-- <form class="mt-5 ms-5" action="/admin/category-update/category._id %>" method="post"> -->
+    <form class="mt-5 ms-5">
+        <div class="card text-start">
+            <div class="card-body ">
+                <div class="container-fluid">
+                    <div class="row d-flex justify-content-center">
+                        <!-- <img class="card-img-top" src="holder.js/100px180/" alt="Title"> -->
+                        <div class="col-md-6 ">
+                            <div class="row">
+                                <div class="col-md-12 d-flex p-3 flex-column justify-content-center align-items-center">
+                                    <div class="error text-danger">
+        
+                                    </div>
+                                    <!-- <h4 class="card-title">Title</h4>
+                              <p class="card-text">Body</p> -->
+                                    <input type="text" name="catName" value="<%= category.catName %>" id="catName">
+                                    <br>
+                                    <input type="number" name="" id="cateOffer" value="<%= category.catOffer %>">
+                                    <br>
+                                    <input type="date" value="<%= category.offerExpiry ? category.offerExpiry.toISOString().split('T')[0] : '' %>" name="" id="date"><br>
+                                    <div class="d-flex justify-content-between" style="width: 100%;">
+                                        <button type="button" class="btn btn-success" id="sumit" onclick="sumit('<%= category._id %>')">Submit</button>
+                                        <button class="btn btn-warning" onclick="removeOffer('<%= category._id %>')">Remove offer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
 
-<%- include('../layouts/admin/footer'); -%> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+
+    <script>
+
+        function removeOffer(cateId){
+            fetch(`/admin/category-update/${cateId}`)
+            .then(res=>res.json())
+            .then((data)=>{
+                if(data.success){
+                    location.reload()
+                }
+            })
+        }
+
+        async function sumit(cateId) {
+            console.log("Entered")
+            let cate = $('#catName').val()
+            let offer = $('#cateOffer').val()
+            let offerEnd = $('#date').val()
+            let gd = new Date( $('#date').val())
+            let date = new Date()
+
+            if (/\s{2,}/.test(cate || offer) || cate == '') {
+                $('#error').text('category should not be blank')
+                setTimeout(() => {
+                    $('#error').text('')
+                }, 3000)
+                return
+            }
+
+            if(offerEnd !== "" && (gd.getTime() <= date.getTime())){
+                $('#error').text('Date should be greater than todays date')
+                setTimeout(()=>{
+                    $('#error').text('')
+                },3000)
+                return
+            }
+            if(offer && !(offerEnd)){
+                $('#error').text('If offer added date should be added too ')
+                setTimeout(()=>{
+                    $('#error').text('')
+                },3000)
+                return
+            }
+
+            let res = await fetch(`/admin/category-update/${cateId}%>`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cate, offer,offerEnd
+                })
+            })
+            let data = await res.json()
+            console.log(data);
+            if (data.status) {
+                window.location.replace('/admin/Category')
+            } else if (data.status == false) {
+                $('#error').text(data.message)
+                setTimeout(() => {
+                    $('#error').text('')
+                }, 3000)
+            }
+        }
+
+    </script>
+
+    <%- include('../layouts/admin/footer'); -%>

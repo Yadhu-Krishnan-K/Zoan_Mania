@@ -11,6 +11,13 @@ const CategoriesSchema = new Schema({
   catOffer:{
     type:Number,
     default:0
+  },
+  offerExpiry:{
+    type:Date
+  },
+  expired:{
+    type:Boolean,
+    default:true
   }
 },{timestamps:true});
 

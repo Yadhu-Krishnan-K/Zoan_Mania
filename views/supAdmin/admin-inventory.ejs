@@ -1,5 +1,5 @@
 <%- include('../layouts/admin/header'); -%>
-<div class="col-md-12">
+<div class="col-md-12 p-2">
   
   <h1>Inventory</h1>
     <div class="d-flex mt-3 justify-content-between" style="width: 100%;">
@@ -7,7 +7,7 @@
         <!-- <input type="search" name="search" id="search"> -->
       </div>
       <div class="addProduct">
-        <a href="/admin/inventory/addProduct"><button>Add product</button></a>
+        <a href="/admin/inventory/addProduct"><button class="btn btn-info me-3">Add product</button></a>
       </div>
     </div> 
   
@@ -40,6 +40,11 @@
                 </td>
                 <td>
                   <%= product.Category %>
+                  <ul>
+                    <% for (let index = 0; index < product.Category.length; index++) { %>
+                      <li><%= product.Category[index] %></li>
+                    <% } %>
+                  </ul>
                 </td>
                 <td>
                   <%= product.Stock %>

@@ -1,43 +1,102 @@
 <%- include('../layouts/admin/header'); -%>
 
-<div class="col-12">
-    <h1>Category</h1>
-    <div class="d-flex">
-        <!-- <div class=" d-flex justify-content-start align-items-center" style="width: 50%; height: 50px;">
+    <div class="col-12">
+        <h1>Category</h1>
+        <div class="d-flex">
+            <!-- <div class=" d-flex justify-content-start align-items-center" style="width: 50%; height: 50px;">
             <input type="search" name="" id="search">
             <button for="search">search</button>
         </div> -->
-        <div class=" d-flex justify-content-end align-items-center" style="width: 100%; height: 50px;">
-            <a href="/admin/addCatgory"><button>+Add Category</button></a>
+            <div class=" d-flex justify-content-end align-items-center" style="width: 100%; height: 50px;">
+                <a href="/admin/addCatgory"><button>+Add Category</button></a>
+            </div>
         </div>
-    </div>
-                <table class="mt-5 table table-striped table-bordered">
-                    <thead>
-                        <tr> 
-                            <th class="thed" scope="col">No.</th>
-                            <th class="thed" scope="col">Category</th>
-                            <th class="thed" scope="col">Updated On</th>
-                            <th class="thed" scope="col">Edit</th>
-                            <th class="thed" scope="col">Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody> 
-                        <%datas.forEach(data=>{ %>
-                        <tr>
-                            <td><%= ++i %></td>
-                            <td><%= data.catName%></td>
-                            <td>
-                                <%let date=new Date(data.createdAt)%>
+        <table class="mt-5 table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th class="thed" scope="col">No.</th>
+                    <th class="thed" scope="col">Category</th>
+                    <th class="thed" scope="col">Updated On</th>
+                    <th class="thed" scope="col">Offer price and expiry</th>
+                    <th class="thed" scope="col">Edit</th>
+                    <th class="thed" scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%datas.forEach(data=>{ %>
+                    <tr>
+                        <td>
+                            <%= ++i %>
+                        </td>
+                        <td>
+                            <%= data.catName%>
+                        </td>
+                        <td>
+                            <%let date=new Date(data.createdAt)%>
                                 <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%>
-                            </td>
-                            <td><i style="display: block;"><a href="/admin/edit-category/<%= data._id %>"><i class="fa-regular fa-pen-to-square "></i></a></i></td>
-                            <td><i style="display: block;"><a href="/admin/delete-category/<%= data._id %>"><i class="fa-solid fa-trash "></i></a></i></td>
-                        </tr>
-                        <%})%>
-                    </tbody>
-                </table>
-</div>
-<script>
-    
-</script>
-<%- include('../layouts/admin/footer'); -%>
+                        </td>
+                        <td>
+                            <%= data.catOffer %>
+                                <% if(data.offerExpiry){ %>
+                                    <% let date = data.offerExpiry %>
+                                    <% const formatDate = (date) => {
+                                        const day = String(date.getDate()).padStart(2, '0');
+                                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                                        const year = date.getFullYear();
+
+                                        return `${day}-${month}-${year}`;
+                                        };
+
+                                        const formattedDate = formatDate(data.offerExpiry);
+                                    %>
+                                    <% if(data.offerExpiry.getTime()>new Date().getTime()){ %>
+                                        <span style="font-weight: 100;">(Expires <%= formattedDate %>)</span>
+                                    <% }else{ %>
+                                        <span class="text-danger">Coupon Expired</span>
+                                    <% } %>
+                                <% } %>
+                        </td>
+                        <td><i style="display: block;"><a href="/admin/edit-category/<%= data._id %>"><i
+                                        class="fa-regular fa-pen-to-square "></i></a></i></td>
+                        <td> <i style="display: block;">
+                                <a href="#" onclick="showConfirmation('<%= data._id %>')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </i></td>
+                    </tr>
+                    <%})%>
+            </tbody>
+        </table>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+
+        function showConfirmation(dataId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                 fetch(`/admin/delete-category/${dataId}`)
+                 .then(res=>res.json())
+                 .then((data)=>{
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+                    setTimeout(()=>{
+                        location.reload()
+                    },3000)
+                 })
+                }
+            });
+        }
+
+    </script>
+    <%- include('../layouts/admin/footer'); -%>

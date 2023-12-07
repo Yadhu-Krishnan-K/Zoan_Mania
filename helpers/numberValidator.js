@@ -1,16 +1,16 @@
 const categoryOffer = (val) => {
-    if(val<0 && val>100 ){
+    if( val < 0 ){
         return{
             status:false,
-            message:"need to be in between 0-100"
+            message:"need to be greater than 0"
         }
-    }else if(val == '' || val == NaN){
-        return({
+    }else if(val == NaN){
+        return{
             status :false,
             message:'please enter valid data'
-        })
+        }
     }
-    else if(val >= 0 && val <=100){
+    else if(val >= 0){
         return {status:true}
     }
 }
@@ -21,11 +21,7 @@ const numberCheck = (number) => {
     }
 }
 
-
-
-
-
-
 module.exports = {
-    categoryOffer
+    categoryOffer,
+    numberCheck
 }

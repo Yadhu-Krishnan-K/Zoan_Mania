@@ -6,8 +6,11 @@ const schema = new mongoose.Schema({
     discount: Number,
     forPuchace: Number,
     Expiry: Date,
-    userId:{type: Array},
-     
+    usedBy:{type: Array},
+    expired:{
+        type:Boolean,
+        default:false
+    }
 })
 
 const coupon = mongoose.model('Coupon',schema)

@@ -37,8 +37,9 @@ const couponControll = require('../controllers/UserControll/userCouponControll')
 
 
 
-router.get('/',authGuard.userLoggedinAuthGuard,(req,res)=>{
-    res.render('user/anonymous',{productInHome})
+router.get('/',authGuard.userLoggedinAuthGuard,async(req,res)=>{
+    const productModel = await products.find().sort({Selled: -1}).limit(8)
+    res.render('user/anonymous',{productModel})
 })
  
 //user login-------------------------------------------------------------------------
@@ -163,7 +164,6 @@ router.post('/placeOrder',orderControll.postPlaceOrder)
 
 
 router.post('/verify-payment',orderControll.verifyPayment)  
-
 
 
 router.get('/placeOrder',authGuard.userLoginAuthGuard,userAccess,orderControll.getPlaceOrder)

@@ -5,8 +5,18 @@ const productModel =require('../../models/products')
 const Categories = require('../../models/category')
 
 const getAdminLogin = (req,res)=>{
-    res.render('supAdmin/admin-login')}
+    res.render('supAdmin/admin-login')
+}
 
+
+const DashBoard = (req,res) => {
+    res.render('supAdmin/DashBoard',{title:"Admin Dash",Page:"Dashboard"})
+}
+
+
+const Banner = (req,res) => {
+    res.render('supAdmin/banner',{title:"Admin Banner",Page:"Banner"})
+}
 
 
 const AdminCheck = async(req,res)=>{
@@ -111,6 +121,8 @@ const addCategory = (req,res)=>{
 
 
 module.exports = {
+    DashBoard,
+    Banner,
     AdminCheck,
     getAdminLogin,
     getCustomer,

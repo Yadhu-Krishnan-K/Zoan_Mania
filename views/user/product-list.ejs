@@ -17,10 +17,13 @@
 
     <div class="row">
       <div class="col-md-3"">
-        <div class="filter d-flex flex-column align-items-start rounded shadow ms-3 mt-3 p-3" style="width: 90%; position: sticky; top: 200px;">
-          <div class="d-flex justify-content-center mb-4" style="width: 100%;"><h4>Categories</h4></div>
+        <div class=" filter d-flex flex-column align-items-start rounded shadow ms-3 mt-3 p-3"
+        style="width: 90%; position: sticky; top: 200px;">
+        <div class="d-flex justify-content-center mb-4" style="width: 100%;">
+          <h4>Categories</h4>
+        </div>
 
-          <% categories.forEach((category)=>{ %>
+        <% categories.forEach((category)=>{ %>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
             <label class="form-check-label" for="flexCheckDefault">
@@ -29,14 +32,14 @@
           </div>
           <% }) %>
 
-        </div>
-
       </div>
-      <div class="col-md-9">
-        <div class="row">
-          
-          <% productsList.forEach(product=> { %>
-            <% if(product.Image.length !== 0){ %>
+
+    </div>
+    <div class="col-md-9">
+      <div class="row">
+
+        <% productsList.forEach(product=> { %>
+          <% if(product.Image.length !==0){ %>
 
             <div class="col-md-6 col p-4">
               <div class="card shadow" style="width: 18rem;margin-left: 25px;">
@@ -48,47 +51,52 @@
                     <%=product.Name%>
                   </h6>
 
-                  <% if(product.Stock >= 1 && (cartData && cartData.Items.length !== 0 )){ %>
-                    <p class="card-text" style="font-weight: 700;">₹<%= product.Price %>/-</p>   
-                    <% console.log("checking product id form cart from userHOme.ejs =======",cartData.Items[0].ProductId._id) %>
-                    <% console.log("chcking if product Id from cart is equal to product id in userHOme.ejs",JSON.stringify(product._id) == JSON.stringify(cartData.Items[0].ProductId._id)) %>
-                    <% let isInCart = false %>
-                    <% for (let index = 0; index < cartData.Items.length; index++) { %>
-                      <% if(JSON.stringify(product._id) == JSON.stringify(cartData.Items[index].ProductId._id)){ %>
-                        <% isInCart = true %>
-                          <% break %>
-                        <% } %>
-                   <% } %>
-                   <% if(isInCart){ %>
-                    <a href="/cart" class="btn btn-warning">Go To Cart</a>
-                  <% }else{ %>
-                    <!-- <a href="/addToCart/" class="btn btn-warning">Add To Cart</a> -->
-                    <button class="btn btn-warning" id="buton<%= product._id %>" onclick="addToCart('<%= product._id %>')">Add To Cart</button>
-                  <% } %>
+                  <% if(product.Stock>= 1 && (cartData && cartData.Items.length !== 0 )){ %>
+                    <p class="card-text" style="font-weight: 700;">₹<%= product.Price %>/-</p>
+                    <% console.log("checking product id form cart from userHOme.ejs=======",cartData.Items[0].ProductId._id) %>
+                    <% console.log(" chcking if product Id from cart is equal to product id in userHOme.ejs",JSON.stringify(product._id)==JSON.stringify(cartData.Items[0].ProductId._id)) %>
+                      <% let isInCart=false %>
+                        <% for (let index=0; index < cartData.Items.length; index++) { %>
+                          <% if(JSON.stringify(product._id)==JSON.stringify(cartData.Items[index].ProductId._id)){ %>
+                            <% isInCart=true %>
+                              <% break %>
+                                <% } %>
+                                  <% } %>
+                                    <% if(isInCart){ %>
+                                      <a href="/cart" class="btn btn-warning">Go To Cart</a>
+                                      <% }else{ %>
+                                        <!-- <a href="/addToCart/" class="btn btn-warning">Add To Cart</a> -->
+                                        <button class="btn btn-warning" id="buton<%= product._id %>"
+                                          onclick="addToCart('<%= product._id %>')">Add To Cart</button>
+                                        <% } %>
 
-                  <% }else if(product.Stock < 1){ %>
-                    
-                    <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out of stock</p>
-                    <a href="" class="btn btn-warning" style="pointer-events: none">Add To Cart</a>
+                                          <% }else if(product.Stock < 1){ %>
+
+                                            <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">
+                                              Out of stock</p>
+                                            <a href="" class="btn btn-warning" style="pointer-events: none">Add To
+                                              Cart</a>
 
 
-                  <% }else {%>
-                    <!-- <a href="/addToCart/" class="btn btn-warning">Add To Cart</a> -->
-                    <button class="btn btn-warning" onclick="addToCart('<%= product._id %>')">Add To Cart</button>
+                                            <% }else {%>
+                                              <!-- <a href="/addToCart/" class="btn btn-warning">Add To Cart</a> -->
+                                              <button class="btn btn-warning"
+                                                onclick="addToCart('<%= product._id %>')">Add To Cart</button>
 
-                    <% } %>  
-                  
-                  <a href="/productDetail/<%= product._id %>" class="btn btn-primary">view Details</a>
+                                              <% } %>
+
+                                                <a href="/productDetail/<%= product._id %>" class="btn btn-primary">view
+                                                  Details</a>
                 </div>
               </div>
             </div>
 
             <% } %>
-            <% }) %>
+              <% }) %>
 
-        </div>
       </div>
     </div>
+  </div>
 
   </div>
   <div class="col-12 d-flex justify-content-center">
@@ -140,24 +148,48 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+    integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script>
-      function addToCart(P_id){
-        $(document).ready(function(){
-          fetch(`/addToCart/${P_id}`)
-          .then(res=>res.json())
-          .then((data)=>{
-            console.log("dat======",data)
-            if(data.success){
-              //add sweet alert
-              location.reload()
-              alert('one item add to cart')
+  <script>
+
+    function addToCart(P_id) {
+      $(document).ready(function () {
+        toastr.options = {
+          // "closeButton": true,
+          "newestOnTop": false,
+          // "progressBar": true,
+          "positionClass": "toast-bottom-center",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "200",
+          "hideDuration": "1000",
+          "timeOut": "2000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        }
+
+
+
+        fetch(`/addToCart/${P_id}`)
+          .then(res => res.json())
+          .then((data) => {
+            console.log("dat======", data)
+            if (data.success) {
+              toastr.info('One item added to cart')
+              setTimeout(()=>{                
+                location.reload()
+              },2200)
             }
           })
-        })
-      }
+      })
+    }
 
-    </script>
+  </script>
   </body>
 
   </html>

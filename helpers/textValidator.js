@@ -15,7 +15,7 @@ const categoryValidator = (text) => {
             message:"Category name can not be empty"
         }
     }
-    else if(spacePattern.test(Cname)){
+    else if(spacePattern.test(text)){
         return{
             status:false,
             message:'should not contain more than two spaces adjecent'

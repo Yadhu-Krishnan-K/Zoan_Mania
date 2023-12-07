@@ -2,12 +2,23 @@
 
     <div class="col-12">
         <h1>Add Category</h1>
-            <div class="text-danger" id="disap">
-            </div>
+           
         <form>
-            <input type="text" placeholder="Category Name" id="cate" name="cate">
-            <input type="number" placeholder="offer(optional)" id="cateOffer">
-            <button type="button" id="sumit" class="btn btn-primary">Submit</button>
+           <div class="card text-start ms-5 me-5">
+             <!-- <img class="card-img-top" src="holder.js/100px180/" alt="Title"> -->
+             <div class="card-body d-flex flex-column justify-content-center align-items-center">
+               <!-- <h4 class="card-title">Title</h4>
+               <p class="card-text">Body</p> -->
+               <div class="text-danger" id="error">
+
+               </div>
+   
+               <input type="text" placeholder="Category Name" id="cate" name="cate" required><br>
+               <input type="number" placeholder="offer(optional)" id="cateOffer"><br>
+               <input type="date" placeholder="expiry of offer if offer added" id="date"><br>
+               <button type="button" id="sumit" class="btn btn-primary">Submit</button>
+             </div>
+           </div>
         </form>
     </div>
     <script>
@@ -15,36 +26,55 @@
             console.log("Entered")
             let cate = $('#cate').val()
             let offer = $('#cateOffer').val()
+            let offerEnd = $('#date').val()
+            let gd = new Date( $('#date').val())
+            let date = new Date()
+            console.log("cate = ",cate,", offer = ",offer,", date = ",offerEnd);
             
-            
+            if(/\s{2,}/.test(cate||offer) || cate == ''){
+                $('#error').text('category should not be blank')
+                setTimeout(()=>{
+                    $('#error').text('')
+                },3000)
+                return
+            }
+            if(offer !== '' ){
+            if(offerEnd !== "" && (gd.getTime() <= date.getTime())){
+                $('#error').text('Date should be greater than todays date')
+                setTimeout(()=>{
+                    $('#error').text('')
+                },3000)
+                return
+            }}
+            if(offer && !(offerEnd)){
+                $('#error').text('If offer added date should be added too ')
+                setTimeout(()=>{
+                    $('#error').text('')
+                },3000)
+                return
+            }
+           
             let res = await fetch('/admin/add-category',{
                 method:'POST',
                 headers:{
                     'Content-Type': 'application/json'
                 },
-                body:{
-                    cate,offer
-                }
+                body:JSON.stringify({
+                    cate,offer,offerEnd
+                })
             })
             let data = await res.json()
             console.log(data);
             if(data.status){
-                window.location.replace('/admin/addCatgory')
+                window.location.replace('/admin/Category')
             }else if(data.status == false){
-                $('#disap').text(data.message)
+                $('#error').text(data.message)
                 setTimeout(()=>{
-                    $('#disap').text('')
+                    $('#error').text('')
                 },3000)
             }
         })
-        const err = document.getElementById('disap')
-        if(err){
-            err.style.display = 'block'
-            setTimeout(()=>{
-                err.innerHTML="";
-                err.style.display = 'none'
-            },4000)
-        }
+        
     </script>
 
 <%- include('../layouts/admin/footer'); -%> 

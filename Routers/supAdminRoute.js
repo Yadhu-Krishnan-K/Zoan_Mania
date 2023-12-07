@@ -33,7 +33,7 @@ router.post('/check',adminauth.adminLoginAuthguard,adminrouter.AdminCheck)
 
 //dasboard
 // router.get('/dashboard',adminauth.adminLoggedinAuthguard,adminrouter.getDashboard)
-
+router.get('/DashBoard',adminauth.adminLoggedinAuthguard,adminrouter.DashBoard)
 
 //----------------------------------------------------------------------------------
 //customer
@@ -60,8 +60,12 @@ router.post('/add-category',catController.addCategory)
 
 router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,adminrouter.getAddProduct)
 
+//------------------------------------------------------------------------------------------------------------------------------------------------
+//get banner
+router.get('/Banner',adminauth.adminLoggedinAuthguard,adminrouter.Banner)
 
-//users-------------------------------------------------------------------------------------------------------------------------------//
+
+//users----------------------------------------------------------------------------------------------------------------------------------------------------------
 // router.get('/admin/Customers',(req,res)=>{
 //     res.redirect('/admin/adminUserControl')
 // })
@@ -122,7 +126,7 @@ router.route('/edit-category/:id')
 //cat update
 router.route('/category-update/:id')
     .post(catController.categoryUpdate)
-
+    .get(catController.cateOfferRemove)
 //-------------------------------------------------------------------------------------------------------------------
 //category delete
 
@@ -164,7 +168,7 @@ router.get('/Orders',adminauth.adminLoggedinAuthguard,ordercontroller.getOrder)
 
 //admin order update
 router.put('/orders/updateStatus/:orderId',ordercontroller.updateOrderStatus)
-
+// /add-category
 
 //admin order detail view page
 router.get('/orders/details/:orderId',adminauth.adminLoggedinAuthguard,ordercontroller.orderDetailPage)

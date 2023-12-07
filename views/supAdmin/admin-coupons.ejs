@@ -1,3 +1,4 @@
+
 <%- include('../layouts/admin/header'); -%>
 
 
@@ -17,29 +18,59 @@
 
 
             <div class="col-md-5 rounded m-2 ms-5 shadow p-3">
-              <div class="Coupon name">
-                <%= coupon.name %>
-              </div>
-              <div class="Coupon Code">
-                <%= coupon.code %>
-              </div>
-              <div class="Discount">
-                <%= coupon.discount %>
-              </div>
-              <div class="PAmount">
-                <%= coupon.forPuchace %>
-              </div>
-              <div class="Expory Date">
-                <%= coupon.Expiry %>
-              </div>
-              <div class="buttons d-flex justify-content-between align-items-center">
-                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#EditModal<%= coupon._id %>"
-                  id="Edit<%=coupon._id %>">Edit</button>
-                <button class="btn btn-danger" id="Delete<%=coupon._id %>"
-                  onclick="deleteCoupn('<%= coupon._id %>')">Delete</button>
-              </div>
 
+              <div class="Coupon name" style="width: 100%;">
+                <div style="width: 50%; float: left;">
+                  Coupon Name
+                </div>
+                <div style="width: 50%; float: left;">
+                  : <%= coupon.name %>
+                </div>
+              </div>
+            
+              <div class="Coupon Code mt-2" style="width: 100%;">
+                <div style="width: 50%; float: left;">
+                  Coupon Code
+                </div>
+                <div style="width: 50%; float: left;">
+                  : <%= coupon.code %>
+                </div>
+              </div>
+            
+              <div class="Coupon Code mt-2" style="width: 100%;">
+                <div style="width: 50%; float: left;">
+                  Discount Prize
+                </div>
+                <div style="width: 50%; float: left;">
+                  : <%= coupon.discount %>
+                </div>
+              </div>
+            
+              <div class="Coupon Code mt-2" style="width: 100%;">
+                <div style="width: 50%; float: left;">
+                  For Above Purchase
+                </div>
+                <div style="width: 50%; float: left;">
+                  : <%= coupon.forPuchace %>
+                </div>
+              </div>
+            
+              <div class="Coupon Code mt-2" style="width: 100%;">
+                <div style="width: 50%; float: left;">
+                  Expiry
+                </div>
+                <div style="width: 50%; float: left;">
+                  : <%= coupon.Expiry ? coupon.Expiry.toISOString().split('T')[0] : '' %>
+                </div>
+              </div>
+            
+              <div class="buttons d-flex justify-content-between align-items-center mt-2" style="width: 100%; float: right;">
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#EditModal<%= coupon._id %>"
+                  id="Edit<%= coupon._id %>">Edit</button>
+                <button class="btn btn-danger" id="Delete<%= coupon._id %>" onclick="deleteCoupn('<%= coupon._id %>')">Delete</button>
+              </div>
             </div>
+            
 
 
             <!-- Edit Coupon -->

@@ -29,11 +29,12 @@ const addCoupons = async(req,res)=>{
 
 const EditCoupon = async(req,res) => {
     try {
-        console.log("Edit coupon====",req.body)
+        // console.log("Edit coupon====",req.body)
+        let name = req.body.Cname.trim()
     // Cname, Ccode, Discount, PAmount, Edate
     await coupons.findByIdAndUpdate({_id: req.params.couponId},
         {
-            name:req.body.Cname,
+            name:name,
             code:req.body.Ccode,
             discount:req.body.Discount,
             forPuchace:req.body.PAmount,
