@@ -8,6 +8,7 @@ const moment = require('moment')
 
 
 const getPlaceOrder = (req,res)=>{
+  try {
     let name = req.session.name
     let orderId = req.session.orderID
     req.session.visited++
@@ -15,10 +16,17 @@ const getPlaceOrder = (req,res)=>{
     if(req.session.visited < 2){
     res.render('user/userOrderConfirm',{name, title:"Oreder Confirmed",orderId})
   }else{res.redirect('/userHome')}
+    
+  } catch (error) {
+    console.error("error 500 :",error);
+  }
+  
   }
 
 
 const postPlaceOrder = async(req,res)=>{
+ 
+  
     console.log("Entered to place order");
     const email = req.session.email;
     
@@ -145,20 +153,27 @@ const postPlaceOrder = async(req,res)=>{
 
 
   const verifyPayment = async(req,res)=>{
-    console.log("data from body==== in verify payment====",req.body,"orderId from sesssion=========",req.session.orderID)
-    razor.verifyPayment(req.body,req.session.orderID).then(async()=>{
-      console.log("payment success")
-      console.log("req.session.newOrder===",req.session.newOrder)
-      let newOrder = new orderModel(req.session.newOrder)
-      await newOrder.save()
-      const cartData = await cartModel.findOne({userId:req.session.userId})
-      await cartModel.findByIdAndDelete(cartData._id);
-  
-      res.json({status:'payment success'})
-    }).catch((err)=>{
-      res.json({status:'payment failed'})
-  
-    })
+    try {
+    
+      console.log("data from body==== in verify payment====",req.body,"orderId from sesssion=========",req.session.orderID)
+      razor.verifyPayment(req.body,req.session.orderID).then(async()=>{
+        console.log("payment success")
+        console.log("req.session.newOrder===",req.session.newOrder)
+        let newOrder = new orderModel(req.session.newOrder)
+        await newOrder.save()
+        const cartData = await cartModel.findOne({userId:req.session.userId})
+        await cartModel.findByIdAndDelete(cartData._id);
+    
+        res.json({status:'payment success'})
+      }).catch((err)=>{
+        res.json({status:'payment failed'})
+    
+      })
+    
+    } catch (error) {
+      console.error("error 500 :",error);
+    }
+    
   }
 
 
@@ -209,20 +224,27 @@ const postPlaceOrder = async(req,res)=>{
 
 
   const getOrderProductView = async(req,res)=>{
-    const orderId = req.params.orderId
-    const userId = req.session.userId
-    const orders = await orderModel.findById({_id:orderId}).populate('Items.productId')
-    const cartData = await cartModel.findOne({userId:userId})
-      let cartcount = 0
-      if (cartData === null || cartData.Items == (null||0)) {
-        cartcount = 0
-      }else{
-      cartData.Items.forEach((cart)=>{
-        cartcount += cart.Quantity
-      })
+    try {
+      
+      const orderId = req.params.orderId
+      const userId = req.session.userId
+      const orders = await orderModel.findById({_id:orderId}).populate('Items.productId')
+      const cartData = await cartModel.findOne({userId:userId})
+        let cartcount = 0
+        if (cartData === null || cartData.Items == (null||0)) {
+          cartcount = 0
+        }else{
+        cartData.Items.forEach((cart)=>{
+          cartcount += cart.Quantity
+        })
+      }
+      const name = req.session.name;
+      res.render('user/order-ProductDetails',{title:"Ordered Items",name,orders,cartcount})
+    
+    } catch (error) {
+      console.error("error 500 :",error);
     }
-    const name = req.session.name;
-    res.render('user/order-ProductDetails',{title:"Ordered Items",name,orders,cartcount})
+    
   }
 
 

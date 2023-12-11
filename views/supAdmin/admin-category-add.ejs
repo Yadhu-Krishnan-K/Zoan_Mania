@@ -14,7 +14,7 @@
                </div>
    
                <input type="text" placeholder="Category Name" id="cate" name="cate" required><br>
-               <input type="number" placeholder="offer(optional)" id="cateOffer"><br>
+               <input type="number" placeholder="offer(optional)" id="cateOffer" onchange="offCheck()"><br>
                <input type="date" placeholder="expiry of offer if offer added" id="date"><br>
                <button type="button" id="sumit" class="btn btn-primary">Submit</button>
              </div>
@@ -22,6 +22,18 @@
         </form>
     </div>
     <script>
+        function offCheck(){
+            if($('#cateOffer').val()>100 || $('#cateOffer').val<0){
+                $('#error').text('Offer is in percentage,should be b/w 0-100')
+                setTimeout(()=>{
+                    $('#error').text('')
+                    $('#cateOffer').val('')      
+                },3000)
+                return
+            }
+        }
+
+
         $('#sumit').click(async()=>{
             console.log("Entered")
             let cate = $('#cate').val()

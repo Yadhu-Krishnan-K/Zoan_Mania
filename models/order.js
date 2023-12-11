@@ -35,12 +35,23 @@ const OrdersSchema = new Schema({
       type: String,
       default:''
       // returned, rejected,
-     }
+     },
+     catOffer:[
+      {
+        catName: String,
+        percentage: Number
+      }
+     ]
   }],
   PaymentMethod: {type: String},
   OrderDate: { type: String },
+  
   ExpectedDeliveryDate:{type: String},
+
+  
+
   TotalPrice: { type: Number },
+
   PaymentStatus: {type: String, default: "Pending"},
   CouponId: { type: Schema.Types.ObjectId },
   Address: { type: ShippedAddressSchema },

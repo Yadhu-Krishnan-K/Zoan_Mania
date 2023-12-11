@@ -19,7 +19,11 @@
                                     <%= element.name %>
                                 </li>
                                 <li class="couponCode">
-                                    <h4 id="Ccode<%= element.id %>"><%= element.code %></h4>
+                                    <% if(!(element.expired)){ %>
+                                        <h4 id="Ccode<%= element.id %>"><%= element.code %></h4>
+                                    <% }else{ %>
+                                        <h4 class="text-danger">Coupon Expired</h4>
+                                    <% } %>
                                 </li>
                                 <li class="PAmountAbove">
                                     <h6>apply for purchase above: <%= element.forPuchace %></h6>
@@ -28,7 +32,11 @@
                                     <%= element.Expiry %>
                                 </li>
                             </ul>
-                            <button class="btn btn-warning" onclick="copy('<%= element.id %>')" >copy coupon</button>
+                            <% if(element.expired){ %>
+                                <button class="btn btn-warning" disabled>copy coupon</button>
+                                <% }else{ %>
+                                    <button class="btn btn-warning" onclick="copy('<%= element.id %>')" >copy coupon</button>
+                            <% } %>
                             <span class="text-success" style="display: none;" id="copied<%= element.id %>">coupon copied<iconify-icon icon="mdi:tick" style="color: green;"></iconify-icon></span>
                         </div>
                     </div>

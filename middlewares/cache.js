@@ -1,4 +1,11 @@
 const noCache = (req,res,next) => {
-    res.set("Cache-Control","no-store")
-    next()
+    try {
+    
+        res.set("Cache-Control","no-store")
+        next()
+    
+    } catch (error) {
+      console.error("error 500 :",error);
+    }
+    
 }

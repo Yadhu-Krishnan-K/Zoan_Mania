@@ -119,22 +119,28 @@
 
                     <div class="col-md-4  ">
                         <div class="bg-white  border p-3 mb-3">
-                            <div class="form-group">
+
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Select categories
+                                </button>
+                            
+                                <ul class="dropdown-menu p-2" id="categoryDropdown">
+                                    <% cate.forEach(cat => { %>
+                                        <li class="dropdown-item" style="cursor: pointer;">
+                                            <input type="checkbox" name="Category" id="<%= cat._id %>" value="<%= cat.catName %>"
+                                                style="cursor: pointer;" <% if (P_detail.Category.includes(cat.catName)) { %> checked <% } %>>
+                                            <label for="<%= cat._id %>">
+                                                <%= cat.catName %>
+                                            </label style="cursor: pointer;">
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                            </div>
+                            
+
                                 <br>
-                                <label>Category:</label>
-                                <select class="form-select bg-light" id="category" name="Category">
-                                    <option value="" selected disabled>
-                                        <%= P_detail.Category %>
-                                    </option>
-                                    <%if(cate) {%>
-                                        <%cate.forEach((data)=>{%>
-                                            <option value="<%=data.catName%>">
-                                                <%=data.catName%>
-                                            </option>
-                                            <% }) %>
-                                                <%}%>
-                                </select>
-                            </div><br>
                         </div>
                         <button type="submit" class="btn btn-primary" onclick="Clicked()">Edit Product</button>
                     </div>
@@ -190,6 +196,24 @@
                 let price = document.getElementById('price').value;
                 let err = document.getElementById('stocker');
                 let prerr = document.getElementById('priceErr');
+
+                // Get selected categories
+            let selectedCategories = [];
+            document.querySelectorAll('[name="Category"]:checked').forEach((checkbox) => {
+                selectedCategories.push(checkbox.value);
+            });
+
+            // Add the selected categories to a hidden field in the form
+            let categoriesInput = document.createElement('input');
+            categoriesInput.type = 'hidden';
+            categoriesInput.name = 'Categories';
+            categoriesInput.value = JSON.stringify(selectedCategories);
+            document.getElementById('sub').appendChild(categoriesInput);
+
+
+
+
+
                 if (stock < 0) {
                     e.preventDefault();
                     err.style.display = 'block'

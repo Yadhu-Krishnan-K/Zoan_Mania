@@ -1,17 +1,31 @@
 const adminLoggedinAuthguard = (req,res,next)=>{
-    if(req.session.adminAuth) {
-        next()
-    }else{
-        res.redirect('/admin')
+    try {
+    
+        if(req.session.adminAuth) {
+            next()
+        }else{
+            res.redirect('/admin')
+        }
+    
+    } catch (error) {
+      console.error("error 500 :",error);
     }
+    
 }
 
 const adminLoginAuthguard  = (req,res,next) => {
-    if(!req.session.logged){
-        next()
-    }else{
-        res.redirect('/admin/Customers')
+    try {
+    
+        if(!req.session.logged){
+            next()
+        }else{
+            res.redirect('/admin/Customers')
+        }
+    
+    } catch (error) {
+      console.error("error 500 :",error);
     }
+    
 }
 
 

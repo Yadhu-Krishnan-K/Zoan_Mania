@@ -13,7 +13,6 @@ const us = require('../controllers/UserControll/user-side')
 const orderModel = require('../models/order')
 const userModel = require('../models/user')
 const authGuard = require('../middlewares/user-Auth')
-const productInHome = require('../controllers/UserControll/home-page-products')
 const controller = require('../util/for-otp')
 const products = require('../models/products')
 const productList = require('../models/products')
@@ -41,7 +40,7 @@ router.get('/',authGuard.userLoggedinAuthGuard,async(req,res)=>{
     const productModel = await products.find().sort({Selled: -1}).limit(8)
     res.render('user/anonymous',{productModel})
 })
- 
+  
 //user login-------------------------------------------------------------------------
 router.get('/login',authGuard.userLoggedinAuthGuard,us.userLogin);
 

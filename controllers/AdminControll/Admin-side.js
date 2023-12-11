@@ -5,17 +5,35 @@ const productModel =require('../../models/products')
 const Categories = require('../../models/category')
 
 const getAdminLogin = (req,res)=>{
-    res.render('supAdmin/admin-login')
+    try {
+        res.render('supAdmin/admin-login')
+    
+    } catch (error) {
+      console.error("error 500 :",error);
+    }
+    
 }
 
 
 const DashBoard = (req,res) => {
-    res.render('supAdmin/DashBoard',{title:"Admin Dash",Page:"Dashboard"})
+    try {
+        res.render('supAdmin/DashBoard',{title:"Admin Dash",Page:"Dashboard"})
+    
+    } catch (error) {
+      console.error("error 500 :",error);
+    }
+    
 }
 
 
 const Banner = (req,res) => {
-    res.render('supAdmin/banner',{title:"Admin Banner",Page:"Banner"})
+    try {
+        res.render('supAdmin/banner',{title:"Admin Banner",Page:"Banner"})
+    
+    } catch (error) {
+      console.error("error 500 :",error);
+    }
+    
 }
 
 
@@ -50,26 +68,32 @@ const AdminCheck = async(req,res)=>{
 
 
 const getCustomer = async(req,res,next)=>{
-    req.session.logged = true;
-    let i = 0;
-
-    // Pagination logic
-    const page = parseInt(req.query.page) || 1;
-    const options = {
-      page: page,
-      limit: 5,
-    };
-
-    const userData = await db.paginate({}, options);
-
-    res.render('supAdmin/admin-control-user', {
-      userData: userData.docs, // Array of documents for the current page
-      i,
-      title: "Customers",
-      Page: "Customers",
-      totalPages: userData.totalPages,
-      currentPage: userData.page,
-    });
+    try {
+        req.session.logged = true;
+        let i = 0;
+    
+        // Pagination logic
+        const page = parseInt(req.query.page) || 1;
+        const options = {
+          page: page,
+          limit: 5,
+        };
+    
+        const userData = await db.paginate({}, options);
+    
+        res.render('supAdmin/admin-control-user', {
+          userData: userData.docs, // Array of documents for the current page
+          i,
+          title: "Customers",
+          Page: "Customers",
+          totalPages: userData.totalPages,
+          currentPage: userData.page,
+        });
+    
+    } catch (error) {
+      console.error("error 500 :",error);
+    }
+    
 }
 
 
@@ -93,8 +117,14 @@ const getInventory = async(req,res)=>{
 
 
 const getAddProduct = async(req,res)=>{
-    const cate = await Categories.find().sort()
-    res.render('supAdmin/admin-addProduct',{cate,title:"Add Products",Page:"Inventory"})
+    try {
+        const cate = await Categories.find().sort()
+        res.render('supAdmin/admin-addProduct',{cate,title:"Add Products",Page:"Inventory"})
+    
+    } catch (error) {
+      console.error("error 500 :",error);
+    }
+    
 
     // res.send('hai')
 }
@@ -103,17 +133,28 @@ const getAddProduct = async(req,res)=>{
 //================================================================================================================
 //admin-category---------------------------
 const getCategory = async(req,res)=>{
+    try {
+        i=0
+        const datas = await Categories.find()
+        // console.log(datas)
+        res.render('supAdmin/admin-category',{datas,i,title:"Categories",Page:"Category"})
     
-    i=0
-    const datas = await Categories.find()
-    // console.log(datas)
-    res.render('supAdmin/admin-category',{datas,i,title:"Categories",Page:"Category"})
+    } catch (error) {
+      console.error("error 500 :",error);
+    }
+    
 
 }
 //===============================================================================================================
 //----const add-category
 const addCategory = (req,res)=>{
-    res.render('supAdmin/admin-category-add',{title:"Add category",Page:"Category"})
+    try {
+        res.render('supAdmin/admin-category-add',{title:"Add category",Page:"Category"})
+    
+    } catch (error) {
+      console.error("error 500 :",error);
+    }
+    
 }
 
 

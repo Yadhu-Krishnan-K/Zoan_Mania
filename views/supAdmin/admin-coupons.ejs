@@ -1,4 +1,3 @@
-
 <%- include('../layouts/admin/header'); -%>
 
 
@@ -27,7 +26,7 @@
                   : <%= coupon.name %>
                 </div>
               </div>
-            
+
               <div class="Coupon Code mt-2" style="width: 100%;">
                 <div style="width: 50%; float: left;">
                   Coupon Code
@@ -36,7 +35,7 @@
                   : <%= coupon.code %>
                 </div>
               </div>
-            
+
               <div class="Coupon Code mt-2" style="width: 100%;">
                 <div style="width: 50%; float: left;">
                   Discount Prize
@@ -45,7 +44,7 @@
                   : <%= coupon.discount %>
                 </div>
               </div>
-            
+
               <div class="Coupon Code mt-2" style="width: 100%;">
                 <div style="width: 50%; float: left;">
                   For Above Purchase
@@ -54,23 +53,29 @@
                   : <%= coupon.forPuchace %>
                 </div>
               </div>
-            
+
               <div class="Coupon Code mt-2" style="width: 100%;">
                 <div style="width: 50%; float: left;">
                   Expiry
                 </div>
                 <div style="width: 50%; float: left;">
-                  : <%= coupon.Expiry ? coupon.Expiry.toISOString().split('T')[0] : '' %>
+                  <% if(coupon.expired){ %>
+                    : <span class="badge bg-danger text-white">Expired</span>
+                    <% }else{ %>
+                      : <%= coupon.Expiry ? coupon.Expiry.toISOString().split('T')[0] : '' %>
+                        <% } %>
                 </div>
               </div>
-            
-              <div class="buttons d-flex justify-content-between align-items-center mt-2" style="width: 100%; float: right;">
+
+              <div class="buttons d-flex justify-content-between align-items-center mt-2"
+                style="width: 100%; float: right;">
                 <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#EditModal<%= coupon._id %>"
                   id="Edit<%= coupon._id %>">Edit</button>
-                <button class="btn btn-danger" id="Delete<%= coupon._id %>" onclick="deleteCoupn('<%= coupon._id %>')">Delete</button>
+                <button class="btn btn-danger" id="Delete<%= coupon._id %>"
+                  onclick="deleteCoupn('<%= coupon._id %>')">Delete</button>
               </div>
             </div>
-            
+
 
 
             <!-- Edit Coupon -->
@@ -297,6 +302,12 @@
               setTimeout(() => {
                 location.reload();
               }, 1800)
+            } else {
+              $('#CcodeErr').text('Code already exists');
+              setTimeout(() => {
+                $('#CcodeErr').text('');
+              }, 3000);
+              return;
             }
           })
       })
@@ -387,7 +398,13 @@
             setTimeout(() => {
               location.reload();
             }, 1800)
-          }
+          }else{
+              $('#CcodeEdrr').text('Code already exists');
+              setTimeout(() => {
+                $('#CcodeEdrr').text('');
+              }, 3000);
+              return;
+            }
         })
 
 
@@ -403,30 +420,30 @@
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!"
-      }).then(async(result) => {
+      }).then(async (result) => {
         if (result.isConfirmed) {
           let res = await fetch(`/admin/deleteCoupon/${couponId}`, {
-        method: "DELETE",
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      let data = await res.json()
-      if (data.success) {
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: 'Coupon Deleted',
-          showConfirmButton: false,
-          timer: 1500
-        })
-        setTimeout(()=>{
-          location.reload()
-        },2000)
-      }
+            method: "DELETE",
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          let data = await res.json()
+          if (data.success) {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Coupon Deleted',
+              showConfirmButton: false,
+              timer: 1500
+            })
+            setTimeout(() => {
+              location.reload()
+            }, 2000)
+          }
         }
       });
-      
+
     }
 
   </script>

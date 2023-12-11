@@ -43,6 +43,9 @@
 
             <div class="col-md-6 col p-4">
               <div class="card shadow" style="width: 18rem;margin-left: 25px;">
+                <% if(product.catOffer.catPer>0){ %>
+                  <span class="bg-info text-white m-2 p-1" style="position: absolute; top: 0px; right: 0px; z-index: 1; border-radius: 5px;"><%= product.catOffer.catPer %>% off</span>
+              <% } %>
                 <a href="/productDetail/<%= product._id %>"><img class="card-img-top img-fluid"
                     style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;"
                     src="/uploads/<%=product.Image[0]%>" alt="Card image cap"></a>

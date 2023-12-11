@@ -88,8 +88,8 @@
                     const disappearElement = document.getElementById('disapear');
                     if (disappearElement) {
                     setTimeout(function () {
-                    disappearElement.style.display = "none";
-                }, 3000);
+                        disappearElement.style.display = "none";
+                    }, 3000);
             }
                 }else if(data.success == false && data.err == "Check your password"){
                     $('#disapear').html(data.err)   

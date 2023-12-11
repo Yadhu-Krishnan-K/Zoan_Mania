@@ -28,10 +28,21 @@ const sch = new mongoose.Schema({
   Review: { type: String }, 
   BrandId: {type: Schema.Types.ObjectId},
   Category: {type: Array},
+
+  catOffer:{
+    catName: String,
+    catPer: Number,
+    till:{ type: Date }
+  },
+
   Price: {type:Number},
   visible:{
     type:Boolean,
     default:true
+ },
+ discountedPrice:{
+  type: Number,
+  default:0
  }
 },{timestamps:true}); 
 sch.plugin(mongoosePaginate);
