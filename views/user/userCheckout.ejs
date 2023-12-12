@@ -144,9 +144,11 @@
                                 <p id="TAmount">Total Amount: <%= cartData.totalAmount %></p>
                             </div>
                             
-                            <div id="couponDiv" class="d-flex mt-2"><input type="text" class="p-2 coups rounded border"
-                                    placeholder="apply coupon" name="" id="couponCode" style="width: 75%;">
+                            <div id="couponDiv" class="d-flex mt-2">
+
+                                <input type="text" class="p-2 coups rounded border" placeholder="apply coupon" name="" id="couponCode" style="width: 75%;">
                                 <button type="button" class="btn btn-warning coups" id="coupon">apply</button>
+                                
                             </div>
                             <div class="text-success" id="couponStatus" style="display: none;">
                                 Coupon applied
@@ -269,10 +271,10 @@
                 "image": "https://example.com/your_logo",
                 "order_id": orderId.id,
                 "handler": function (response) {
-                    console.log("response of razor ==== ", response)
-                    alert(response.razorpay_payment_id)
-                    alert(response.razorpay_order_id)
-                    alert(response.razorpay_signature)
+                    // console.log("response of razor ==== ", response)
+                    // alert(response.razorpay_payment_id)
+                    // alert(response.razorpay_order_id)
+                    // alert(response.razorpay_signature)
                     verifyPayment(response, orderId)
                 },
                 "prefill": {

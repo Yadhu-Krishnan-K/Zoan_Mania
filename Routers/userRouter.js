@@ -198,6 +198,7 @@ router.post('/applyCoupon',couponControll.applyCoupon)
 //product search000
 
 router.post('/search',authGuard.userLoginAuthGuard,userAccess,us.searchOptions)
+router.post('/filter',authGuard.userLoginAuthGuard,userAccess,us.filter)
 
 
 

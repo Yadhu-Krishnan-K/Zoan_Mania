@@ -17,6 +17,7 @@ const category = require('../../models/category')
 const Categories = require('../../models/category')
 
 const controller = require('../../util/for-otp')
+const cart = require('../../models/cartModel')
 // require('razorpay/dist/types/items')
 
 
@@ -105,7 +106,7 @@ const otpForm = (req,res)=>{
       },60000)
     }
   
-    // res.render('user/otpRegister',{title:"Register",time,erro})
+    res.render('user/otpRegister',{title:"Register",time,erro})
     
   } catch (error) {
     console.error("error 500 :",error);
@@ -250,8 +251,8 @@ const searchOptions = async(req,res)=>{
       let pageNums = Math.ceil(listCount/perPage)
       let currentPage = page;
       const productsList = await products.find({$or:[
-        {Name:{$regex: "^"+value, $options: "i"}},
-        {Category:{$regex: "^"+value, $options: "i"}} 
+        {Name:{$regex: new RegExp(value), $options: "i"}},
+        {Category:{$regex: new RegExp(value), $options: "i"}} 
       ]}).sort({_id: -1})
     .skip((page-1)*perPage)
     .limit(perPage)
@@ -307,8 +308,11 @@ const productList1 = async(req,res)=>{
   const productsList = await products.find().sort({_id: -1})
   .skip((page-1)*perPage)
   .limit(perPage)
-  
-  res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount,pageNums,listCount,page,currentPage,categories});
+  const Products = await products.find()
+  const minPrice = Math.min(...Products.map(product => product.Price));
+  const maxPrice = Math.max(...Products.map(product => product.Price));
+  console.log("minmax and maxprize currespondingly==== ",minPrice,maxPrice)
+  res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount,pageNums,listCount,page,currentPage,categories,minPrice,maxPrice});
     
     
   } catch (error) {
@@ -593,7 +597,7 @@ const userGetCart = async(req,res)=>{
           console.log("cartcount when entering cartpage====",cartcount)
           req.session.totalAmount = sum;
           const totalPrice = await  cartModel.updateOne({userId: userId}, {$set:{totalAmount: sum}})
-  
+          req.session.usedCoupon = false
         res.render('user/cart-page',{title:'My cart',name,cartDetail,sum,cartcount})
   
       }else{
@@ -703,7 +707,7 @@ const cartQuantityUpdate = async (req, res) => {
       // Save cart details
       cartDetail.save();
     }
-    let realPrice = cartItem.Price * newQuantity
+    let realPrice = cartItem.ProductId.Price * cartItem.Quantity
     res.json({
       success: true,
       Quantity: newQuantity,
@@ -730,7 +734,7 @@ const cartItemDeletion = async(req,res)=>{
         $pull:{
             Items:{_id: cartId}
         }
-    })
+      })
       res.json({
         success:true,
         message:"Password Updated Successfully"
@@ -1148,6 +1152,7 @@ const checkoutUser = async (req, res)=>{
       cartData.Items.forEach((cart)=>{
         cartcount += cart.Quantity
       })
+      req.session.usedCoupon = false
     res.render('user/userCheckout',{title:"Zoan | Checkout",userData,name,cartcount,cartData})
     }else{
       res.redirect('/userHome')
@@ -1159,6 +1164,51 @@ const checkoutUser = async (req, res)=>{
   
 }
 
+  // const filter =  async (req, res) => {
+  //   try {
+  //     const selectedCategories = req.body.categories;
+  //     const maxPrice = req.body.priceRange;
+  //     console.log("maxPrice==",maxPrice)
+  //     const cartData = await cart.findOne({userId:req.session.userId})
+  //     // Query the database to find products matching the selected categories
+  //     const filteredProducts = await products.find({ Category: { $all: selectedCategories }, Price:{$lte:maxPrice} });
+  //     // console.log(filteredProducts)
+  //     // Send the filtered products to the client
+  //     res.json({ products: filteredProducts, cartData });
+  //   } catch (error) {
+  //     console.error('Error filtering products:', error);
+  //     res.status(500).json({ error: 'Internal Server Error' });
+  //   }
+  // }
+  const filter = async (req, res) => {
+    try {
+      const selectedCategories = req.body.categories;
+      const maxPrice = req.body.priceRange;
+      console.log("prixe ranged to = ",maxPrice)
+      const cartData = await cart.findOne({ userId: req.session.userId });
+  
+      let filterCriteria = {};
+  
+      if (selectedCategories && selectedCategories.length > 0) {
+        filterCriteria.Category = { $all: selectedCategories };
+      }
+  
+      if (maxPrice !== undefined) {
+        filterCriteria.Price = { $lte: maxPrice };
+      }
+      console.log("filterCriteria===",filterCriteria)
+      // Query the database to find products based on the filter criteria
+      const filteredProducts = await products.find(filterCriteria);
+
+  
+      // Send the filtered products to the client
+      res.json({ products: filteredProducts, cartData });
+    } catch (error) {
+      console.error('Error filtering products:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  
 
 
 
@@ -1205,5 +1255,6 @@ module.exports = {
     updateAddress,
     deleteAddress,
     checkoutUser,
-    searchOptions
+    searchOptions,
+    filter
 }

@@ -34,14 +34,15 @@ const OrdersSchema = new Schema({
      returnStatus:{
       type: String,
       default:''
-      // returned, rejected,
      },
-     catOffer:[
-      {
-        catName: String,
-        percentage: Number
-      }
-     ]
+     discounted:{
+      type:Number
+     },
+     RealPrice:{
+      type:Number
+     },
+     
+
   }],
   PaymentMethod: {type: String},
   OrderDate: { type: String },
@@ -53,7 +54,14 @@ const OrdersSchema = new Schema({
   TotalPrice: { type: Number },
 
   PaymentStatus: {type: String, default: "Pending"},
-  CouponId: { type: Schema.Types.ObjectId },
+  // CouponId: { type: Schema.Types.ObjectId },
+  couponAmount: {
+    coupnId: { type: Schema.Types.ObjectId },
+    amount: {
+      type:Number,
+      default: 0
+    }
+  },
   Address: { type: ShippedAddressSchema },
 });
 

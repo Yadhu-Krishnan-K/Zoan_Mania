@@ -1,152 +1,129 @@
 <%- include('../layouts/user/header'); -%>
 
-
-
-
-
-
-
-  <div class="col-12">
-
-    <!-- Carousel -->
-    <div class="row">
-      <div class="col-12 d-flex justify-content-center mt-4 mb-5">
-        <h2>See Our Products</h2>
-      </div>
+<div class="col-12">
+  <!-- Carousel -->
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center mt-4 mb-5">
+      <h2>See Our Products</h2>
     </div>
+  </div>
 
-    <div class="row">
-      <div class="col-md-3"">
-        <div class=" filter d-flex flex-column align-items-start rounded shadow ms-3 mt-3 p-3"
+  <div class="row">
+    <div class="col-md-3">
+      <div class="filter d-flex flex-column align-items-start rounded shadow ms-3 p-3"
         style="width: 90%; position: sticky; top: 200px;">
         <div class="d-flex justify-content-center mb-4" style="width: 100%;">
           <h4>Categories</h4>
         </div>
 
         <% categories.forEach((category)=>{ %>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
+          <div class="form-check">  
+            <input class="form-check-input" type="checkbox" value="<%= category.catName %>"
+              id="category_<%= category._id %>" name="categories">
+            <label class="form-check-label" for="category_<%= category._id %>">
               <%= category.catName %>
             </label>
           </div>
-          <% }) %>
-
-      </div>
-
+        <% }) %>
+        <!-- Price range filtering -->
+  <!-- <div class="mt-4">
+    <h4>Price Range</h4>
+    <div class="mb-3">
+      <label for="priceRange" class="form-label">Select Price Range:</label>
+      <input type="range" class="form-range" id="priceRange" min="<%= minPrice %>" max="<%= maxPrice %>" step="10" value="<%= minPrice %>">
     </div>
+  </div> -->
+  <!-- Price range filtering -->
+<div class="mt-4">
+  <h4>Price Range</h4>
+  <div class="mb-3">
+    <label for="priceRange" class="form-label">Select Price Range:</label>
+    <div class="d-flex justify-content-between">
+      <!-- <span id="minPriceLabel"></span> -->
+      <p>Price Range: ₹<span id="maxPriceLabel" class="fs-4"></span>/-</p>
+    </div>
+    <input type="range" class="form-range" id="priceRange" min="<%= minPrice %>" max="<%= maxPrice %>" step="10" value="<%= minPrice %>">
+  </div>
+</div>
+
+        <div style="width: 100%;" class="d-flex justify-content-center">
+          <button class="btn btn-success" onclick="applyFilters()">Apply</button>
+        </div>
+      </div>
+    </div>
+
     <div class="col-md-9">
-      <div class="row">
-
-        <% productsList.forEach(product=> { %>
+      <div id="productContainer" class="row">
+        <% productsList.forEach(product => { %>
           <% if(product.Image.length !==0){ %>
-
+            <!-- Product card HTML goes here -->
             <div class="col-md-6 col p-4">
               <div class="card shadow" style="width: 18rem;margin-left: 25px;">
                 <% if(product.catOffer.catPer>0){ %>
-                  <span class="bg-info text-white m-2 p-1" style="position: absolute; top: 0px; right: 0px; z-index: 1; border-radius: 5px;"><%= product.catOffer.catPer %>% off</span>
-              <% } %>
-                <a href="/productDetail/<%= product._id %>"><img class="card-img-top img-fluid"
+                  <span class="bg-info text-white m-2 p-1"
+                    style="position: absolute; top: 0px; right: 0px; z-index: 1; border-radius: 5px;">
+                    <%= product.catOffer.catPer %>% off
+                  </span>
+                <% } %>
+                <a href="/productDetail/<%= product._id %>">
+                  <img class="card-img-top img-fluid"
                     style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;"
-                    src="/uploads/<%=product.Image[0]%>" alt="Card image cap"></a>
+                    src="/uploads/<%=product.Image[0]%>" alt="Card image cap">
+                </a>
                 <div class="card-body">
                   <h6 class="card-title">
                     <%=product.Name%>
                   </h6>
 
-                  <% if(product.Stock>= 1 && (cartData && cartData.Items.length !== 0 )){ %>
+                  <% if(product.Stock >= 1 && (cartData && cartData.Items.length !== 0 )){ %>
                     <p class="card-text" style="font-weight: 700;">₹<%= product.Price %>/-</p>
-                    <% console.log("checking product id form cart from userHOme.ejs=======",cartData.Items[0].ProductId._id) %>
-                    <% console.log(" chcking if product Id from cart is equal to product id in userHOme.ejs",JSON.stringify(product._id)==JSON.stringify(cartData.Items[0].ProductId._id)) %>
-                      <% let isInCart=false %>
-                        <% for (let index=0; index < cartData.Items.length; index++) { %>
-                          <% if(JSON.stringify(product._id)==JSON.stringify(cartData.Items[index].ProductId._id)){ %>
-                            <% isInCart=true %>
-                              <% break %>
-                                <% } %>
-                                  <% } %>
-                                    <% if(isInCart){ %>
-                                      <a href="/cart" class="btn btn-warning">Go To Cart</a>
-                                      <% }else{ %>
-                                        <!-- <a href="/addToCart/" class="btn btn-warning">Add To Cart</a> -->
-                                        <button class="btn btn-warning" id="buton<%= product._id %>"
-                                          onclick="addToCart('<%= product._id %>')">Add To Cart</button>
-                                        <% } %>
+                    <% let isInCart=false %>
+                    <% for (let index=0; index < cartData.Items.length; index++) { %>
+                      <% if(JSON.stringify(product._id) === JSON.stringify(cartData.Items[index].ProductId._id)){ %>
+                        <% isInCart=true %>
+                        <% break %>
+                      <% } %>
+                    <% } %>
+                    <% if(isInCart){ %>
+                      <a href="/cart" class="btn btn-warning">Go To Cart</a>
+                    <% } else { %>
+                      <button class="btn btn-warning" id="buton<%= product._id %>"
+                        onclick="addToCart('<%= product._id %>')">Add To Cart</button>
+                    <% } %>
+                  <% } else if(product.Stock < 1){ %>
+                    <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">
+                      Out of stock
+                    </p>
+                    <a href="" class="btn btn-warning" style="pointer-events: none">Add To Cart</a>
+                  <% } else { %>
+                    <button class="btn btn-warning" onclick="addToCart('<%= product._id %>')">Add To Cart</button>
+                  <% } %>
 
-                                          <% }else if(product.Stock < 1){ %>
-
-                                            <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">
-                                              Out of stock</p>
-                                            <a href="" class="btn btn-warning" style="pointer-events: none">Add To
-                                              Cart</a>
-
-
-                                            <% }else {%>
-                                              <!-- <a href="/addToCart/" class="btn btn-warning">Add To Cart</a> -->
-                                              <button class="btn btn-warning"
-                                                onclick="addToCart('<%= product._id %>')">Add To Cart</button>
-
-                                              <% } %>
-
-                                                <a href="/productDetail/<%= product._id %>" class="btn btn-primary">view
-                                                  Details</a>
+                  <a href="/productDetail/<%= product._id %>" class="btn btn-primary">View Details</a>
                 </div>
               </div>
             </div>
-
-            <% } %>
-              <% }) %>
-
+          <% } %>
+        <% }) %>
       </div>
     </div>
   </div>
 
-  </div>
   <div class="col-12 d-flex justify-content-center">
     <nav aria-label="Page navigation" class="m-3">
-      <ul class="pagination ">
+      <ul class="pagination">
         <% for(i=1;i<=pageNums;i++){ %>
           <li class="page-item <%= currentPage === i ? 'active' : '' %>">
             <a class="page-link" href="?page=<%= i %>">
               <%= i %>
             </a>
           </li>
-          <% } %>
+        <% } %>
       </ul>
     </nav>
   </div>
 
-
-  <footer class="container-fluid mt-5" style=" height: 300px;background: #000;">
-    <div class="row">
-      <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
-        <h4 class="footer-head ">Get In Touch</h4>
-        <p class="tefo">Life is too short to wear boring clothes</p>
-        <div class="social-media">
-          <a href=""><img src="/icons/facebook.png" alt=""></a>
-          <a href=""><img src="/icons/instagram.png" alt=""></a>
-          <a href=""><img src="/icons/twitter.png" alt=""></a>
-        </div>
-
-      </div>
-
-      <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
-        <h4 class="footer-head">Company info</h4>
-        <p><a href="" class="tefo">About us</a></p>
-        <p><a href="" class="tefo">Carrier</a></p>
-        <p><a href="" class="tefo">We are hiring</a></p>
-        <p><a href="" class="tefo">Blog</a></p>
-      </div>
-
-      <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
-        <h4 class="footer-head">Features</h4>
-        <p><a href="" class="tefo">Business Marketing</a></p>
-        <p><a href="" class="tefo">User Analystic</a></p>
-        <p><a href="" class="tefo">Live Chat</a></p>
-
-      </div>
-    </div>
-  </footer>
+  <!-- Your footer code here -->
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
@@ -156,13 +133,92 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
+     // Add this part for the price range slider
+  const priceRange = document.getElementById('priceRange');
+  // const minPriceLabel = document.getElementById('minPriceLabel');
+  const maxPriceLabel = document.getElementById('maxPriceLabel');
+
+  // Initialize the labels with the initial values
+  // minPriceLabel.textContent = `Min: ₹${priceRange.min}`;
+  maxPriceLabel.textContent = `${priceRange.value}`;
+
+  // Add event listener to update labels while sliding
+  priceRange.addEventListener('input', function () {
+    // minPriceLabel.textContent = `Min: ₹${priceRange.min}`;
+    maxPriceLabel.textContent = `${priceRange.value}`;
+  });
+
+
+
+
+    function applyFilters() {
+      const selectedCategories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
+        .map(checkbox => checkbox.value);
+      const priceRange = document.getElementById('priceRange').value;
+
+      fetch('/filter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ categories: selectedCategories, priceRange }),
+      })
+      .then(res => res.json())
+      .then(data => updateUI(data))
+      .catch(error => console.error('Error applying filters:', error));
+    }
+
+    function updateUI(data) {
+      console.log('data==',data)
+      const productContainer = document.getElementById('productContainer');
+      productContainer.innerHTML = '';
+
+      data.products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'col-md-6 col p-4';
+
+        productCard.innerHTML = `
+          <div class="card shadow" style="width: 18rem;margin-left: 25px;">
+            ${product.catOffer.catPer > 0 ? `<span class="bg-info text-white m-2 p-1" style="position: absolute; top: 0px; right: 0px; z-index: 1; border-radius: 5px;">${product.catOffer.catPer}% off</span>` : ''}
+            <a href="/productDetail/${product._id}">
+              <img class="card-img-top img-fluid" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/${product.Image[0]}" alt="Card image cap">
+            </a>
+            <div class="card-body">
+              <h6 class="card-title">${product.Name}</h6>
+
+              ${product.Stock >= 1 && (data.cartData && data.cartData.Items.length !== 0 ) ? `
+                <p class="card-text" style="font-weight: 700;">₹${product.Price}/-</p>
+                ${(() => {
+                  let isInCart = false;
+                  for (let index = 0; index < data.cartData.Items.length; index++) {
+                    if (JSON.stringify(product._id) === JSON.stringify(data.cartData.Items[index].ProductId._id)) {
+                      isInCart = true;
+                      break;
+                    }
+                  }
+                  return isInCart ? '<a href="/cart" class="btn btn-warning">Go To Cart</a>' :
+                    `<button class="btn btn-warning" id="buton${product._id}" onclick="addToCart('${product._id}')">Add To Cart</button>`;
+                })()}
+              ` : product.Stock < 1 ? `
+                <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out of stock</p>
+                <a href="" class="btn btn-warning" style="pointer-events: none">Add To Cart</a>
+              ` : `
+                <button class="btn btn-warning" onclick="addToCart('${product._id}')">Add To Cart</button>
+              `}
+
+              <a href="/productDetail/${product._id}" class="btn btn-primary">View Details</a>
+            </div>
+          </div>
+        `;
+
+        productContainer.appendChild(productCard);
+      });
+    }
 
     function addToCart(P_id) {
       $(document).ready(function () {
         toastr.options = {
-          // "closeButton": true,
           "newestOnTop": false,
-          // "progressBar": true,
           "positionClass": "toast-bottom-center",
           "preventDuplicates": false,
           "onclick": null,
@@ -176,12 +232,9 @@
           "hideMethod": "fadeOut"
         }
 
-
-
         fetch(`/addToCart/${P_id}`)
           .then(res => res.json())
           .then((data) => {
-            console.log("dat======", data)
             if (data.success) {
               toastr.info('One item added to cart')
               setTimeout(()=>{                
@@ -191,8 +244,5 @@
           })
       })
     }
-
   </script>
-  </body>
-
-  </html>
+<%- include('../layouts/user/footer'); -%>

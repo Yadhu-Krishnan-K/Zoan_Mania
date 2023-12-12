@@ -10,9 +10,9 @@
                     <p class="text ">Welcome</p>
                     <h4>Sign in</h4>
                     
-                        <div class="alert alert-success text-center" id="disapear" style="display: none;">
+                        <span class="text-danger text-center justify-content-end" id="disapear" style="display: none;">
                             
-                        </div>
+                        </span>
                        
                             <!-- <form action="/homed" method="post" class="" id="smt"> -->
                             <form id="smt">
@@ -44,66 +44,57 @@
         <div class="right-section"></div>
     </section>
     <script>
-        $(document).ready(function () {
-            $(".toggle-password").click(function () {
-                $(this).toggleClass("fa-eye fa-eye-slash");
-                var input = $(this).siblings("input");
-                if (input.attr("type") == "password") {
-                    input.attr("type", "text");
-                } else {
-                    input.attr("type", "password");
-                }
-            });
+ $(document).ready(function () {
+        $(".toggle-password").click(function () {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $(this).siblings("input");
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
 
-            
-      
-        $('#smt').submit(function(event) {
+        $('#smt').submit(function (event) {
             event.preventDefault();
-            // console.log("clicked");;
 
             var email = $('#email').val()
-            var password = $('#password').val() 
-            fetch('/homed',{
-                method:'POST',
-                headers:{
-                   "Content-Type":"application/json", 
+            var password = $('#password').val()
+
+            fetch('/homed', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                        password,email
+                    password, email
                 })
             })
-            .then(res=>res.json())
-            .then((data) => {
-                console.log("data===",data)
-                if(data.success==false){
-                    console.log("error====",data.err)
-                }
-                if(data.success){
+                .then(res => res.json())
+                .then((data) => {
+                    console.log("data===", data)
 
-                    window.location.replace('/userHome');
-
-                }else if(data.success == false && data.err =="User is blocked"){  
-                    $('#disapear').html(data.err)   
-                    $('#disapear').css('display','block')
-                    const disappearElement = document.getElementById('disapear');
-                    if (disappearElement) {
-                    setTimeout(function () {
-                        disappearElement.style.display = "none";
-                    }, 3000);
-            }
-                }else if(data.success == false && data.err == "Check your password"){
-                    $('#disapear').html(data.err)   
-                    $('#disapear').css('display','block')
-                    const disappearElement = document.getElementById('disapear');
-                    if (disappearElement) {
-                        setTimeout(function () {
-                            disappearElement.style.display = "none";
-                        }, 3000);
+                    if (data.success) {
+                        window.location.replace('/userHome');
+                    } else {
+                        displayError(data.err);
                     }
-                }
-            })
-            
-        })
-    })
+                })
+                .catch((error) => {
+                    console.error('Error during login:', error);
+                    displayError('An unexpected error occurred. Please try again later.');
+                });
+        });
+
+        function displayError(errorMessage) {
+            $('#disapear').text(errorMessage);
+            $('#disapear').show();
+
+            setTimeout(function () {
+                $('#disapear').text('');
+                $('#disapear').hide();
+            }, 3000);
+        }
+    });
     </script>
     <%-include('footer');-%>

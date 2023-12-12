@@ -15,6 +15,7 @@ const offerCheck = async() => {
           $set: {expired: true}
         }
     )
+    //category
     const result = await category.updateMany(
         {
           offerExpiry: { $lte: new Date() },

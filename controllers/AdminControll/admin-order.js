@@ -37,7 +37,8 @@ const updateOrderStatus = async(req,res)=>{
   try {
     const orderId = req.params.orderId
     const newStatus = req.body.newStatus
-    await orderModel.findByIdAndUpdate(orderId,{Status:newStatus})
+    await orderModel.findByIdAndUpdate(orderId,{Status:newStatus,PaymentStatus:'Paid offline'},{new:true})
+
     socketManager.getIO().emit('OrderStatusUpdated', { orderId, newStatus });
     res.json({success:true})
     

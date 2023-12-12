@@ -30,7 +30,7 @@ const applyCoupon = async(req,res)=>{
     console.log("total Amount===",totalAmount)
     let coupons = await coupon.findOne({code:code})
     console.log(req.session.userId)
-   
+  
     // if(coupon ==
     // console.log("check inside apply coupon====",coupons)
     if(coupons == null){
@@ -52,6 +52,8 @@ const applyCoupon = async(req,res)=>{
         req.session.totalAmount -= coupons.discount
         let amount = req.session.totalAmount
         coupons.usedBy.push(req.session.userId)
+        req.session.usedCoupon = true
+        req.session.couponCode = code
         res.json({success:true, message:"Coupon applied", amount})
       }else{
         res.json({success:false, message:'Cannot apply this coupon'})

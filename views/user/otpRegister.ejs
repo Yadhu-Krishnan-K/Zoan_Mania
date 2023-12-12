@@ -65,12 +65,11 @@ function resendOTP() {
     fetch('/resendOtp')
     .then(res=>res.json())
     .then((data)=>{
-        // console.log(data);
         
     })
 }
 
-const timerInterval = setInterval(updateTimer, 1000);
+ let timerInterval = setInterval(updateTimer, 1000);
 
 // Clear localStorage when the page is loaded initially
 window.onload = function () {

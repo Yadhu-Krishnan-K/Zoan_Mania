@@ -39,7 +39,7 @@ const postAddProduct = async(req,res)=>{
             let ar=imageUrls[i].split('.')
             arr.push(ar[1])
          }
-       
+
          for(i=0;i<arr.length;i++){
           
              if(!(["jpg","jpeg","png"].includes(arr[i]))){
@@ -157,16 +157,17 @@ const postProductEdit = async(req,res)=>{
         ];
         const images = imageUrls.filter(img=>img!=='0')
         console.log("/update-product=======",images)
-    
+        
     
             // const {Description,ProductName,Category,Stock,Price} = req.body
-    
+        const discountedPrice = req.body.Price - (req.body.Price * productData.catOffer.catPer/100)
         const data = {
             Name: req.body.ProductName,
             Description: req.body.Description,
             Category: req.body.Category,
             Stock: req.body.Stock,
             Price: req.body.Price,
+            discountedPrice: discountedPrice,
             Image: images,
             Spec1: req.body.Spec1,
             Spec2: req.body.Spec2,

@@ -2,7 +2,6 @@ require('dotenv').config()
 const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
 const user = require('../models/user')
-const otpModel = require('../models/otpModel')
 
 
 
