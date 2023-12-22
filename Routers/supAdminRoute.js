@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer');
+
 // const socketIO = require('socket.io')
 
 
@@ -10,6 +11,7 @@ const products = require('../models/products')
 const Cate = require('../models/category')
 const admin = require('../models/admin')
 const multi = require('../middlewares/multiImage')
+const bannermulter = require('../middlewares/multerBanner')
 const adminrouter = require('../controllers/AdminControll/Admin-side');
 const adminauth = require('../middlewares/admin-Auth')
 const { fileLoader } = require('ejs');
@@ -22,7 +24,8 @@ const couponController = require('../controllers/AdminControll/admin-coupon-mana
 const { default: mongoose, isObjectIdOrHexString } = require('mongoose');
 const ordercontroller =require('../controllers/AdminControll/admin-order')
 const socketManager = require('../util/socket')
-
+const dashBoard = require('../controllers/AdminControll/adminDash')
+const adminBanner = require('../controllers/AdminControll/admin-banner-controll')
 
 
 router.get('/',adminauth.adminLoginAuthguard,adminrouter.getAdminLogin)
@@ -61,8 +64,7 @@ router.post('/add-category',catController.addCategory)
 router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,adminrouter.getAddProduct)
 
 //------------------------------------------------------------------------------------------------------------------------------------------------
-//get banner
-router.get('/Banner',adminauth.adminLoggedinAuthguard,adminrouter.Banner)
+
 
 
 //users----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -179,7 +181,7 @@ router.put('/updatReturnStatus/:orderId',ordercontroller.updateReturnStatus)
 
 
 //coupon management=======================================000000000000000000000000000000000----------------
-router.get('/Coupons', adminauth.adminLoggedinAuthguard, couponController.getCoupons)
+router.get('/Coupons', couponController.getCoupons)
 
 router.post('/addCoupons',couponController.addCoupons)
 
@@ -188,11 +190,26 @@ router.put('/CouponEdit/:couponId',adminauth.adminLoggedinAuthguard,couponContro
 router.delete('/deleteCoupon/:couponId',couponController.deleteCoupon)
 
 
+//dashboard
+// router.get('/chart-data', adminauth.adminLoggedinAuthguard, dashBoard.chartGet)
+router.get('/getSalesData/:SO',dashBoard.chartGet)
+
+
+//Banner
+router.route('/Banner')
+.get(adminauth.adminLoggedinAuthguard,adminrouter.Banner)
+.post(bannermulter.array('images',3),adminBanner.addBanner)
+
+
+
+//422error
+router.get('/422Error',(req,res)=>{
+    res.render('/422error')
+})
 
 
 
 
 
 
-
-module.exports = router 
+module.exports = router

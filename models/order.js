@@ -41,13 +41,12 @@ const OrdersSchema = new Schema({
      RealPrice:{
       type:Number
      },
-     
-
   }],
   PaymentMethod: {type: String},
   OrderDate: { type: String },
   
   ExpectedDeliveryDate:{type: String},
+  // updatedStatus:{type: Date},
 
   
 

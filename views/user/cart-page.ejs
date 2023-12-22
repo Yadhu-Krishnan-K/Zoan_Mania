@@ -142,7 +142,7 @@
           document.getElementById('incBtn_' + productId).disabled = true;
         }
 
-        document.getElementById('totalPrice').innerHTML = "Total Price= ₹" + Response.totalPrice + "/-";
+        document.getElementById('totalPrice').innerHTML = "Total Price= ₹" +parseFloat(Response.totalPrice).toFixed(2) + "/-";
         const priceElement = document.getElementById('price' + productId);
         const actual = $('#actualPrice'+productId)
         const originalPrice = $('#originalPrice'+productId)
@@ -151,7 +151,7 @@
         if (!isNaN(discountedPrice)) {
           console.log("respons.price==",Response.price)
           // priceElement.innerHTML = "<span id='actualPrice" + productId + "'>" + Response.price + "</span>/-&nbsp;&nbsp;";
-          actual.text(Response.price);
+          actual.text(parseFloat(Response.price).toFixed(2));
           originalPrice.text(Response.realPrice);
           document.getElementById(`totalCartQuantity`).innerHTML = Response.totalQuantity;
 

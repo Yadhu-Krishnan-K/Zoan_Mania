@@ -1,11 +1,113 @@
 <%- include('../layouts/admin/header'); -%>
 
-    <div class="col-md-12">
-        <div class="row d-flex justify-content-center ">
-            <div class="col-md-8">
-
+<div class="col-md-12 p-3">
+    <h1 class="ms-3">Banner</h1>
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-11 bg-secondary p-4">
+            <form id="banners" enctype="multipart/form-data">
+                <span id="error" class="text-danger" style="display: none;"></span>
+                <div class="mb-3 d-flex justify-content-center">
+                    <input type="file" name="images" class="form-control" id="imageInput" onchange="checkImages()" accept="image/*" multiple>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="button" id="btn" type="button" style="display:none;" class="btn btn-success" onclick="uploadBanner()">Add Banner</button>
+                    <button type="button" id="cbtn" class="btn btn-danger" style="display: none;">Cancel</button>
+                </div>
+            </form>
+            <div class="row">
+                <h4>MAIN IMAGE</h4>
+                <div class="col-md-12 d-flex justify-content-center">
+                    <img src="/Banners/<%= ban.mainImage %>" height="400" width="800" alt="img">
+                </div>
+                <h4 class="mt-5">IMAGES</h4>
+                <% if(ban.images.length>0){ %>
+                    <% ban.images.forEach(img => { %>
+                        <div class="col-md-4 d-flex justify-content-center">
+                            <img src="/Banners/<%= img %>" height="30" width="60" alt="img">
+                        </div>
+                    <% }); %>
+                <% } %>
             </div>
         </div>
     </div>
+</div>
+
+<script>
+    function checkImages() {
+        $('#btn').show();
+        $('#cbtn').show();
+        const input = document.getElementById('imageInput');
+        const files = input.files;
+        if (files.length > 3) {
+            $('#error').text('Only 3 images are allowed');
+            $('#error').show();
+            $('#btn').hide();
+            $('#cbtn').hide();
+            setTimeout(() => {
+                $('#error').text('');
+                $('#error').hide();
+                input.value = '';
+            }, 3000);
+            return;
+        }
+        const extensions = Array.from(files).map((file) => {
+            const fileName = file.name;
+            const parts = fileName.split('.');
+            return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : null;
+        });
+        let flag = false;
+        const allowedExtensions = ['jpg', 'jpeg', 'png'];
+        extensions.some((ext) => {
+            if (!(allowedExtensions.includes(ext))) {
+                flag = true;
+              
+            }
+        });
+        if (flag) {
+            $('#error').text('Only jpg/png/jpeg extensions are allowed');
+            $('#error').show();
+            $('#btn').hide();
+            $('#cbtn').hide();
+            setTimeout(() => {
+                $('#error').text('');
+                $('#error').hide();
+                input.value = '';
+            }, 3000);
+            return;
+        }
+    }
+    $('#cbtn').click((event) => {
+        event.preventDefault();
+        const input = document.getElementById('imageInput');
+        input.value = '';
+        $('#btn').hide();
+        $('#cbtn').hide();
+    });
+
+    async function uploadBanner() {
+        const formData = new FormData(document.getElementById('banners'));
+            // Append the selected categories to the FormData object
+            // formData.append('categories', selectedCategories.join(','));
+
+            try {
+                const response = await fetch('/admin/banner', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Check the appropriate property based on your response structure
+                if (response.status) {
+                    // Handle successful response, e.g., redirect to another page
+                    location.reload()
+                } else {
+                    // Handle error response
+                    console.error('Error submitting form:', response.statusText);
+                    window.location.replace('/admin/422Error')
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+            }
+    }
+</script>
 
 <%- include('../layouts/admin/footer'); -%>

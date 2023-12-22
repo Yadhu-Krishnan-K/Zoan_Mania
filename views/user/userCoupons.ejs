@@ -26,10 +26,13 @@
                                     <% } %>
                                 </li>
                                 <li class="PAmountAbove">
-                                    <h6>apply for purchase above: <%= element.forPuchace %></h6>
+                                    <h6>apply for purchase above: ₹<%= element.forPuchace %>/-</h6>
                                 </li>
                                 <li class="expiryDate">
                                     <%= element.Expiry %>
+                                </li>
+                                <li class="">
+                                    <h6>Coupon Discount: <%= element.discount %>%</h6>
                                 </li>
                             </ul>
                             <% if(element.expired){ %>

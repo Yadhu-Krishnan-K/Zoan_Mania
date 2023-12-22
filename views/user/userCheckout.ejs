@@ -140,8 +140,8 @@
                                 <label class="form-check-label" for="payment_online">Online Payment</label>
                             </div>
 
-                            <div class="d-flex border rounded mt-4 justify-content-center align-items-center">
-                                <p id="TAmount">Total Amount: <%= cartData.totalAmount %></p>
+                            <div class="d-flex border rounded mt-4 p-2 align-items-center">
+                                <p  class="ms-2">Total Amount: ₹<span id="TAmount"><%=parseFloat(cartData.totalAmount).toFixed(2) %></span>/-&nbsp;&nbsp;&nbsp;<span id="hidden" style="display: none; text-decoration: line-through;" class="text-secondary"></span></p>
                             </div>
                             
                             <div id="couponDiv" class="d-flex mt-2">
@@ -185,6 +185,8 @@
 
         $('#coupon').click(()=>{
   let code = $('#couponCode').val()
+  let realPrice = $('#TAmount').text()
+  console.log("real prize before applyig coupon",realPrice)
 
   fetch('/applyCoupon',{
     method:'POST',
@@ -201,10 +203,20 @@
       $('.coups').hide()
       $('#couponStatus').show()
 
-      $('#TAmount').text("Total Amount: "+data.amount)
+      $('#TAmount').text(parseFloat(data.amount).tofixed(2))
+      $('#hidden').text("₹"+parseFloat(realPrice).toFixed(2)+"/-")
+      $('#hidden').show()
       console.log(data.amount);
+      console.log("real prize before applyig coupon",realPrice)
+
     }else{
-      alert(data.message)
+    //   alert(data.message)
+    Swal.fire({
+  icon: "error",
+  title: "Oops...",
+  text: data.message,
+//   footer: '<a href="#">Why do I have this issue?</a>'
+});
     }
   })
 })
@@ -222,7 +234,8 @@
 
 
             if (!selectedAddress) {
-                alert('Please select a delivery address before confirming your order.');
+                // alert('Please select a delivery address before confirming your order.');
+                Swal.fire("Please select a delivery address before confirming your order!");
             } else {
                 console.log("Selected Addrss===", selectedAddress)
                 console.log("Selected Payment===", selectedPayment)
@@ -317,8 +330,8 @@
             })
                 .then(res => res.json())
                 .then((data) => {
-                    console.log(data.status == 'payment success');
-                    if(data.status){
+                    // console.log(data.status == 'payment success');
+                    if(data.status == 'payment success'){
                         window.location.replace('/placeOrder')
                     }else if(data.status == 'payment failed'){
                         alert('payment failed')

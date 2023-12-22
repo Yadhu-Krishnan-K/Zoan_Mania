@@ -17,7 +17,7 @@ const session = require('express-session')
 const {v4:uuidv4} = require('uuid')
 const passport = require('passport')
 const sessionSecret = uuidv4();
-// const cron = require('./util/cron')
+const cron = require('./util/cron')
 
 
 // web socket setup

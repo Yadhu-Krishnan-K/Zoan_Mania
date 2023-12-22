@@ -112,7 +112,7 @@
                       <div class="mb-3">
                         <label class="col-form-label">Expiry Date:</label>
                         <span class="text-danger" id="EdateEdrr"></span>
-                        <input type="date" class="form-control" value="<%= coupon.Expiry.toISOString().split('T')[0] %>"
+                        <input type="date" min="<%= new Date().toISOString().split('T')[0] %>" class="form-control" value="<%= coupon.Expiry.toISOString().split('T')[0] %>"
                           id="EdateEd">
                       </div>
 
@@ -188,7 +188,7 @@
             <div class="mb-3">
               <label class="col-form-label">Expiry Date:</label>
               <span class="text-danger" id="EdateErr"></span>
-              <input type="date" value="<%= formattedDate %>" class="form-control" id="Edate" required>
+              <input type="date" min="<%= new Date().toISOString().split('T')[0] %>" value="<%= formattedDate %>" class="form-control" id="Edate" required>
             </div>
 
           </form>
@@ -243,8 +243,8 @@
         }
 
         let Discount = $('#Discount').val()
-        if (Discount <= 0 || Discount == '') {
-          $('#DiscountErr').text('Should be positive')
+        if (Discount <= 0 || Discount == ''|| Discount>100) {
+          $('#DiscountErr').text('Should be positive and less than 0')
           setTimeout(() => {
             $('#DiscountErr').text('')
           }, 3000)
@@ -289,7 +289,6 @@
               $('#PAmount').val("")
               $('#Edate').val("")
 
-
               // Optionally, you can update the address list on the page.
               Swal.fire({
                 position: 'top-end',
@@ -330,7 +329,7 @@
       let Ccode = $('#CcodeEd').val()
       let CcodePattern = /^(?=.*[A-Z])(?=.*\d)(?=.*-).*$/;
       if (!CcodePattern.test(Ccode) || Ccode == '') {
-        $('#CcodeEdrr').text('Ccode must have one capital letter, one number, and one "-" sign.');
+        $('#CcodeEdrr').text('Must have one capital letter, one number, and one "-" sign.');
         setTimeout(() => {
           $('#CcodeEdrr').text('');
         }, 3000);
@@ -338,8 +337,8 @@
       }
 
       let Discount = $('#DiscountEd').val()
-      if (Discount <= 0 || Discount == '') {
-        $('#DiscountEdrr').text('Should be positive')
+      if (Discount <= 0 || Discount == ''|| Discount>100) {
+        $('#DiscountEdrr').text('Should be positive and less than 100')
         setTimeout(() => {
           $('#DiscountEdrr').text('')
         }, 3000)

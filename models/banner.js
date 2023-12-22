@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const bannerSchema = new mongoose.Schema({
-  image: {
+  mainImage: {
     type: String,
     required: true,
   },
+  images:{type: Array},
   date: {
     type: Date,
     

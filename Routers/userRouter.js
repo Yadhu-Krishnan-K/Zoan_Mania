@@ -27,7 +27,8 @@ const cartHelper = require('../helpers/cartHelper')
 const Categories = require('../models/category')
 const orderControll = require('../controllers/UserControll/orderControll')
 const couponControll = require('../controllers/UserControll/userCouponControll')
-
+const invoice = require('../util/invoice')
+const cartCount  =require('../helpers/cartHelper')
 
 
 
@@ -200,9 +201,20 @@ router.post('/applyCoupon',couponControll.applyCoupon)
 router.post('/search',authGuard.userLoginAuthGuard,userAccess,us.searchOptions)
 router.post('/filter',authGuard.userLoginAuthGuard,userAccess,us.filter)
 
+router.get('/downloadInvoice/:orderId',invoice)
 
 
+//user Wallet
 
+router.get('/walletHistory', authGuard.userLoginAuthGuard,userAccess,(req,res)=>{
+    try {
+        const cartcount = cartCount
+        const name = req.session.name
+        res.render('user/walletHistory',{title:'WalletHistory',cartcount,name})
+    } catch (error) {
+        console.log('500 error')
+    }
+})
 
 
 

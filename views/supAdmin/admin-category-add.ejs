@@ -15,7 +15,7 @@
    
                <input type="text" placeholder="Category Name" id="cate" name="cate" required><br>
                <input type="number" placeholder="offer(optional)" id="cateOffer" onchange="offCheck()"><br>
-               <input type="date" placeholder="expiry of offer if offer added" id="date"><br>
+               <input type="date" min="<%= new Date().toISOString().split('T')[0] %>" placeholder="expiry of offer if offer added" id="date"><br>
                <button type="button" id="sumit" class="btn btn-primary">Submit</button>
              </div>
            </div>

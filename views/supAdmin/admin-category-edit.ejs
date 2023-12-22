@@ -12,8 +12,8 @@
                 <div class="col-md-12 d-flex p-3 flex-column justify-content-center align-items-center">
                   <span id="error" class=" text-danger"></span>
                   <input type="text" name="catName" value="<%= category.catName %>" id="catName"><br>
-                  <input type="number" name="" id="cateOffer" value="<%= category.catOffer %>"><br>
-                  <input type="date" value="<%= category.offerExpiry ? category.offerExpiry.toISOString().split('T')[0] : '' %>" name="" id="date"><br>
+                  <input type="number" name="" id="cateOffer" value="<%= category.catOffer > 0 ? category.catOffer:'' %>"><br>
+                  <input type="date" min="<%= new Date().toISOString().split('T')[0] %>" value="<%= category.offerExpiry ? category.offerExpiry.toISOString().split('T')[0] : '' %>" name="" id="date"><br>
                   <div class="d-flex justify-content-between" style="width: 100%;">
                     <button type="button" class="btn btn-success" id="submitBtn" onclick="submitForm('<%= category._id %>')">Submit</button>
                     <button class="btn btn-warning" onclick="removeOffer('<%= category._id %>')">Remove offer</button>

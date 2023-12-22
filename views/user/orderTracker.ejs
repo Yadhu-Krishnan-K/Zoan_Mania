@@ -41,9 +41,9 @@
                             <button class="btn btn-outline-success" type="button">Details</button>
                           </a>
                           <%if(order.Status==="Delivered" ){%>
-                            <a href="#">
-                              <button class="btn btn-outline-warning" type="button">Download Invoice</button>
-                            </a>
+                            
+                              <button class="btn btn-outline-warning" onclick="Download('<%= order._id %>')" type="button">Download Invoice</button>
+                            
                           <%} else if(order.Status==="Canceled" || order.Status==="Rejected" ){%>
 
                           <%} else {%>
@@ -141,6 +141,22 @@ socket.on('OrderStatusUpdated',({orderId,newStatus})=>{
 })
 
 
+function Download(orderId) {
+        fetch(`/downloadInvoice/${orderId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to the generated invoice file
+                    window.location.href = data.filePath;
+                } else {
+                    console.error('Error generating invoice:', data.message);
+                    // Handle error, show a message, etc.
+                }
+            })
+            .catch(error => {
+                console.error('Error downloading invoice:', error);
+            });
+    }
 
   function cancelOrder(orderId){
           Swal.fire({

@@ -12,7 +12,8 @@ const manageCoupons = async(req,res)=>{
     const coupons = await coupon.find()
     console.log("Cpns===",coupons)
     const name = req.session.name
-    res.render('user/userCoupons',{title:"Coupons",cartcount,name,coupons})
+    const userId = req.session.userId
+    res.render('user/userCoupons',{title:"Coupons",cartcount,name,coupons,userId})
     
   } catch (error) {
     console.error("error 500 :",error);
@@ -24,7 +25,7 @@ const applyCoupon = async(req,res)=>{
   try {
     
     let code =req.body.code
-    // let exist = await coupon.findOne({code:code})
+    // let exist = await coupon.findOne({eq.code:code})
   
     let totalAmount = req.session.totalAmount
     console.log("total Amount===",totalAmount)
@@ -48,8 +49,9 @@ const applyCoupon = async(req,res)=>{
           })
         }
       })
+      // if(coupons.usedBy.length == 0 || )
       if(totalAmount >= coupons.forPuchace){
-        req.session.totalAmount -= coupons.discount
+        req.session.totalAmount -= (coupons.discount * req.session.totalAmount/100)
         let amount = req.session.totalAmount
         coupons.usedBy.push(req.session.userId)
         req.session.usedCoupon = true
@@ -63,8 +65,7 @@ const applyCoupon = async(req,res)=>{
   } catch (error) {
     console.error("error 500 :",error);
   }
-  
-  }
+}
 
 
 

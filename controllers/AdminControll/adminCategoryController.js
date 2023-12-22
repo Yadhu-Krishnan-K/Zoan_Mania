@@ -1,8 +1,10 @@
 const category = require('../../models/category')
 const Cate = require('../../models/category')
 const validator = require('../../helpers/textValidator')
+const npmValid = require('validator')
 const moneyVal = require('../../helpers/numberValidator')
 const products = require('../../models/products')
+const Categories = require('../../models/category')
 
 
 //add category
@@ -14,6 +16,8 @@ const addCategory = async(req,res)=>{
         const ofer = moneyVal.categoryOffer(catOffer)
         console.log("ofer===",ofer)
         const name = validator.categoryValidator(catName)
+
+        
         if(!(ofer.status)){
             res.json({
                 status:false,message:ofer.message
@@ -76,12 +80,20 @@ const editCategory = async(req,res)=>{
 //cat update
 const categoryUpdate = async(req,res)=>{
     try {
-        const catName = req.body.cateName
+
+        const catName = req.body.cate
+        console.log("category name===",catName)
+        const catId = req.params.id
+        console.log("catId==",catId)
         let catOffer = req.body.offer
         let date = req.body.offerEnd
         const ofer = moneyVal.categoryOffer(catOffer)
         console.log("ofer===",ofer)
         const name = validator.categoryValidator(catName)
+        const nameinValid = npmValid.isEmpty(catName.trim())
+        console.log("nameinvalid===",nameinValid)
+        const oldCatName = await category.findOne({_id: req.params.id})
+        console.log('old name of category==',oldCatName)
         if(!(ofer.status)){
             res.json({
                 status:false,message:ofer.message
@@ -96,10 +108,31 @@ const categoryUpdate = async(req,res)=>{
             catOffer = 0
             date = null
         }
-        const cat = await category.find({catName:{$regex: "^" + catName, $options: "i"}})
-        console.log(cat)
-    if(cat.length == 0){
+        const cat = await category.findOne({catName:{$regex:  catName, $options: "i"}})
+        console.log("catExist===",cat)
+        // console.log("id from find of category==",cat._id)
+        // console.log("is equal",catId==cat._id)
+    
+    if(cat === null||catId==cat._id || (cat.catName.length !== catName.length)){
+
         if(ofer.status && name.status){
+            console.log('old name of category==',oldCatName.catName)
+            const Product = await products.find({ Category : { $in: [oldCatName.catName] } })
+            Product.forEach(async(product)=>{
+                product.Category.splice(product.Category.indexOf(oldCatName.catName),1)
+                product.Category.push(catName)
+                const catext = await Categories.findOne({catName:product.catOffer.catName})
+                if(product.catOffer.catPer<=catOffer || new Date(product.catOffer.till)<=new Date()){
+                    product.catOffer.catName = catName
+                    product.catOffer.catPer = catOffer
+                    product.catOffer.till = date
+                    product.discountedPrice = product.Price - (product.Price*catOffer/100)
+                }
+                product.save()
+            })
+            
+            console.log('products when updating',Product)
+
             await category.updateOne({_id:req.params.id},{
                 catName:catName,
                 catOffer:catOffer,
@@ -112,7 +145,7 @@ const categoryUpdate = async(req,res)=>{
         }
     // res.redirect('/admin/Category') 
     }
-    else if(cat.length > 0) {
+    else if(cat.catName.length == catName.length) {
         res.json({
             status:false,
             message:'category already exist'
@@ -124,9 +157,6 @@ const categoryUpdate = async(req,res)=>{
       console.error("error 500 :",error);
     }
     
-
-
-
 
 }
 const cateOfferRemove = async(req,res)=>{

@@ -88,63 +88,65 @@
                   <hr>
                   <div class="row d-flex justify-content-end ">
                     <div>
-                  <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal" id="modalBtn">Edit</button>
+                  <button type="button" class="btn btn-outline-primary" onclick="openEditModal()" data-bs-target="#editModal" id="modalBtn">Edit</button>
                     </div>
                   </div>
                 </div>
               </div>
               
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Profile</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Name</label>
-            <input type="text" class="form-control" value="<%= name %>" id="recipient-name">
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Email:</label>
-            <input type="text" class="form-control" value="<%= userData.email%>" id="recipient-email">
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Phone Number:</label>
-            <input type="text" class="form-control" value="<%= userData.MobileNumber %>" id="recipient-Pnumber">
-          </div>
-          
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" onclick="saveDetail()" class="btn btn-primary">Save Details</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 
             </div>
+            <a href="/walletHistory" style="text-decoration: none;">
             <div class="card mb-4 p-3">
-              <h3>Wallet</h3>
+              <h3 class="mb-4">Wallet History</h3>
               <p>Available balance : <%= userData.Wallet %></p>
             </div>
-
+            </a>
          
 
           
+          </div>
+          <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Profile</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">Name</label>
+                      <input type="text" class="form-control" value="<%= name %>" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">Email:</label>
+                      <input type="text" class="form-control" value="<%= userData.email%>" id="recipient-email">
+                    </div>
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">Phone Number:</label>
+                      <input type="text" class="form-control" value="<%= userData.MobileNumber %>" id="recipient-Pnumber">
+                    </div>
+                    
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" onclick="saveDetail()" class="btn btn-primary">Save Details</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
 <script>
     
-    // function openEditModal() {
-    //     console.log("edit button clicked")
-    //             $('#editModal').modal('show');
-    // }
+    function openEditModal() {
+        console.log("edit button clicked")
+                $('#editModal').modal('show');
+    }
   
     function saveDetail(){
 

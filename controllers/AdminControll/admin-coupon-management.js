@@ -52,13 +52,17 @@ const EditCoupon = async(req,res) => {
         let exist = await findOne({
             code:req.body.Ccode
         })
-        console.log("")
+
+        // console.log("")
+        
         if(exist){
             return res.json({
                 success:false
             })
         }
+    
     // Cname, Ccode, Discount, PAmount, Edate
+
     await coupons.findByIdAndUpdate({_id: req.params.couponId},
         {
             name:name,
@@ -68,6 +72,7 @@ const EditCoupon = async(req,res) => {
             Expiry:req.body.Edate,
         },{new:true}
         )
+    
         res.json({
             success: true
         })

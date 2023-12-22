@@ -18,6 +18,7 @@ const Categories = require('../../models/category')
 
 const controller = require('../../util/for-otp')
 const cart = require('../../models/cartModel')
+const banner = require('../../models/banner')
 // require('razorpay/dist/types/items')
 
 
@@ -41,7 +42,6 @@ const userLogin = (req, res) => {
   
 }
 
- 
 const userSignup = (req,res)=>{
   try {
     
@@ -52,7 +52,7 @@ const userSignup = (req,res)=>{
     console.error("error 500 :",error);
   }
   
-} 
+}
 
 
 const getHome =async (req, res) => {
@@ -75,11 +75,12 @@ const getHome =async (req, res) => {
         cartcount += cart.Quantity;
       });
     }
+    const BAnner = await banner.findOne()
     const catWithOffer = 
 
     await cartModel.updateOne({ userId: userId }, { $set: { totalQuantity: cartcount } });
 
-    res.render('user/userHome', { title: 'Zoan Home', productModel, name, cartData, cartcount });
+    res.render('user/userHome', { title: 'Zoan Home', productModel, name, cartData, cartcount, BAnner });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -256,10 +257,13 @@ const searchOptions = async(req,res)=>{
       ]}).sort({_id: -1})
     .skip((page-1)*perPage)
     .limit(perPage)
-    
-    
+    const Products = await products.find()
+    const minPrice = Math.min(...Products.map(product => product.Price));
+    const maxPrice = Math.max(...Products.map(product => product.Price));
+
+
     res.render('user/product-list',{
-      productsList,categories,name, title:'Product List',cartcount,cartData, pageNums,currentPage
+      productsList,categories,name, title:'Product List',cartcount,cartData, pageNums,currentPage,minPrice, maxPrice
     })
     
   } catch (error) {

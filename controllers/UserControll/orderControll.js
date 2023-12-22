@@ -106,6 +106,10 @@ const postPlaceOrder = async(req,res)=>{
         if(paymentMethod=='cod'){
           console.log("inside payment method = cod and order model is creating")
         const order = await newOrder.save();
+        if(req.session.usedCoupon){
+          console.log("verifyPayment coupon== ",req.session.userId)
+          await coupon.updateOne({code: req.session.couponCode},{ $push: { usedBy: req.session.userId } })
+        }
         req.session.orderID = order._id;
         // console.log("Order detail", order);
         await cartModel.findByIdAndDelete(cartData._id);
@@ -169,7 +173,10 @@ const postPlaceOrder = async(req,res)=>{
 
   const verifyPayment = async(req,res)=>{
     try {
-    
+      if(req.session.usedCoupon){
+        console.log("verifyPayment coupon== ",req.session.userId)
+        await coupon.updateOne({code: req.session.couponCode},{ $push: { usedBy: req.session.userId } })
+      }
       console.log("data from body==== in verify payment====",req.body,"orderId from sesssion=========",req.session.orderID)
       razor.verifyPayment(req.body,req.session.orderID).then(async()=>{
         console.log("payment success")

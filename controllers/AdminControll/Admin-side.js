@@ -3,6 +3,7 @@ const admin = require('../../models/admin')
 const db = require('../../models/user')
 const productModel =require('../../models/products')
 const Categories = require('../../models/category')
+const BAnner = require('../../models/banner')
 
 const getAdminLogin = (req,res)=>{
     try {
@@ -15,9 +16,17 @@ const getAdminLogin = (req,res)=>{
 }
 
 
-const DashBoard = (req,res) => {
+const DashBoard = async(req,res) => {
     try {
-        res.render('supAdmin/DashBoard',{title:"Admin Dash",Page:"Dashboard"})
+        // const productModel = await productModel.find().sort({ Selled: -1 }).limit(6);
+        const products = await productModel.aggregate([
+            {$sort : {
+                Selled : -1
+            }},
+            {$limit : 6}
+        ])
+
+        res.render('supAdmin/DashBoard',{title:"Admin Dash",Page:"Dashboard",products})
     
     } catch (error) {
       console.error("error 500 :",error);
@@ -26,10 +35,11 @@ const DashBoard = (req,res) => {
 }
 
 
-const Banner = (req,res) => {
+const Banner = async(req,res) => {
+
     try {
-        res.render('supAdmin/banner',{title:"Admin Banner",Page:"Banner"})
-    
+        const ban = await BAnner.findOne()
+        res.render('supAdmin/banner',{title:"Admin Banner",Page:"Banner",ban})
     } catch (error) {
       console.error("error 500 :",error);
     }
