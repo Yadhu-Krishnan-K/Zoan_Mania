@@ -5,51 +5,16 @@
   <!-- ... Carousel content ... -->
 </div>
  
-<!-- The slideshow/carousel -->
-    <!-- <div class="carousel-inner">
-
-      <div class="carousel-item active">
-        <img src="pics/Group 1.png" alt="Los Angeles" class="d-block w-100">
-        <!-- <div class="carousel-caption pos ">
-          <p>SUMMER 2024</p>
-          <h1 class="text-justify">Multicoloured
-            Tie-dye Sweater</h1>
-          <p>We had such a great time in LA!</p>
-          <a href="#">
-            <button class="text-light"
-              style="background-color: transparent; border: white solid 1px; padding: 10px 10px;">SHOP NOW</button>
-          </a>
-        </div> -->
-      <!-- </div>
-      <div class="carousel-item">
-        <img src=" pics/Group 1.png" alt="Chicago" class="d-block w-100">
-        <div class="carousel-caption">
-          <h3>Los Angeles</h3>
-          <p>We had such a great time in LA!</p>
-        </div>
-      </div>
-
-    </div> -->
-
-    <!-- Left and right controls/icons -->
-    <!-- <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-    </button>
-  </div> -->
-
 
 <!-- Carousel wrapper -->
-<div id="carouselBasicExample" class="carousel slide carousel-fade" data-mdb-ride="carousel" data-mdb-carousel-init>
+<div id="carouselBasicExample" class="carousel slide carousel-fade" data-bs-ride="carousel">
   <!-- Indicators -->
   <div class="carousel-indicators">
     <% for (let i = 0; i < BAnner.images.length; i++) { %>
       <button
         type="button"
-        data-mdb-target="#carouselBasicExample"
-        data-mdb-slide-to="<%= i %>"
+        data-bs-target="#carouselBasicExample"
+        data-bs-slide-to="<%= i %>"
         <% if (i === 0) { %>class="active" aria-current="true"<% } %>
         aria-label="Slide <%= i + 1 %>"
       ></button>
@@ -60,7 +25,7 @@
   <div class="carousel-inner">
     <% BAnner.images.forEach((image, index) => { %>
       <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
-        <img src="/Banners/<%= image %>" class="d-block w-100" alt="<%= image.alt %>"/>
+        <img src="/croppedBanner/<%= image %>" class="d-block w-100" alt="<%= image.alt %>" />
         <div class="carousel-caption d-none d-md-block">
           <h5><%= image.label %></h5>
           <p><%= image.description %></p>
@@ -71,19 +36,15 @@
   <!-- Inner -->
 
   <!-- Controls -->
-  <button class="carousel-control-prev" type="button" data-mdb-target="#carouselBasicExample" data-mdb-slide="prev">
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselBasicExample" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Previous</span>
   </button>
-  <button class="carousel-control-next" type="button" data-mdb-target="#carouselBasicExample" data-mdb-slide="next">
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselBasicExample" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>
   </button>
 </div>
-
-
-
- 
 <!-- Carousel wrapper -->
 
 
@@ -104,7 +65,7 @@
   <div class="container-fluid">
 <div class="row me-5">
   <% productModel.forEach(product => { %>
-    <% if (product.Image.length !== 0) { %>
+    <% if (product.Image.length !== 0 && product.visible) { %>
       <div class="col-md-3 p-4">
         <div class="card shadow border" style="width: 18rem;margin-left: 25px;">
           <% if(product.catOffer.catPer>0){ %>
@@ -117,15 +78,18 @@
             <h6 class="card-title">
               <%= product.Name %>
             </h6>
-            <!-- <h5><%= product.Price %></h5> -->
-            <% if (product.Stock >= 1 && (cartData && cartData.Items.length !== 0)) { %>
+            <!-- <h5><% product.Price %></h5> -->
+            <% if (product.Stock >= 1) { %>
+              <!-- && (cartData && cartData.Items.length !== 0) -->
               <p class="card-text" style="font-weight: 700;">₹<%= product.Price %>/-</p>
               <% let isInCart = false %>
+              <% if(cartData && cartData.Items.length>0){ %>
               <% for (let index = 0; index < cartData.Items.length; index++) { %>
                 <% if (JSON.stringify(product._id) == JSON.stringify(cartData.Items[index].ProductId._id)) { %>
                   <% isInCart = true %>
                   <% break %>
                 <% } %>
+              <% } %>
               <% } %>
               <% if (isInCart) { %>
                 <a href="/cart" class="btn btn-warning">Go To Cart</a>
@@ -135,7 +99,7 @@
               <% } %>
 
             <% } else if (product.Stock < 1) { %>
-              <p class="card-text" style="font-weight: 700;">₹<%= product.Price %>/-</p>
+              <!-- <p class="card-text" style="font-weight: 700;">₹< product.Price %>/-</p> -->
 
               <p class="card-text"
                 style="font-weight: 800; color: rgb(238, 101, 101);">Out of stock</p>

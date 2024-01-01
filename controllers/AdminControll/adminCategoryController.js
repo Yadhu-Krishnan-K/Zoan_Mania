@@ -86,6 +86,7 @@ const categoryUpdate = async(req,res)=>{
         const catId = req.params.id
         console.log("catId==",catId)
         let catOffer = req.body.offer
+        console.log('catOffer==',catOffer)
         let date = req.body.offerEnd
         const ofer = moneyVal.categoryOffer(catOffer)
         console.log("ofer===",ofer)
@@ -95,12 +96,12 @@ const categoryUpdate = async(req,res)=>{
         const oldCatName = await category.findOne({_id: req.params.id})
         console.log('old name of category==',oldCatName)
         if(!(ofer.status)){
-            res.json({
+           return res.json({
                 status:false,message:ofer.message
             })
         }
         if(!(name.status)){
-            res.json({
+           return res.json({
                 status:false, message:name.message
             })
         }
@@ -122,7 +123,7 @@ const categoryUpdate = async(req,res)=>{
                 product.Category.splice(product.Category.indexOf(oldCatName.catName),1)
                 product.Category.push(catName)
                 const catext = await Categories.findOne({catName:product.catOffer.catName})
-                if(product.catOffer.catPer<=catOffer || new Date(product.catOffer.till)<=new Date()){
+                if(product.catOffer.catName==oldCatName.catName||product.catOffer.catPer<=catOffer || new Date(product.catOffer.till)<=new Date()){
                     product.catOffer.catName = catName
                     product.catOffer.catPer = catOffer
                     product.catOffer.till = date
@@ -159,6 +160,10 @@ const categoryUpdate = async(req,res)=>{
     
 
 }
+
+
+
+
 const cateOfferRemove = async(req,res)=>{
     try {
         await Cate.updateOne({_id:req.params.id},{

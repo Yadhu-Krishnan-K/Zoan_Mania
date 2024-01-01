@@ -19,6 +19,7 @@ const Categories = require('../../models/category')
 const controller = require('../../util/for-otp')
 const cart = require('../../models/cartModel')
 const banner = require('../../models/banner')
+const wallet = require('../../models/walletPayment')
 // require('razorpay/dist/types/items')
 
 
@@ -134,12 +135,15 @@ const postEnteringHOme = async(req, res) => {
               const hashPass = await bcrypt.hash(req.session.password, saltRounds);
               req.session.userAuth = true;
 
+
               const logged = await userModel.create({ name, email, password: hashPass });
               console.log(logged);
 
               const user = await userModel.findOne({ email: email });
-
               req.session.userId = user._id;
+              const walletHistory = await wallet.create({userId:req.session.userId})
+              console.log('wallet===',walletHistory)
+
               res.json({ success: true});
           } else {
               // req.session.errorOtp = "enter valid otp";
@@ -1062,6 +1066,7 @@ const passwordChange2 = async(req,res)=>{
     try {
       console.log("req.body==",req.body)
     const {Name,Address,City,Pincode,State,Mobile} = req.body;
+    
     console.log("Name=",Name,
       "AddressLine=",Address,
       "City=",City,
@@ -1078,12 +1083,7 @@ const passwordChange2 = async(req,res)=>{
       Mobile:Mobile
     }
     await userModel.updateOne({_id:req.session.userId},{$push:{address: addr}})
-    // const customer = await userModel.findOne({_id:req.session.userId})
-    // console.log("custData=======",customer)
-    // customer.addr.push()
-    // customer.save()
-    // res.redirect('/manageAddress ')
-    console.log("reached success response")
+    
     res.json({ success: true, message: "Address saved successfully" });
   
     } catch (error) {

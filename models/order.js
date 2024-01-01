@@ -18,7 +18,7 @@ const ShippedAddressSchema = new Schema({
 });
 
 const OrdersSchema = new Schema({
-  UserId: { type: Schema.Types.ObjectId },
+  UserId: { type: Schema.Types.ObjectId, ref: "user"},
   Status: { type: String, default:"Pending"},
   //status=pending, orderplaced, shiped, delivered, rejected
   Items: [{
@@ -55,7 +55,7 @@ const OrdersSchema = new Schema({
   PaymentStatus: {type: String, default: "Pending"},
   // CouponId: { type: Schema.Types.ObjectId },
   couponAmount: {
-    coupnId: { type: Schema.Types.ObjectId },
+    coupnId: { type: Schema.Types.ObjectId, ref: "coupon"},
     amount: {
       type:Number,
       default: 0

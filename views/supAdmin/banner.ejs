@@ -14,20 +14,20 @@
                     <button type="button" id="cbtn" class="btn btn-danger" style="display: none;">Cancel</button>
                 </div>
             </form>
+            <% if(ban && ban.images.length>0){ %>
             <div class="row">
                 <h4>MAIN IMAGE</h4>
                 <div class="col-md-12 d-flex justify-content-center">
-                    <img src="/Banners/<%= ban.mainImage %>" height="400" width="800" alt="img">
+                        <img src="/croppedBanner/<%= ban.mainImage %>" height="400" width="800" alt="img">
                 </div>
                 <h4 class="mt-5">IMAGES</h4>
-                <% if(ban.images.length>0){ %>
                     <% ban.images.forEach(img => { %>
                         <div class="col-md-4 d-flex justify-content-center">
-                            <img src="/Banners/<%= img %>" height="30" width="60" alt="img">
+                            <img src="/croppedBanner/<%= img %>" height="30" width="60" alt="img">
                         </div>
                     <% }); %>
-                <% } %>
             </div>
+            <% } %>
         </div>
     </div>
 </div>

@@ -52,10 +52,10 @@
       </div>
     </div>
 
-    <div class="col-md-10">
+    <div class="col-md-10"> 
       <div id="productContainer" class="row">
         <% productsList.forEach(product => { %>
-          <% if(product.Image.length !==0){ %>
+          <% if(product.Image.length !==0 && product.visible){ %>
             <!-- Product card HTML goes here -->
             <div class="col-md-4  p-4">
               <div class="card shadow" style="width: 18rem;margin-left: 25px;">
@@ -75,14 +75,17 @@
                     <%=product.Name%>
                   </h6>
 
-                  <% if(product.Stock >= 1 && (cartData && cartData.Items.length !== 0 )){ %>
+                  <% if(product.Stock >= 1){ %>
+                    <!-- && (cartData && cartData.Items.length !== 0 ) -->
                     <p class="card-text" style="font-weight: 700;">₹<%= product.Price %>/-</p>
                     <% let isInCart=false %>
+                    <% if(cartData && cartData.Items.length>0){ %>
                     <% for (let index=0; index < cartData.Items.length; index++) { %>
                       <% if(JSON.stringify(product._id) === JSON.stringify(cartData.Items[index].ProductId._id)){ %>
                         <% isInCart=true %>
                         <% break %>
                       <% } %>
+                    <% } %>
                     <% } %>
                     <% if(isInCart){ %>
                       <a href="/cart" class="btn btn-warning">Go To Cart</a>

@@ -28,7 +28,7 @@ const chartGet = async(req,res)=>{
         // console.log("orders passing to processOrdersForChart====",orders)
         // Process the orders to structure the data for Chart.js
         const ordersData = chartHelper.processOrdersForChart(orders,num);
-        // console.log("ordersData=====",ordersData)
+        console.log("ordersData=====",ordersData)
         // Send the data to the frontend
         res.json({ ordersData });
       } catch (error) {

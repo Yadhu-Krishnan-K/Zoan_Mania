@@ -13,5 +13,5 @@ const schema = new mongoose.Schema({
     }
 })
 
-const coupon = mongoose.model('Coupon',schema)
+const coupon = mongoose.model('coupon',schema)
 module.exports = coupon

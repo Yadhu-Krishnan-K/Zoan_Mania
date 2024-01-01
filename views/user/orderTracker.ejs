@@ -1,27 +1,31 @@
-
-
-  <%- include('../layouts/user/header') %>
+<%- include('../layouts/user/header') %>
 
   <section class="gradient-custom-2">
     <div class="container py-5">
       <div class="row">
         <div class="col-md-12 col-lg-12 col-xl-12">
           <% if(orderDetails){ %>
-            <% orderDetails.forEach((order) => { %>
+            <% orderDetails.forEach((order)=> { %>
               <div class="card card-stepper mt-5" style="border-radius: 16px;">
                 <div class="card-header p-4">
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
-                      <p class="text-muted mb-2"> Order ID <span class="fw-bold text-body"><%= order._id %></span></p>
-                      <p class="text-muted mb-0"> Place On <span class="fw-bold text-body"><%= order.OrderDate %></span> </p>
+                      <p class="text-muted mb-2"> Order ID <span class="fw-bold text-body">
+                          <%= order._id %>
+                        </span></p>
+                      <p class="text-muted mb-0"> Place On <span class="fw-bold text-body">
+                          <%= order.OrderDate %>
+                        </span> </p>
 
                       <% if(order.Status !=="Canceled" ){ %>
-                        <p class="text-muted mb-0">Will be delivered on or before <span class="fw-bold text-body"><%= order.ExpectedDeliveryDate %></span></p>
-                      <% } else if(order.Status === "Canceled" ){ %>
-                        <p class="text-muted mb-0">Order Canceled<span class="fw-bold text-body"></p>
-                      <% } else { %>
-                        <p class=" text-muted mb-0">Order Rejected<span class="fw-bold text-body"></span></p>
-                      <% } %>
+                        <p class="text-muted mb-0">Will be delivered on or before <span class="fw-bold text-body">
+                            <%= order.ExpectedDeliveryDate %>
+                          </span></p>
+                        <% } else if(order.Status==="Canceled" ){ %>
+                          <p class="text-muted mb-0">Order Canceled<span class="fw-bold text-body"></p>
+                          <% } else { %>
+                            <p class=" text-muted mb-0">Order Rejected<span class="fw-bold text-body"></span></p>
+                            <% } %>
 
                     </div>
                   </div>
@@ -41,16 +45,18 @@
                             <button class="btn btn-outline-success" type="button">Details</button>
                           </a>
                           <%if(order.Status==="Delivered" ){%>
-                            
-                              <button class="btn btn-outline-warning" onclick="Download('<%= order._id %>')" type="button">Download Invoice</button>
-                            
-                          <%} else if(order.Status==="Canceled" || order.Status==="Rejected" ){%>
 
-                          <%} else {%>
-                            
-                              <button class="btn btn-outline-danger" type="button" onclick="cancelOrder('<%= order._id%>')">Cancel Order</button>
-                            
-                          <%}%>
+                            <button class="btn btn-outline-warning" onclick="Download('<%= order._id %>')"
+                              type="button">Download Invoice</button>
+
+                            <%} else if(order.Status==="Canceled" || order.Status==="Rejected" ){%>
+
+                              <%} else {%>
+
+                                <button class="btn btn-outline-danger" type="button"
+                                  onclick="cancelOrder('<%= order._id%>')">Cancel Order</button>
+
+                                <%}%>
                         </div>
                       </div>
                       <hr class="my-4">
@@ -63,22 +69,22 @@
                             <li class="step0 text-center" id="step2"></li>
                             <li class="step0 text-center" id="step3"></li>
                             <li class="step0 text-end" id="step4"></li>
-                          <% } else if (order.Status==="Order Placed" ) { %>
+                            <% } else if (order.Status==="Order Placed" ) { %>
                               <li class="step0 active text-center" id="step1"></li>
                               <li class="step0 active text-center" id="step2"></li>
                               <li class="step0 text-center" id="step3"></li>
                               <li class="step0 text-end" id="step4"></li>
-                          <% } else if (order.Status==="Shipped" ) { %>
+                              <% } else if (order.Status==="Shipped" ) { %>
                                 <li class="step0 active text-center" id="step1"></li>
                                 <li class="step0 active text-center" id="step2"></li>
                                 <li class="step0 active text-center" id="step3"></li>
                                 <li class="step0 text-end" id="step4"></li>
-                          <% } else if (order.Status==="Delivered" ) { %>
+                                <% } else if (order.Status==="Delivered" ) { %>
                                   <li class="step0 active text-center" id="step1"></li>
                                   <li class="step0 active text-center" id="step2"></li>
                                   <li class="step0 active text-center" id="step3"></li>
                                   <li class="step0 active text-end" id="step4"></li>
-                          <% } %>
+                                  <% } %>
 
                         </ul>
                         <div class="d-flex justify-content-between">
@@ -113,81 +119,90 @@
                         </div>
                         <% } else if(order.Status==="Canceled" ){ %>
                           <h1>Order Canceled</h1>
-                        <% } else if(order.Status==="Rejected" ){ %>
+                          <% } else if(order.Status==="Rejected" ){ %>
                             <h1>Order Rejected</h1>
-                        <% } %>
+                            <% } %>
                     </div>
                   </div>
                 </div>
               </div>
-            <% }) %>
-          <% } else { %>
-            <h1 style="text-align: center;">No Orders</h1>
-          <% } %>
+              <% }) %>
+                <% } else { %>
+                  <h1 style="text-align: center;">No Orders</h1>
+                  <% } %>
         </div>
       </div>
     </div>
   </section>
 
   <%- include('../layouts/user/footer'); -%>
-  <script src="/socket.io/socket.io.js"></script>
-<script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
 
-const socket = io()
+      const socket = io()
 
-socket.on('OrderStatusUpdated',({orderId,newStatus})=>{
-  // console.log(`Order ${orderId} status updated to ${newStatus}`);
-  location.reload()
-})
+      socket.on('OrderStatusUpdated', ({ orderId, newStatus }) => {
+        // console.log(`Order ${orderId} status updated to ${newStatus}`);
+        location.reload()
+      })
 
 
-function Download(orderId) {
+      function Download(orderId) {
         fetch(`/downloadInvoice/${orderId}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect to the generated invoice file
-                    window.location.href = data.filePath;
-                } else {
-                    console.error('Error generating invoice:', data.message);
-                    // Handle error, show a message, etc.
-                }
-            })
-            .catch(error => {
-                console.error('Error downloading invoice:', error);
-            });
-    }
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+      // Trigger download
+      const a = document.createElement('a');
+      const objectUrl = URL.createObjectURL(blob);
+      a.href = objectUrl;
+      a.download = 'downloaded-pdf.pdf'; // Set the desired filename
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
 
-  function cancelOrder(orderId){
-          Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Cancel it!"
+      // Cleanup object URL after download
+      URL.revokeObjectURL(objectUrl);
+    })
+        .catch(error => {
+          console.error('Fetch error:', error);
+        });
+      }
+
+      function cancelOrder(orderId) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Cancel it!"
         }).then((result) => {
           if (result.isConfirmed) {
             fetch(`/cancelOrderData/${orderId}`)
-            .then((res) => res.json())
-            .then((data) =>{
-              if (data.success) {
-                Swal.fire({
-                  title: "Order Canceled!",
-                  text: "Your order has been canceled.",
-                  icon: "success"
-                })
-                .then(
-                  setTimeout(()=>{
-                    location.reload()
-                  },3000)
-                );
-              }
-            })
-            .catch((err)=>console.log(err))
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.success) {
+                  Swal.fire({
+                    title: "Order Canceled!",
+                    text: "Your order has been canceled.",
+                    icon: "success"
+                  })
+                    .then(
+                      setTimeout(() => {
+                        location.reload()
+                      }, 3000)
+                    );
+                }
+              })
+              .catch((err) => console.log(err))
           }
         });
-  }
-</script>
-
+      }
+    </script>

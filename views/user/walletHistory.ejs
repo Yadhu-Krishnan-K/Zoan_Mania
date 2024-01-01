@@ -1,32 +1,64 @@
 <%- include('../layouts/user/header') -%>
+    <div class="container mt-5">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-10">
 
-    <div
-        class="table-responsive"
-    >
-        <table
-            class="table table-primary"
-        >
-            <thead>
-                <tr>
-                    <th scope="col">Column 1</th>
-                    <th scope="col">Column 2</th>
-                    <th scope="col">Column 3</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="">
-                    <td scope="row">R1C1</td>
-                    <td>R1C2</td>
-                    <td>R1C3</td>
-                </tr>
-                <tr class="">
-                    <td scope="row">Item</td>
-                    <td>Item</td>
-                    <td>Item</td>
-                </tr>
-            </tbody>
-        </table>
+                <div class="table-responsive text-center  border rounded mb-5"
+                    style="height: 300px; overflow-y: scroll;">
+                    <% if(!WH){ %>
+                        <h1 class="m-5">
+                            No payments yet
+                        </h1>
+                        <% }else{ %>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Purpose</th>
+                                        <th scope="col">Credited/Debited</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% WH.payment.forEach((pay,i)=>{ %>
+                                        <tr class="">
+                                            <!-- <td scope="row">< i+1 %></td> -->
+                                            <!-- <td>₹<pay.income=='Debited'?  pay.amount.toFixed(2): - pay.amount.toFixed(2)  %>/-</td> -->
+                                            <td>
+                                                <% if(pay.income=='Debited' ){ %>
+                                                    <span class="text-success">+ ₹<%= pay.amount.toFixed(2) %></span>
+                                                    <% }else{ %>
+                                                        <span class="text-warning">- ₹<%= pay.amount.toFixed(2) %>
+                                                                </span>
+
+                                                        <% } %>
+                                            </td>
+                                            <!-- <td>< pay.date %></td> -->
+                                            <td>
+                                                <% const
+                                                    dateString=pay.date
+                                                    ; const dateObject=new Date(dateString); const
+                                                    readableDate=dateObject.toLocaleString(); 
+                                                %>
+                                                <%= readableDate %>
+                                            </td>
+                                            <td>
+                                                <%= pay.purpose %>
+                                            </td>
+                                            <td>
+                                                <%= pay.income %>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+
+                                </tbody>
+                            </table>
+                            <% } %>
+                </div>
+
+            </div>
+        </div>
     </div>
-    
 
-<%- include('../layouts/user/footer') -%>
+    <%- include('../layouts/user/footer') -%>

@@ -29,6 +29,7 @@ const orderControll = require('../controllers/UserControll/orderControll')
 const couponControll = require('../controllers/UserControll/userCouponControll')
 const invoice = require('../util/invoice')
 const cartCount  =require('../helpers/cartHelper')
+const walletHistory = require('../models/walletPayment')
 
 
 
@@ -205,12 +206,13 @@ router.get('/downloadInvoice/:orderId',invoice)
 
 
 //user Wallet
-
-router.get('/walletHistory', authGuard.userLoginAuthGuard,userAccess,(req,res)=>{
+router.get('/walletHistory', authGuard.userLoginAuthGuard,userAccess,async(req,res)=>{
     try {
         const cartcount = cartCount
         const name = req.session.name
-        res.render('user/walletHistory',{title:'WalletHistory',cartcount,name})
+        const WH = await walletHistory.findOne({userId:req.session.userId})
+        console.log('wh==',WH)
+        res.render('user/walletHistory',{title:'WalletHistory',cartcount,name,WH})
     } catch (error) {
         console.log('500 error')
     }

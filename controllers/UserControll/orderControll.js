@@ -6,6 +6,7 @@ const products = require('../../models/products')
 const razor = require('../../middlewares/razorpay')
 const moment = require('moment')
 const coupon = require('../../models/coupons')
+const wallet = require('../../models/walletPayment')
 
 
 const getPlaceOrder = (req,res)=>{
@@ -75,24 +76,25 @@ const postPlaceOrder = async(req,res)=>{
         }
   
         // console.log(add);
-        let couponAmount
-       if(req.session.usedCoupon){
+        let couponAmount = {}
+      if(req.session.usedCoupon){
         let code = req.session.couponCode
         let coup = await coupon.findOne({code:code})
         couponAmount = {
-            couponId:coup._id,
-            amount: coup.discount
+          coupnId:coup._id,
+          amount: coup.discount
         }
-       }else{
+      }else{
         couponAmount = {
-          couponId: null,
+          coupnId: null,
           amount: 0,       
         }
       }
+      console.log('coupon==',couponAmount)
         let newOrder = new orderModel({
             UserId: userID,
             Items: cartData.Items.map(cartItem => ({
-              productId: cartItem.ProductId, // Assuming this is the correct property name
+              productId: cartItem.ProductId,
               quantity: cartItem.Quantity,
               discounted: cartItem.ProductId.discountedPrice
             })),
@@ -135,6 +137,47 @@ const postPlaceOrder = async(req,res)=>{
             req.session.visited = 0
             console.log("order response back");
             res.json({ success: true, method:'cod' });
+        }else if(paymentMethod=='Wallet'){
+          console.log("inside payment method = cod and order model is creating")
+        const order = await newOrder.save();
+        if(req.session.usedCoupon){
+          console.log("verifyPayment coupon== ",req.session.userId)
+          await coupon.updateOne({code: req.session.couponCode},{ $push: { usedBy: req.session.userId } })
+        }
+        req.session.orderID = order._id;
+        // console.log("Order detail", order);
+        await cartModel.findByIdAndDelete(cartData._id);
+        await userModel.updateOne({_id:req.session.userId},{$inc:{Wallet:-req.session.totalAmount}})
+        const walletHisto = await wallet.findOne({userId:req.session.userId})
+      walletHisto.payment.push( {
+        amount:req.session.totalAmount,
+        date:new Date(),
+        purpose:'Purchased Item',
+        income:'Credited'
+
+    })
+    await walletHisto.save()
+        for (const item of order.Items) {
+            const productId = item.productId;
+            const quantity = item.quantity;
+            const product = await products.findById(productId);
+  
+            if (product) {
+                const updateQuantity = product.Stock - quantity;
+                product.Selled += quantity
+                if (updateQuantity < 0) {
+                    product.Stock = 0;
+                    product.Status = "Out of stock";
+                } else {
+                    product.Stock = updateQuantity;
+                    await product.save();
+                }
+            }
+        }
+  //just redirect if code to some route
+            req.session.visited = 0
+            console.log("order response back");
+            res.json({ success: true, method:'Wallet' });
         }else if(paymentMethod == 'online'){
           const orderId =await razor.createOrder(req.session.totalAmount)
           console.log("order Id=====",orderId)
@@ -204,7 +247,7 @@ const postPlaceOrder = async(req,res)=>{
     try {
       const name = req.session.name;
       const userId = req.session.userId
-      const orderDetails = await  orderModel.find({UserId:req.session.userId}).sort({_id: -1})
+      const orderDetails = await  orderModel.find({UserId:req.session.userId}).sort({_id: -1}).populate('couponAmount.coupnId')
       const cartData = await cartModel.findOne({userId:userId})
       let cartcount = 0
       if (cartData === null || cartData.Items == (null||0)) {
@@ -229,17 +272,25 @@ const postPlaceOrder = async(req,res)=>{
   
    try {
     const order = await orderModel.findByIdAndUpdate({_id:req.params.orderId},{Status:"Canceled"})
-    order.Items.forEach(async(product)=>{
-      const P_id = product.productId
-      const count = product.quantity
-      await products.findByIdAndUpdate({_id:P_id},{$inc:{Stock:count}})
-
-    })
+    console.log(order)
+    for (const product of order.Items) {
+      const P_id = product.productId;
+      const count = product.quantity;
+      await products.findByIdAndUpdate({ _id: P_id }, { $inc: { Stock: count } });
+    }
     let total = order.TotalPrice
-    console.log("total===",total)
     let userId = req.session.userId
     if(order.PaymentMethod == 'online'){
       await userModel.findByIdAndUpdate({_id:userId},{$inc:{Wallet:total}},{new:true})
+      const walletHisto = await wallet.findOne({userId:req.session.userId})
+      walletHisto.payment.push( {
+        amount:total,
+        date:new Date(),
+        purpose:'Order Cancelled',
+        income:'Debited'
+
+    })
+    await walletHisto.save()
     }
     console.log("ordermodel====",order)
     res.json({
@@ -252,12 +303,16 @@ const postPlaceOrder = async(req,res)=>{
 
 
 
+
+
+
   const getOrderProductView = async(req,res)=>{
     try {
       
       const orderId = req.params.orderId
       const userId = req.session.userId
-      const orders = await orderModel.findById({_id:orderId}).populate('Items.productId')
+      const orders = await orderModel.findById({_id:orderId}).populate('Items.productId').populate('couponAmount.coupnId')
+      // console.log()
       const cartData = await cartModel.findOne({userId:userId})
         let cartcount = 0
         if (cartData === null || cartData.Items == (null||0)) {

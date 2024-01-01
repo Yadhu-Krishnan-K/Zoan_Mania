@@ -181,11 +181,11 @@ router.put('/updatReturnStatus/:orderId',ordercontroller.updateReturnStatus)
 
 
 //coupon management=======================================000000000000000000000000000000000----------------
-router.get('/Coupons', couponController.getCoupons)
+router.get('/Coupons',couponController.getCoupons)
 
 router.post('/addCoupons',couponController.addCoupons)
 
-router.put('/CouponEdit/:couponId',adminauth.adminLoggedinAuthguard,couponController.EditCoupon)
+router.put('/CouponEdit/:couponId',couponController.EditCoupon)
 
 router.delete('/deleteCoupon/:couponId',couponController.deleteCoupon)
 
@@ -206,6 +206,9 @@ router.route('/Banner')
 router.get('/422Error',(req,res)=>{
     res.render('/422error')
 })
+
+router.route('/downloadSalesReport')
+.get(ordercontroller.downloadCSV)
 
 
 

@@ -16,19 +16,21 @@
         </div>
     </div> -->
 
-    </div>
+    <!-- </div> -->
     <form id="orderForm">
         <!-- action="/placeOrder" method="post" -->
         <div class="container p-3">
             <div class="row">
                 <div class="col-md-6">
                     <h3 class="mb-4">Delivery Addresses</h3>
-                    <% userData.address.forEach((addr)=> { %>
+                    <% let isFirstAddress=true; userData.address.forEach((addr)=> {
+                        %>
                         <div class="card mb-3">
                             <div class="card-body">
                                 <div class="form-check">
                                     <input class="form-check-input address-radio" type="radio" name="selectedAddress"
-                                        id="address_<%= addr._id %>" value="<%= addr._id %>" />
+                                        id="address_<%= addr._id %>" value="<%= addr._id %>" <%=isFirstAddress
+                                        ? 'checked' : '' %> />
                                     <h5 class="card-title">
                                         <%= addr.Name %>
                                     </h5>
@@ -45,7 +47,8 @@
                                 </div>
                             </div>
                         </div>
-                        <% }) %>
+                        <% isFirstAddress=false; }); %>
+
                             <% if (userData.address.length===0) { %>
                                 <p class="text-center">No saved addresses. Please add a new address.</p>
                                 <% } %>
@@ -72,33 +75,39 @@
                                                         <div class="form-group">
                                                             <label class="col-form-label">Name:</label>
                                                             <span class="text-danger" id="nameErr"></span>
-                                                            <input type="text" class="form-control" id="recipient-name" onchange="nameCheck()" required>
+                                                            <input type="text" class="form-control" id="recipient-name"
+                                                                onchange="nameCheck()" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label class="col-form-label">Addrss:</label>
                                                             <span class="text-danger" id="addErr"></span>
-                                                            <textarea class="form-control" id="recipient-address" onchange="addCheck()" required></textarea>
+                                                            <textarea class="form-control" id="recipient-address"
+                                                                onchange="addCheck()" required></textarea>
                                                         </div>
                                                         <div class="form-group">
                                                             <label class="col-form-label">City:</label>
                                                             <span class="text-danger" id="cityErr"></span>
-                                                            <input type="text" class="form-control" id="recipient-City" onchange="cityCheck()" required>
+                                                            <input type="text" class="form-control" id="recipient-City"
+                                                                onchange="cityCheck()" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label class="col-form-label">Pincode:</label>
                                                             <span class="text-danger" id="pinErr"></span>
-                                                            <input type="number" class="form-control" id="recipient-Pincode" onchange="pinCheck()" required>
-                                                                
+                                                            <input type="number" class="form-control"
+                                                                id="recipient-Pincode" onchange="pinCheck()" required>
+
                                                         </div>
                                                         <div class="form-group">
                                                             <label class="col-form-label">State:</label>
                                                             <span class="text-danger" id="stateErr"></span>
-                                                            <input type="text" class="form-control" id="recipient-State" onchange="stateCheck()" required>
+                                                            <input type="text" class="form-control" id="recipient-State"
+                                                                onchange="stateCheck()" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label class="col-form-label">Mobile:</label>
                                                             <span class="text-danger" id="mobErr"></span>
-                                                            <input type="number" class="form-control" id="recipient-Mobile" onchange="mobCheck()" required>
+                                                            <input type="number" class="form-control"
+                                                                id="recipient-Mobile" onchange="mobCheck()" required>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -106,22 +115,12 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Close</button>
-                                                <button type="button" onclick="saveAddress()"
-                                                    class="btn btn-primary">Add Address</button>
+                                                <button type="button" id="addAddressBtn" class="btn btn-primary">Save
+                                                    Address</button>
                                             </div>
                                         </div>
                                     </div>
                 </div>
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -139,21 +138,40 @@
                                     id="payment_online" value="online" />
                                 <label class="form-check-label" for="payment_online">Online Payment</label>
                             </div>
+                            <div class="form-check mt-3">
+
+                                <span id="WalletError" class="text-danger" style="display: none;">
+
+                                </span>
+
+                                <input class="form-check-input payment-radio"
+                                    onclick="checkWallet('<%= userData.Wallet %>','<%= cartData.totalAmount %>')"
+                                    type="radio" name="selectedPayment" id="payment_Wallet" value="Wallet" />
+                                <label class="form-check-label" for="payment_Wallet">Wallet Payment</label>
+                            </div>
+                            <div class="d-flex border rounded mt-4 p-2 align-items-center justify-content-center">
+                                <span>Wallet Amount:</span>&nbsp;<span>₹<%= userData.Wallet.toFixed(2) %>/-</span>
+                            </div>
 
                             <div class="d-flex border rounded mt-4 p-2 align-items-center">
-                                <p  class="ms-2">Total Amount: ₹<span id="TAmount"><%=parseFloat(cartData.totalAmount).toFixed(2) %></span>/-&nbsp;&nbsp;&nbsp;<span id="hidden" style="display: none; text-decoration: line-through;" class="text-secondary"></span></p>
+                                <p class="ms-2">Total Amount: ₹<span id="TAmount" class="h5">
+                                        <%=parseFloat(cartData.totalAmount).toFixed(2) %>
+                                    </span>/-&nbsp;&nbsp;&nbsp;<span id="hidden"
+                                        style="display: none; text-decoration: line-through;"
+                                        class="text-secondary"></span></p>
                             </div>
-                            
+
                             <div id="couponDiv" class="d-flex mt-2">
 
-                                <input type="text" class="p-2 coups rounded border" placeholder="apply coupon" name="" id="couponCode" style="width: 75%;">
+                                <input type="text" class="p-2 coups rounded border" placeholder="apply coupon" name=""
+                                    id="couponCode" style="width: 75%;">
                                 <button type="button" class="btn btn-warning coups" id="coupon">apply</button>
-                                
+
                             </div>
                             <div class="text-success" id="couponStatus" style="display: none;">
                                 Coupon applied
                             </div>
-                            
+
 
                             <div class="text-center mt-3">
                                 <button class="btn btn-warning mt-4" id="confirmOrderButton" type="button">Confirm
@@ -169,57 +187,153 @@
     </form>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
+        function checkWallet(walletAmount, total) {
+            console.log('wallet=', walletAmount, ', total=', total)
+            console.log(typeof (walletAmount), typeof (total))
+            if (Number(walletAmount) < Number(total)) {
+                $('#WalletError').text('Insufficient Balance')
+                $('#WalletError').show()
+                setTimeout(() => {
+                    $('#WalletError').text('')
+                    $('#WalletError').hide()
+                    $("#payment_Wallet").prop('checked', false);
+                }, 3000)
+            }
+        }
         // JavaScript to handle the radio button selections and form submission
-        function nameCheck(){
-            let name = $('#recipient-name').val()
-            if(name == '' || name.test(/\s{2,}/)){
-                $('#nameErr').text('Enter a valid name')
-                setTimeout(()=>{
-                    $('#nameErr').text('')
-                },3000)
+
+
+        let namech = true
+        let addch = true
+        let citych = true
+        let pinch = true
+        let statech = true
+        let phch = true
+        function nameCheck() {
+            let name = $('#recipient-name').val();
+            if (name === '' || /\s{2,}/.test(name)) {
+                $('#nameErr').text('Enter a valid name');
+
+                namech = false
+            } else {
+                $('#nameErr').text('');
+
+                namech = true
+            }
+        }
+
+        function addCheck() {
+            const address = $('#recipient-address').val();
+            if (address === '' || /\s{2,}/.test(address)) {
+                $('#addErr').text('Enter a valid address');
+
+
+                addch = false
+            } else {
+                $('#addErr').text('');
+
+                addch = true
+            }
+        }
+
+        function cityCheck() {
+            const cityCheck = $('#recipient-City').val();
+            if (cityCheck === '' || /\s{2,}/.test(cityCheck)) {
+                $('#cityErr').text('Enter a city');
+
+                citych = false
+            } else {
+                $('#cityErr').text('');
+
+                citych = true
+            }
+        }
+
+        function pinCheck() {
+            const pinCheck = $('#recipient-Pincode').val();
+            console.log("pin==", pinCheck)
+            if (pinCheck.length !== 6) {
+                $('#pinErr').text('Enter a valid Pincode');
+
+                pinch = false
+            } else {
+                $('#pinErr').text('');
+
+                pinch = true
+            }
+        }
+
+        function stateCheck() {
+            const stateCheck = $('#recipient-State').val();
+            if (stateCheck === '' || /\s{2,}/.test(stateCheck)) {
+                $('#stateErr').text('Enter a state name');
+
+                statech = false
+            } else {
+                $('#stateErr').text('');
+
+                statech = true
+            }
+        }
+
+        function mobCheck() {
+            const mobCheck = $('#recipient-Mobile').val();
+            if (mobCheck.length !== 10) {
+                $('#mobErr').text('Enter a valid mobile');
+
+                phch = false
+            } else {
+                $('#mobErr').text('');
+
+                phch = true
             }
         }
 
 
 
 
-        $('#coupon').click(()=>{
-  let code = $('#couponCode').val()
-  let realPrice = $('#TAmount').text()
-  console.log("real prize before applyig coupon",realPrice)
 
-  fetch('/applyCoupon',{
-    method:'POST',
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-      code,
-    })
-  }).then(res=>res.json())
-  .then((data)=>{
-    console.log(data)
-    if(data.success){
-      $('.coups').hide()
-      $('#couponStatus').show()
+        $('#coupon').click(() => {
+            let code = $('#couponCode').val()
+            let realPrice = $('#TAmount').text()
+            console.log("real prize before applyig coupon", realPrice)
 
-      $('#TAmount').text(parseFloat(data.amount).tofixed(2))
-      $('#hidden').text("₹"+parseFloat(realPrice).toFixed(2)+"/-")
-      $('#hidden').show()
-      console.log(data.amount);
-      console.log("real prize before applyig coupon",realPrice)
+            fetch('/applyCoupon', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    code,
+                })
+            }).then(res => res.json())
+                .then((data) => {
+                    console.log(data)
 
-    }else{
-    //   alert(data.message)
-    Swal.fire({
-  icon: "error",
-  title: "Oops...",
-  text: data.message,
-//   footer: '<a href="#">Why do I have this issue?</a>'
-});
-    }
-  })
-})
+                    if (data.success) {
+                        $('.coups').hide()
+                        $('#couponStatus').show()
+
+                        $('#TAmount').text(parseFloat(data.amount).toFixed(2))
+                        $('#hidden').text("₹" + parseFloat(realPrice).toFixed(2) + "/-")
+                        $('#hidden').show()
+                        console.log(data.amount);
+                        console.log("real prize before applyig coupon", realPrice)
+
+                    } else {
+                        //   alert(data.message)
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: data.message,
+                            //   footer: '<a href="#">Why do I have this issue?</a>'
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Fetch error:', error);
+                });
+        })
 
 
         const confirmOrderButton = document.getElementById('confirmOrderButton');
@@ -252,7 +366,7 @@
                 })
                     .then(res => res.json())
                     .then((data) => {
-                        if (data.success && data.method == 'cod') {
+                        if (data.success && (data.method == 'cod' || data.method == 'Wallet')) {
                             // console.log(data.success)
                             window.location.replace('/placeOrder')
                         }
@@ -322,7 +436,7 @@
             fetch('/verify-payment', {
                 method: 'POST',
                 headers: {
-                    "Content-Type":"application/json"
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     payment, orderId
@@ -331,9 +445,9 @@
                 .then(res => res.json())
                 .then((data) => {
                     // console.log(data.status == 'payment success');
-                    if(data.status == 'payment success'){
+                    if (data.status == 'payment success') {
                         window.location.replace('/placeOrder')
-                    }else if(data.status == 'payment failed'){
+                    } else if (data.status == 'payment failed') {
                         alert('payment failed')
                     }
                 })
@@ -346,20 +460,11 @@
 
 
 
-
-
-
-
-
-
-
-
-
         const orderForm = document.getElementById('orderForm');
 
 
-
         const saveAddress = async () => {
+            console.log('clicked')
             const Name = document.getElementById('recipient-name').value
             const Address = document.getElementById('recipient-address').value
             const City = document.getElementById('recipient-City').value
@@ -373,23 +478,22 @@
                 "Pincode=", Pincode,
                 "State=", State,
                 "Mobile=", Mobile)
-
-            const res = await fetch('/saveAddress', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    Name, Address, City, Pincode, State, Mobile
+            console.log("this===", namech, addch, citych, pinch, statech, phch)
+            if (namech && addch && citych && pinch && statech && phch) {
+                var res = await fetch('/saveAddress', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        Name, Address, City, Pincode, State, Mobile
+                    })
                 })
-            })
+            }
             const data = await res.json()
             // console.log(data)
             if (data.success) {
-                // Address saved successfully
-                // Display a success message
 
-                // Clear form fields (optional)
                 document.getElementById('recipient-name').value = "";
                 document.getElementById('recipient-address').value = "";
                 document.getElementById('recipient-City').value = "";
@@ -414,11 +518,10 @@
 
             }
 
-
         }
+        document.getElementById('addAddressBtn').addEventListener('click', saveAddress);
 
 
-        // Function to get the selected value
 
     </script>
 

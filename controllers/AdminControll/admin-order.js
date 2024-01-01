@@ -1,7 +1,12 @@
 const orderModel = require('../../models/order');
 const socketManager = require('../../util/socket')
 const mongoose = require('mongoose')
+const json2csv = require('json2csv').parse;
+const fs = require('fs');
 const userModel = require('../../models/user')
+const Orders = require('../../models/order')
+const wallet = require('../../models/walletPayment');
+const products = require('../../models/products');
 
 
 
@@ -63,17 +68,27 @@ const updateReturnStatus = async(req,res)=>{
     if (num == 0) {
       item.returnStatus = 'returned';
       await order.save();
-      let Wamount = item.quantity * item.productId.Price
+      let Wamount = item.quantity * item.productId.discountedPrice
       await userModel.findByIdAndUpdate({_id: order.UserId},{$inc:{Wallet:Wamount}})
-      
-      res.json({
+      const walletHistory = await wallet.findOne({userId:order.UserId})
+      // console.log('wallet==',walletHistory)
+      walletHistory.payment.push( {
+        amount:Wamount,
+        date:new Date(),
+        purpose:'Order Returned',
+        income:'Debited'
+
+    })
+    await walletHistory.save()
+
+      return res.json({
         response:"accepted"
       })
   
     } else if (num == 1) {
-      item.returnStatus = 'rejected';
       await order.save();
-      res.json({
+      item.returnStatus = 'rejected';
+        return res.json({
         response:"rejected"
       })
   
@@ -101,6 +116,52 @@ const orderDetailPage = async(req,res)=>{
   
 }
 
+// Endpoint to generate and download the CSV file
+const downloadCSV = async(req,res) => {
+  try{
+    const salesData = []
+
+    const data = await Orders.find().populate('Items.productId').populate('UserId')
+    // console.log('data==',data)
+    data.forEach((order)=>{
+      order.Items.forEach((product)=>{
+        let obj = {
+          _id: product.productId._id,
+          product: product.productId.Name,
+          purchaseDate: order.OrderDate,
+          orderedBy: order.UserId.name,
+          quantity: product.quantity,
+          price: product.discounted,
+        }
+        salesData.push(obj)
+      })
+    })
+console.log('salesData==',salesData)
+    // const salesData = [
+    //   { date: '2023-01-01', product: 'Product A', amount: 100 },
+    //   { date: '2023-01-02', product: 'Product B', amount: 150 },
+    //   // Add more data as needed
+    // ];
+
+
+
+  
+    // Convert JSON data to CSV format
+    const csv = json2csv(salesData, { fields: ['_id', 'product', 'purchase date','ordered by','quantity','price'] });
+  
+    // Set headers for file download
+    res.setHeader('Content-disposition', 'attachment; filename=sales_report.csv');
+    res.set('Content-Type', 'text/csv');
+  
+    // Send the CSV data to the client
+    res.status(200).send(csv);
+    // res.json({stayFocus: true})
+  }catch(error){
+    console.error(error)
+  }
+  
+}
+
 
 
 
@@ -112,5 +173,5 @@ module.exports = {
     updateOrderStatus,
     updateReturnStatus,
     orderDetailPage,
-
+    downloadCSV
 }

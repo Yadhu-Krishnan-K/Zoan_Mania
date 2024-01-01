@@ -64,7 +64,7 @@
                 </td>
                 <td id="price<%= cart.ProductId._id %>" class="common">
                
-                  ₹<span id="actualPrice<%= cart.ProductId._id %>"><%= cart.Quantity * cart.ProductId.discountedPrice %></span>/-&nbsp;&nbsp;
+                  ₹<span id="actualPrice<%= cart.ProductId._id %>"><%= cart.Quantity * cart.ProductId.discountedPrice.toFixed(2) %></span>/-&nbsp;&nbsp;
 
                   <% if(cart.ProductId.catOffer.catPer > 0){ %>
                     <span id="originalPrice<%= cart.ProductId._id %>" style="text-decoration: line-through;" class="text-muted">₹<%=cart.Quantity * cart.ProductId.Price %>/-</span>
@@ -78,7 +78,7 @@
             <div class="row d-flex justify-content-end border">
               <div class="col-md-3 d-flex justify-content-center align-items-center border" style="height: 80px;">
                 <div style="height: 90%; width: 90%; display: flex; justify-content: center; align-items: center;"
-                  id="totalPrice">Total Price=₹<%= sum %>/-</div>
+                  id="totalPrice">Total Price=₹<%= sum.toFixed(2) %>/-</div>
               </div>
             </div>
             <div class="d-flex justify-content-end align-items-center mt-4 mb-3">

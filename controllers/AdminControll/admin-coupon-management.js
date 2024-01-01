@@ -16,8 +16,12 @@ const getCoupons = async(req,res) => {
 
 const addCoupons = async(req,res)=>{
     try {   
+        let naem = req.body.Cname.trim()
         let exist = await coupons.findOne({
-            code:req.body.Ccode
+            $or:[
+                {code:req.body.Ccode},
+                {name:naem}
+            ]
         })
         if(exist){
             return res.json({
@@ -49,13 +53,14 @@ const EditCoupon = async(req,res) => {
     try {
         // console.log("Edit coupon====",req.body)
         let name = req.body.Cname.trim()
-        let exist = await findOne({
-            code:req.body.Ccode
+        let exist = await coupons.findOne({
+            $or:[
+                {code:req.body.Ccode},
+                {name:name}
+            ]
         })
-
-        // console.log("")
         
-        if(exist){
+        if(exist&& JSON.stringify(exist._id)!==JSON.stringify(req.params.couponId)){
             return res.json({
                 success:false
             })
@@ -70,6 +75,7 @@ const EditCoupon = async(req,res) => {
             discount:req.body.Discount,
             forPuchace:req.body.PAmount,
             Expiry:req.body.Edate,
+            expired:false
         },{new:true}
         )
     
@@ -92,8 +98,6 @@ const deleteCoupon = async(req,res) => {
         console.error("error: ",error)
     }
 }
-
-
 
 
 

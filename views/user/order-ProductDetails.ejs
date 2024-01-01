@@ -60,9 +60,14 @@
                                                     </div>
                                                     <div
                                                         class="col text-center d-flex justify-content-center align-items-center">
-                                                        <p class="text-muted mb-0 small">₹<%=data.productId.Price%>
+                                                        <%
+                                                            let Ptotal = data.discounted*data.quantity
+                                                         %>
+                                                        <p class="text-muted mb-0 small">₹<%=Ptotal.toFixed(2)%>
                                                         </p>
                                                     </div>
+                                                    
+                                                    
                                                     <% if(orders.Status === 'Delivered' && !(data.needToRemoved)){ %>
                                                         <div
                                                             class="col text-center d-flex justify-content-center align-items-center">
@@ -93,6 +98,7 @@
                                                             </div>
                                                             <% } %>
                                                         <% } %>
+                                                        
 
                                                 </div>
                                                 <br>
@@ -168,13 +174,20 @@
                                     </div>
                                 </div>
 
-
+                                <% if(orders.couponAmount && orders.couponAmount.coupnId){ %>
+                                    <div class="col-12 d-flex flex-column align-items-end ">
+                                        <h5 class="text-success">coupon used: <%=orders.couponAmount.coupnId.name  %></h5><br>
+                                        <span class="text-success">off: <%= orders.couponAmount.amount %>%</span><br>
+                                        <% let val = orders.TotalPrice*orders.couponAmount.amount/100 %>
+                                        <span class="text-success">deducted: ₹<%= val.toFixed(2) %>/-</span>
+                                    </div>
+                                <% } %>
                                 <div class="card-footer border-0 px-4 py-5"
                                     style="background-color: #72a887; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
                                     <h5
                                         class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">
                                         Total
-                                        Price: <span class="h2 mb-0 ms-2">₹ <%= orders.TotalPrice %></span></h5>
+                                        Price: <span class="h2 mb-0 ms-2">₹ <%= orders.TotalPrice.toFixed(2) %></span></h5>
                                 </div>
                             </div>
                         </div>

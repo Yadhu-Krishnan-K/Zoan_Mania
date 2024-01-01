@@ -26,7 +26,10 @@
                             <p style="font-weight: 100;"><span><%= P_detail.Suffix %></span></p>
                             <div class="rating" style="height: 30px; width: 100px; ; "><p>Rating</p></div>
                             <hr>
-                            <h3 style="font-weight: 300;">₹  <%= P_detail.Price %>/-</h3>
+                            <span class="h3" style="font-weight: 300;">₹  <%= P_detail.discountedPrice %>/-</span>&nbsp;&nbsp;
+                            <% if(P_detail.catOffer.catPer>0){ %>
+                              <span style="text-decoration: line-through; font-weight: 100;">₹  <%= P_detail.Price %>/-</span>
+                            <% } %>
                             <p class="text-success-emphasis">inclusive of all taxes</p>
                          
                             <% if( P_detail.Stock < 1 ){ %>
@@ -55,7 +58,7 @@
                                     <button class="btn btn-success">Add To Cart</button>                                <!-- <a href="" class="ms-3"><img src="/icons/like.png" alt=""></a> -->
                                   </div> 
                                 <% } %>
-                            <% } %>
+                            <% } %> 
 
                             
 
