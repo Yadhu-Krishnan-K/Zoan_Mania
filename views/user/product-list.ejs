@@ -25,26 +25,40 @@
             </label>
           </div>
         <% }) %>
-        <!-- Price range filtering -->
-  <!-- <div class="mt-4">
-    <h4>Price Range</h4>
-    <div class="mb-3">
-      <label for="priceRange" class="form-label">Select Price Range:</label>
-      <input type="range" class="form-range" id="priceRange" min="<%= minPrice %>" max="<%= maxPrice %>" step="10" value="<%= minPrice %>">
-    </div>
-  </div> -->
-  <!-- Price range filtering -->
-<div class="mt-4">
-  <h4>Price Range</h4>
-  <div class="mb-3">
-    <label for="priceRange" class="form-label">Select Price Range:</label>
-    <div class="d-flex justify-content-between">
-      <!-- <span id="minPriceLabel"></span> -->
-      <p>₹<span id="maxPriceLabel" class="fs-4"></span>/-</p>
-    </div>
-    <input type="range" class="form-range" id="priceRange" min="<%= minPrice %>" max="<%= maxPrice %>" step="10" value="<%= minPrice %>">
-  </div>
-</div>
+
+        <div class="mt-4">
+          <h4>Price Range</h4>
+          <div class="mb-3">
+            <label for="priceRange" class="form-label">Select Price Range:</label>
+            <div class="d-flex flex-column">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="priceRange" value="0-100" id="priceRange1">
+                <label class="form-check-label" for="priceRange1">₹0 - ₹100</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="priceRange" value="100-500" id="priceRange2">
+                <label class="form-check-label" for="priceRange2">₹100 - ₹500</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="priceRange" value="500-1000" id="priceRange3">
+                <label class="form-check-label" for="priceRange3">₹500 - ₹1000</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="priceRange" value="1000-2000" id="priceRange4">
+                <label class="form-check-label" for="priceRange4">₹1000 - ₹2000</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="priceRange" value="2000-5000" id="priceRange5">
+                <label class="form-check-label" for="priceRange5">₹2000 - ₹5000</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="priceRange" value="5000-above" id="priceRange6">
+                <label class="form-check-label" for="priceRange6">₹5000 and above</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
 
         <div style="width: 100%;" class="d-flex justify-content-center">
           <button class="btn btn-success" onclick="applyFilters()">Apply</button>
@@ -136,87 +150,82 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
-     // Add this part for the price range slider
-  const priceRange = document.getElementById('priceRange');
-  // const minPriceLabel = document.getElementById('minPriceLabel');
-  const maxPriceLabel = document.getElementById('maxPriceLabel');
-
-  // Initialize the labels with the initial values
-  // minPriceLabel.textContent = `Min: ₹${priceRange.min}`;
-  maxPriceLabel.textContent = `${priceRange.value}`;
-
-  // Add event listener to update labels while sliding
-  priceRange.addEventListener('input', function () {
-    // minPriceLabel.textContent = `Min: ₹${priceRange.min}`;
-    maxPriceLabel.textContent = `${priceRange.value}`;
-  });
 
 
 
 
-    function applyFilters() {
-      const selectedCategories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
-        .map(checkbox => checkbox.value);
-      const priceRange = document.getElementById('priceRange').value;
 
-      fetch('/filter', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ categories: selectedCategories, priceRange }),
-      })
-      .then(res => res.json())
-      .then(data => updateUI(data))
-      .catch(error => console.error('Error applying filters:', error));
-    }
+  function applyFilters() {
+  const selectedCategories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
+    .map(checkbox => checkbox.value);
+
+    const selectedPriceRange = document.querySelector('input[name="priceRange"]:checked');
+    const selectedPriceRangeValue = selectedPriceRange ? selectedPriceRange.value : null;
+    // console.log('typeof selectedPriceRangeValue=',typeof(selectedPriceRangeValue))
+    // console.log('selectedPriceRangeValue==',selectedPriceRangeValue);
+    // console.log('Data sent to server:', JSON.stringify({ categories: selectedCategories, priceRange: selectedPriceRange }));
+
+  fetch('/filter', { 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ categories: selectedCategories, priceRange: selectedPriceRangeValue }),
+  })
+  .then(res => res.json())
+  .then(data => updateUI(data))
+  .catch(error => console.error('Error applying filters:', error));
+}
+
 
     function updateUI(data) {
-      console.log('data==',data)
-      const productContainer = document.getElementById('productContainer');
-      productContainer.innerHTML = '';
+  const productContainer = document.getElementById('productContainer');
+  productContainer.innerHTML = '';
 
-      data.products.forEach(product => {
-        const productCard = document.createElement('div');
-        productCard.className = 'col-md-4 p-4';
+  data.products.forEach(product => {
+    const productCard = document.createElement('div');
+    productCard.className = 'col-md-4 p-4';
 
-        productCard.innerHTML = `
-          <div class="card shadow" style="width: 18rem;margin-left: 25px;">
-            ${product.catOffer.catPer > 0 ? `<span class="bg-info text-white m-2 p-1" style="position: absolute; top: 0px; right: 0px; z-index: 1; border-radius: 5px;">${product.catOffer.catPer}% off</span>` : ''}
-            <a href="/productDetail/${product._id}">
-              <img class="card-img-top img-fluid" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/${product.Image[0]}" alt="Card image cap">
-            </a>
-            <div class="card-body">
-              <h6 class="card-title">${product.Name}</h6>
+    const cardHtml = `
+      <div class="card shadow" style="width: 18rem; margin-left: 25px;">
+        ${product.catOffer.catPer > 0 ? `<span class="bg-info text-white m-2 p-1" style="position: absolute; top: 0px; right: 0px; z-index: 1; border-radius: 5px;">${product.catOffer.catPer}% off</span>` : ''}
+        <a href="/productDetail/${product._id}">
+          <img class="card-img-top img-fluid" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/${product.Image[0]}" alt="Card image cap">
+        </a>
+        <div class="card-body">
+          <h6 class="card-title">${product.Name}</h6>
 
-              ${product.Stock >= 1 && (data.cartData && data.cartData.Items.length !== 0 ) ? `
-                <p class="card-text" style="font-weight: 700;">₹${product.Price}/-</p>
-                ${(() => {
-                  let isInCart = false;
-                  for (let index = 0; index < data.cartData.Items.length; index++) {
-                    if (JSON.stringify(product._id) === JSON.stringify(data.cartData.Items[index].ProductId._id)) {
-                      isInCart = true;
-                      break;
-                    }
-                  }
-                  return isInCart ? '<a href="/cart" class="btn btn-warning">Go To Cart</a>' :
-                    `<button class="btn btn-warning" id="buton${product._id}" onclick="addToCart('${product._id}')">Add To Cart</button>`;
-                })()}
-              ` : product.Stock < 1 ? `
-                <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out of stock</p>
-                <a href="" class="btn btn-warning" style="pointer-events: none">Add To Cart</a>
-              ` : `
-                <button class="btn btn-warning" onclick="addToCart('${product._id}')">Add To Cart</button>
-              `}
+          ${product.Stock >= 1 ? `<p class="card-text" style="font-weight: 700;">₹${product.Price}/-</p>` : ''}
+          
+          ${(() => {
+            let isInCart = false;
+            if (data.cartData && data.cartData.Items.length > 0) {
+              for (let index = 0; index < data.cartData.Items.length; index++) {
+                if (JSON.stringify(product._id) === JSON.stringify(data.cartData.Items[index].ProductId._id)) {
+                  isInCart = true;
+                  break;
+                }
+              }
+            }
+            if (isInCart) {
+              return '<a href="/cart" class="btn btn-warning">Go To Cart</a>';
+            } else if (product.Stock >= 1) {
+              return `<button class="btn btn-warning" id="buton${product._id}" onclick="addToCart('${product._id}')">Add To Cart</button>`;
+            } else {
+              return `<p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out of stock</p>`;
+            }
+          })()}
 
-              <a href="/productDetail/${product._id}" class="btn btn-primary">View Details</a>
-            </div>
-          </div>
-        `;
+          <a href="/productDetail/${product._id}" class="btn btn-primary">View Details</a>
+        </div>
+      </div>
+    `;
 
-        productContainer.appendChild(productCard);
-      });
-    }
+    productCard.innerHTML = cardHtml;
+    productContainer.appendChild(productCard);
+  });
+}
+
 
     function addToCart(P_id) {
       $(document).ready(function () {

@@ -82,19 +82,19 @@ const categoryUpdate = async(req,res)=>{
     try {
 
         const catName = req.body.cate
-        console.log("category name===",catName)
+        // console.log("category name===",catName)
         const catId = req.params.id
-        console.log("catId==",catId)
+        // console.log("catId==",catId)
         let catOffer = req.body.offer
-        console.log('catOffer==',catOffer)
+        // console.log('catOffer==',catOffer)
         let date = req.body.offerEnd
         const ofer = moneyVal.categoryOffer(catOffer)
-        console.log("ofer===",ofer)
+        // console.log("ofer===",ofer)
         const name = validator.categoryValidator(catName)
         const nameinValid = npmValid.isEmpty(catName.trim())
-        console.log("nameinvalid===",nameinValid)
+        // console.log("nameinvalid===",nameinValid)
         const oldCatName = await category.findOne({_id: req.params.id})
-        console.log('old name of category==',oldCatName)
+        // console.log('old name of category==',oldCatName)
         if(!(ofer.status)){
            return res.json({
                 status:false,message:ofer.message
@@ -110,14 +110,14 @@ const categoryUpdate = async(req,res)=>{
             date = null
         }
         const cat = await category.findOne({catName:{$regex:  catName, $options: "i"}})
-        console.log("catExist===",cat)
+        // console.log("catExist===",cat)
         // console.log("id from find of category==",cat._id)
         // console.log("is equal",catId==cat._id)
     
     if(cat === null||catId==cat._id || (cat.catName.length !== catName.length)){
 
         if(ofer.status && name.status){
-            console.log('old name of category==',oldCatName.catName)
+            // console.log('old name of category==',oldCatName.catName)
             const Product = await products.find({ Category : { $in: [oldCatName.catName] } })
             Product.forEach(async(product)=>{
                 product.Category.splice(product.Category.indexOf(oldCatName.catName),1)

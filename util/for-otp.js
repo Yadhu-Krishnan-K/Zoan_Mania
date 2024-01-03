@@ -27,11 +27,11 @@ const vaotp= () => { var vtp = otpGenerator.generate(4,
   try {
     const test = 24
      
-    const {name,email,password}=req.body;
+    let {name,email,password}=req.body;
     const data = {name,email,password}
     req.session.email = email;
     req.session.password = password;
-    req.session.name = name;
+    req.session.name = name.trim();
     const uname = await user.findOne({name: name})
     if(uname){
       // res.render('user/userSignUp',{title: "SignUp",exist:"The username already exists"})

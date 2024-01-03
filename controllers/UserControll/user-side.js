@@ -3,6 +3,7 @@ const otpGenerator = require('otp-generator')
 const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
 const bcrypt = require('bcrypt')
+const validator = require('validator')
 
 // const { password } = require('../../util/passwordValidator')
 //c//onst products = require('../../models/products')
@@ -267,7 +268,7 @@ const searchOptions = async(req,res)=>{
 
 
     res.render('user/product-list',{
-      productsList,categories,name, title:'Product List',cartcount,cartData, pageNums,currentPage,minPrice, maxPrice
+      productsList,categories,name, title:'Product List',cartcount,cartData, pageNums,currentPage,minPrice, maxPrice, value
     })
     
   } catch (error) {
@@ -806,7 +807,24 @@ const updateUserProfile = async(req,res)=>{
     
     const userId = req.session.userId
     console.log("req.body===",req.body)
-    const {name, email, phone} = req.body
+    // const {name, email, phone} = req.body
+    const name = req.body.name.replace(/ +/g,' ').trim()
+    if(name.length == 0){
+      return res.json({
+        success:false,
+        error:'name'
+      })
+    }
+
+    const email = req.body.email
+    if(!validator.isEmail(email)){
+      return res.json({
+        success:false,
+        error:'email'
+      })
+    }
+    const phone = req.body.phone
+
     const item = await userModel.findOne({_id:userId})
     let flag = 0
     if(!name){
@@ -815,6 +833,7 @@ const updateUserProfile = async(req,res)=>{
     if(!email){
       email=item.email
     }
+    
     if(!phone){
       if(!item.MobileNumber){
         await userModel.updateOne({_id:userId},{$set:{name:name,email:email}})
@@ -1168,50 +1187,46 @@ const checkoutUser = async (req, res)=>{
   
 }
 
-  // const filter =  async (req, res) => {
-  //   try {
-  //     const selectedCategories = req.body.categories;
-  //     const maxPrice = req.body.priceRange;
-  //     console.log("maxPrice==",maxPrice)
-  //     const cartData = await cart.findOne({userId:req.session.userId})
-  //     // Query the database to find products matching the selected categories
-  //     const filteredProducts = await products.find({ Category: { $all: selectedCategories }, Price:{$lte:maxPrice} });
-  //     // console.log(filteredProducts)
-  //     // Send the filtered products to the client
-  //     res.json({ products: filteredProducts, cartData });
-  //   } catch (error) {
-  //     console.error('Error filtering products:', error);
-  //     res.status(500).json({ error: 'Internal Server Error' });
-  //   }
-  // }
-  const filter = async (req, res) => {
-    try {
-      const selectedCategories = req.body.categories;
-      const maxPrice = req.body.priceRange;
-      console.log("prixe ranged to = ",maxPrice)
-      const cartData = await cart.findOne({ userId: req.session.userId });
-  
-      let filterCriteria = {};
-  
-      if (selectedCategories && selectedCategories.length > 0) {
-        filterCriteria.Category = { $all: selectedCategories };
-      }
-  
-      if (maxPrice !== undefined) {
-        filterCriteria.Price = { $lte: maxPrice };
-      }
-      console.log("filterCriteria===",filterCriteria)
-      // Query the database to find products based on the filter criteria
-      const filteredProducts = await products.find(filterCriteria);
 
-  
-      // Send the filtered products to the client
-      res.json({ products: filteredProducts, cartData });
-    } catch (error) {
-      console.error('Error filtering products:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+const filter = async (req, res) => {
+  try {
+    const selectedCategories = req.body.categories;
+    console.log('selected categories = ', selectedCategories);
+
+    // Parse the selected price range string into an array with lower and upper bounds
+    console.log('price range===',req.body.priceRange);
+    const priceRangeArray = req.body.priceRange?req.body.priceRange.split('-').map(Number):null;
+
+    console.log("price range to = ", priceRangeArray);
+
+    const cartData = await cart.findOne({ userId: req.session.userId });
+
+    let filterCriteria = {};
+
+    if (selectedCategories && selectedCategories.length > 0) {
+      filterCriteria.Category = { $all: selectedCategories };
     }
-  };
+    if(priceRangeArray){
+    if (priceRangeArray[0]!==5000) {
+      filterCriteria.Price = { $gte: priceRangeArray[0], $lte: priceRangeArray[1] };
+    }else{
+      filterCriteria.Price = { $gte: priceRangeArray[0]};
+    }}
+
+    console.log("filterCriteria ===", filterCriteria);
+
+    // Query the database to find products based on the filter criteria
+    const filteredProducts = await products.find(filterCriteria);
+    console.log('filteredProducts==',filteredProducts)
+
+    // Send the filtered products to the client
+    res.json({ products: filteredProducts, cartData });
+  } catch (error) {
+    console.error('Error filtering products:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
   
 
 

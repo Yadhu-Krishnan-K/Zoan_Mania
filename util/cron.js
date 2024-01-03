@@ -46,6 +46,49 @@ const CouponUpdate = async()=>{
 }
 
 
+//product category expiry
+const proUpdate = async () => {
+  try {
+    const productsToUpdate = await products.find();
+
+    for (const product of productsToUpdate) {
+      const cname = product.catOffer.catName;
+
+      if (cname) {
+        const cat = await category.findOne({ catName: cname });
+
+        if (cat && cat.expired) {
+          // Update the product using findOneAndUpdate
+          const updatedProduct = await products.findOneAndUpdate(
+            { _id: product._id },
+            {
+              $set: {
+                'catOffer.catName': null,
+                'catOffer.catPer': 0,
+                'catOffer.till': null,
+              },
+            },
+            { new: true } // This option returns the modified document
+          );
+
+          // if (updatedProduct) {
+          //   // console.log('Product updated:', updatedProduct);
+          // } else {
+          //   // console.log('Failed to update product:', product);
+          // }
+        }
+      }
+    }
+
+    // console.log('Update process completed.');
+  } catch (error) {
+    console.error('Error during product update:', error);
+  }
+};
+
+
+
+
 
 const productUpdate = async () => {
   // updating product offer at expiring, turns all to 0 and null
@@ -69,7 +112,7 @@ const productUpdate = async () => {
 
     for (const cat of proCat.Category) {
       const cate = await category.findOne({ catName: cat });
-      if (cate.catOffer > bigOffer) {
+      if (cate.catOffer > bigOffer && !cate.expired) {
         bigOffer = cate.catOffer;
       }
     }
@@ -80,6 +123,12 @@ const productUpdate = async () => {
       proCat.catOffer.catPer = categor.catOffer;
       proCat.catOffer.till = categor.offerExpiry;
       await proCat.save(); // Use await here to ensure sequential execution
+    }else{
+      const categor = await category.findOne({ catOffer: bigOffer });
+      proCat.catOffer.catName = null;
+      proCat.catOffer.catPer = 0;
+      proCat.catOffer.till = null;
+      await proCat.save();
     }
   }
 
@@ -119,6 +168,7 @@ const productUpdate = async () => {
 
 var task = cron.schedule("*/10 * * * * *", async () => {
   try {
+    await proUpdate()
     await productUpdate()
     await catUpdate();
     await CouponUpdate()

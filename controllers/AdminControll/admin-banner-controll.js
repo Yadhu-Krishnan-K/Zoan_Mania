@@ -18,8 +18,8 @@ const addBanner = async (req, res) => {
             const imagePath = path.join(__dirname, '../../public/Banners', imageUrls[i]); // Update the path here
             console.log('imagePath=',imagePath)
             // Specify the desired dimensions for cropping
-            const width = 400;
-            const height = 400;
+            const width = 1200;
+            const height = 500;
 
             // Use sharp to crop and resize the image
             const outputBuffer = await sharp(imagePath)

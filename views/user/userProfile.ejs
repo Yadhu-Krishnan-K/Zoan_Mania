@@ -105,7 +105,7 @@
             </a>
          
 
-          
+          <!-- userData edit modal -->
           </div>
           <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -118,13 +118,14 @@
                   <form>
                     <div class="mb-3">
                       <label for="recipient-name" class="col-form-label">Name</label>
-                      <input type="text" class="form-control" value="<%= name %>" id="recipient-name">
+                      <input type="text" class="form-control"  value="<%= name %>" id="recipient-name">
                     </div>
                     <div class="mb-3">
                       <label for="recipient-name" class="col-form-label">Email:</label>
                       <input type="text" class="form-control" value="<%= userData.email%>" id="recipient-email">
                     </div>
                     <div class="mb-3">
+                      <span class="text-danger" id="pherr"></span>
                       <label for="recipient-name" class="col-form-label">Phone Number:</label>
                       <input type="text" class="form-control" value="<%= userData.MobileNumber %>" id="recipient-Pnumber">
                     </div>
@@ -147,6 +148,7 @@
         console.log("edit button clicked")
                 $('#editModal').modal('show');
     }
+
   
     function saveDetail(){
 
@@ -156,7 +158,9 @@
         console.log("email==",email)
         const phone = document.getElementById('recipient-Pnumber').value
         console.log("phone==",phone)
-
+        if(phone.length!==10){
+         return document.getElementById('pherr').innerHTML = 'should include 10 digits'
+        }
 
         const data = {
             name,email,phone

@@ -24,8 +24,8 @@
   <!-- Inner -->
   <div class="carousel-inner">
     <% BAnner.images.forEach((image, index) => { %>
-      <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
-        <img src="/croppedBanner/<%= image %>" class="d-block w-100" alt="<%= image.alt %>" />
+      <div class="carousel-item <%= index === 0 ? 'active' : '' %> d-flex justify-content-center ">
+        <img src="/croppedBanner/<%= image %>" class="d-block" width="100%" alt="<%= image.alt %>" />
         <div class="carousel-caption d-none d-md-block">
           <h5><%= image.label %></h5>
           <p><%= image.description %></p>

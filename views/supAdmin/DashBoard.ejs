@@ -47,7 +47,7 @@
                     <th scope="row"><%= i + 1 %></th>
                     <td><img height="50px" style="border-radius: 12px;" width="50px" src="/uploads/<%= product.Image[0] %>" alt="img"></td>
                     <td><%= product.Name %></td>
-                    <td><%= product.discountedPrice %></td>
+                    <td><%= product.discountedPrice.toFixed(2) %></td>
                     <td><%= product.Selled %></td>
                   </tr>
                 <% }) %>
