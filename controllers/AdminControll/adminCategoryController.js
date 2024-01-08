@@ -37,7 +37,7 @@ const addCategory = async(req,res)=>{
     if(cat.length == 0){
         if(ofer.status && name.status){
             const colleeeection = await category.create({
-                catName:catName,
+                catName:catName.toUpperCase(),
                 catOffer:catOffer,
                 offerExpiry:date,
                 expired:(catOffer==0)?true:false
@@ -119,10 +119,9 @@ const categoryUpdate = async(req,res)=>{
         if(ofer.status && name.status){
             // console.log('old name of category==',oldCatName.catName)
             const Product = await products.find({ Category : { $in: [oldCatName.catName] } })
-            Product.forEach(async(product)=>{
+            for(let product of Product){
                 product.Category.splice(product.Category.indexOf(oldCatName.catName),1)
-                product.Category.push(catName)
-                const catext = await Categories.findOne({catName:product.catOffer.catName})
+                product.Category.push(catName.toUpperCase())
                 if(product.catOffer.catName==oldCatName.catName||product.catOffer.catPer<=catOffer || new Date(product.catOffer.till)<=new Date()){
                     product.catOffer.catName = catName
                     product.catOffer.catPer = catOffer
@@ -130,12 +129,12 @@ const categoryUpdate = async(req,res)=>{
                     product.discountedPrice = product.Price - (product.Price*catOffer/100)
                 }
                 product.save()
-            })
+            }
             
             console.log('products when updating',Product)
 
             await category.updateOne({_id:req.params.id},{
-                catName:catName,
+                catName:catName.toUpperCase(),
                 catOffer:catOffer,
                 offerExpiry:date,
                 expired:(catOffer==0)?true:false
@@ -185,6 +184,13 @@ const cateOfferRemove = async(req,res)=>{
 //category Delete
 const categoryDelete = async(req,res)=>{
     try {
+        let cate = await Cate.findOne({_id:req.params.id})
+
+        await products.updateMany(
+            { Category: { $elemMatch: { $eq: cate.catName } } },
+            { $pull: { Category: cate.catName } }
+          );
+
         await Cate.findByIdAndDelete({_id:req.params.id})
         res.json({success:true})
     

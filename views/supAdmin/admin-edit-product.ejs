@@ -11,8 +11,9 @@
                 <div class="row d-flex justify-content-between">
                     <div class="col-md-8 border p-3 mb-3">
                         <div class="form-group border p-3 mb-3">
+                            <span class="text-danger" id="NameErr"></span>
                             <label for="productName">Name : </label>
-                            <input type="text" name="ProductName" class="form-control bg-light"
+                            <input type="text" id="Pname" name="ProductName" class="form-control bg-light"
                                 value="<%=P_detail.Name%>" id="productName" placeholder="Enter product name" required />
                         </div>
                         <br>
@@ -119,13 +120,14 @@
 
                     <div class="col-md-4  ">
                         <div class="bg-white  border p-3 mb-3">
-
+                            <span class="text-danger" id="catErr"></span>
                             <div class="dropdown">
+
                                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                     aria-expanded="false">
                                     Select categories
                                 </button>
-                            
+                                
                                 <ul class="dropdown-menu p-2" id="categoryDropdown">
                                     <% cate.forEach(cat => { %>
                                         <li class="dropdown-item" style="cursor: pointer;">
@@ -194,11 +196,12 @@
 
         function Clicked() {
             document.getElementById('sub').addEventListener("submit", (e) => {
+                let Pname = document.getElementById('Pname').value.trim()
                 let stock = document.getElementById('stock').value;
                 let price = document.getElementById('price').value;
                 let err = document.getElementById('stocker');
                 let prerr = document.getElementById('priceErr');
-
+                let catErr = document.getElementById('catErr')
                 // Get selected categories
             let selectedCategories = [];
             document.querySelectorAll('[name="Category"]:checked').forEach((checkbox) => {
@@ -209,12 +212,24 @@
             let categoriesInput = document.createElement('input');
             categoriesInput.type = 'hidden';
             categoriesInput.name = 'Categories';
-            categoriesInput.value = JSON.stringify(selectedCategories);
+            categoriesInput.value = selectedCategories; 
             document.getElementById('sub').appendChild(categoriesInput);
 
+                if(Pname.length==0){
+                    e.preventDefault()
+                    document.getElementById('NameErr').innerHTML = 'Enter a valid name'
+                    setTimeout(()=>{
+                        document.getElementById('NameErr').innerHTML = ''
+                    },3000)
+                }
 
-
-
+                if (selectedCategories.length==0){
+                    e.preventDefault();
+                    catErr.innerHTML = 'Select Atleast One Category';
+                    setTimeout(()=>{
+                        catErr.innerHTML = ''
+                    },3000)
+                }
 
                 if (stock < 0) {
                     e.preventDefault();
@@ -222,15 +237,16 @@
                     err.innerHTML = 'stock should be greater than or equal to 0';
                     setTimeout(() => {
                         err.style.display = 'none'
-                    }, 4000)
+                    }, 3000)
                 }
+
                 if (price <= 0) {
                     e.preventDefault();
                     prerr.style.display = 'block'
                     prerr.innerHTML = 'price should be greater than 0';
                     setTimeout(() => {
                         prerr.style.display = 'none'
-                    }, 4000)
+                    }, 3000)
                 }
             })
         }

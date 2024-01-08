@@ -1,13 +1,19 @@
+// import { PDFDocument } from 'pdf-lib';
+// import { drawTable } from 'pdf-lib-draw-table';
+// const PDFDocument = require('pdf-lib')
 const orderModel = require('../../models/order');
 const socketManager = require('../../util/socket')
 const mongoose = require('mongoose')
 const json2csv = require('json2csv').parse;
 const fs = require('fs');
+// const pdf = require("../../util/salesReportPDF");
+const pdf = require('../../util/salesReportPDF')
+// const PDFDocument = require('pdfkit-table'); // Use 'pdfkit-tables' instead of 'pdfkit'
 const userModel = require('../../models/user')
 const Orders = require('../../models/order')
 const wallet = require('../../models/walletPayment');
 const products = require('../../models/products');
-
+// require('pdfkit-tables');
 
 
 
@@ -120,34 +126,34 @@ const orderDetailPage = async(req,res)=>{
 const downloadCSV = async(req,res) => {
   try{
     const salesData = []
+    let startDate = new Date(req.body.startDate).toISOString().split('T')[0]
+    let endDate = new Date(req.body.endDate).toISOString().split('T')[0]
+    console.log('startDate=',startDate,' ,endDate=',endDate)
 
     const data = await Orders.find().populate('Items.productId').populate('UserId')
     // console.log('data==',data)
     data.forEach((order)=>{
-      order.Items.forEach((product)=>{
-        let obj = {
-          _id: product.productId._id,
-          product: product.productId.Name,
-          purchaseDate: order.OrderDate,
-          orderedBy: order.UserId.name,
-          quantity: product.quantity,
-          price: product.discounted,
-        }
-        salesData.push(obj)
-      })
+      let orderDate = new Date(order.OrderDate).toISOString().split('T')[0]
+      console.log('orderDate=',orderDate)
+      // Check if the order date is within the specified range
+      if (orderDate >= startDate && orderDate <= endDate) {
+        order.Items.forEach((product) => {
+          let obj = {
+            _id: product.productId._id,
+            product: product.productId.Name,
+            purchaseDate: order.OrderDate,
+            orderedBy: order.UserId.name,
+            quantity: product.quantity,
+            price: product.discounted,
+          };
+          salesData.push(obj);
+        });
+      }
     })
 console.log('salesData==',salesData)
-    // const salesData = [
-    //   { date: '2023-01-01', product: 'Product A', amount: 100 },
-    //   { date: '2023-01-02', product: 'Product B', amount: 150 },
-    //   // Add more data as needed
-    // ];
-
-
-
   
     // Convert JSON data to CSV format
-    const csv = json2csv(salesData, { fields: ['_id', 'product', 'purchase date','ordered by','quantity','price'] });
+    const csv = json2csv(salesData, { fields: ['_id', 'product', 'purchaseDate','orderedBy','quantity','price'] });
   
     // Set headers for file download
     res.setHeader('Content-disposition', 'attachment; filename=sales_report.csv');
@@ -168,10 +174,65 @@ console.log('salesData==',salesData)
 
 
 
+const downloadPdf = async (req, res) => {
+  try{
+    console.log('reached...')
+    let startDate = new Date(req.body.startDate).toISOString().split('T')[0]
+      // const format = req.body.fileFormat;
+      let endDate = new Date(req.body.endDate).toISOString().split('T')[0]
+     
+
+      const orders = await Orders.find().populate("Items.productId");
+          // PaymentStatus: { $ne: 'pending' },
+        //   OrderDate: {
+        //     $gte: startDate,
+        //     $lte: endDate,
+        //   },
+        // })
+        console.log('orders before pdf==',orders)
+      let filteredOrders = orders.filter(order=>startDate<=new Date(order.OrderDate).toISOString().split('T')[0]&&endDate>=new Date(order.OrderDate).toISOString().split('T')[0]&&order.PaymentStatus!=='Pending')
+      console.log('orders===when====pdfdownlod===',filteredOrders)
+      let totalSales = 0;
+      filteredOrders.forEach((order) => {
+        totalSales += order.TotalPrice || 0;
+      });
+
+      console.log(totalSales, "orderssss");
+      const sum = totalSales.length > 0 ? totalSales[0].totalSales : 0;
+      const pdfBuffer = await pdf.generatePdfBuffer(filteredOrders, startDate, endDate, totalSales);
+
+      // Set the content type and response headers
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=sales_report.pdf`);
+
+      // Send the PDF buffer as the response
+      res.send(pdfBuffer);
+  }catch(error){
+    console.log('pdf error:',error)
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = {
     getOrder,
     updateOrderStatus,
     updateReturnStatus,
     orderDetailPage,
-    downloadCSV
+    downloadCSV,
+    downloadPdf
 }

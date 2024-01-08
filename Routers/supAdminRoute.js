@@ -208,9 +208,9 @@ router.get('/422Error',(req,res)=>{
 })
 
 router.route('/downloadSalesReport')
-.get(ordercontroller.downloadCSV)
+.post(ordercontroller.downloadCSV)
 
-
+router.post('/downloadSalesReportPDF',ordercontroller.downloadPdf)
 
 
 

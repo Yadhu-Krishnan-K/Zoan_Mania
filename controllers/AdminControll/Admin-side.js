@@ -4,6 +4,7 @@ const db = require('../../models/user')
 const productModel =require('../../models/products')
 const Categories = require('../../models/category')
 const BAnner = require('../../models/banner')
+const order = require('../../models/order')
 
 const getAdminLogin = (req,res)=>{
     try {
@@ -25,8 +26,11 @@ const DashBoard = async(req,res) => {
             }},
             {$limit : 6}
         ])
+        const orders = await order.find().sort({ OrderDate: 1 }).exec();
+        const earliestOrder = orders[0]
+        console.log('order[0]==',earliestOrder)
 
-        res.render('supAdmin/DashBoard',{title:"Admin Dash",Page:"Dashboard",products})
+        res.render('supAdmin/DashBoard',{title:"Admin Dash",Page:"Dashboard",products,earliestOrder})
     
     } catch (error) {
       console.error("error 500 :",error);

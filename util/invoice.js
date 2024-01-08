@@ -7,59 +7,43 @@ const easyInvoice = async (req, res) => {
   try {
     let order = await Orders.findOne({ _id: req.params.orderId }).populate('Items.productId');
     const ar = order.Items.map((item) => ({
-      quantity: item.quantity,
-      description: item.productId.Name,
-      tax: 0,
-      price: item.productId.discountedPrice,
+      "quantity": `${item.quantity}`,
+      "description": item.productId.Name,
+      "tax-rate": 0,
+      "price": isNaN(item.discounted) ? 0 : item.discounted,
     }));
-    // console.log('ar=',ar)
-    // let totalWithoutOffers = ar.reduce((total,products) => total + prodcuts)
     var data = {
-      // "apiKey": "123abc", // Get apiKey through: https://app.budgetinvoice.com/register
-
-      // Customize enables you to provide your own templates
-      // Please review the documentation for instructions and examples
-      customize: {
-        //  "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html
+      
+      "sender": {
+        "company": 'ZOAN_MANiA',
+        "address": "Sample Street 123",
+        "zip": "1234 AB",
+        "city": "CHR",
+        "country": "INDIA"
       },
-      // images: {
-      //   // The logo on top of your invoice
-      //   logo: "https://public.budgetinvoice.com/img/logo_en_original.png",
-      //   // The invoice background
-      //   background: "https://public.budgetinvoice.com/img/watermark-draft.jpg",
-      // },
-      // Your own data
-      sender: {
-        company: "Zoan_Mania",
-        address: "CCCCCChr",
-        zip: "123456",
-        city: "chr",
-        country: "India",
-   
+      "client": {
+        "company": "Client Corp",
+        "address": order.Address.Address,
+        "zip": order.Address.Pincode,
+        "city": order.Address.City,
+        "country": "INDIA"
       },
-      // Your recipient
-      client: {
-        company: order.Address.Name,
-        address: order.Address.Address,
-        zip: order.Address.Pincode,
-        city: order.Address.City,
-        country: 'IND',
- 
-      },
-      information: {
+      "information": {
         // Invoice number
         number: order._id,
         // Invoice data
-        date: order.OrderDate,
+        date: order.OrderDate 
       },
-
-      products: ar,
-
+      "products": ar,
+      "bottom-notice": "Thank you for your purchase",
       settings: {
-        currency: "USD",
+        "currency": "INR",
+        "tax-notation": "GST",
+        "margin-top": 50,
+        "margin-right": 50,
+        "margin-left": 50,
+        "margin-bottom": 25
       },
-      discount: order.couponAmount.amount,
-      total:  order.TotalPrice,
     };
     console.log(data)
 

@@ -19,7 +19,7 @@ const ShippedAddressSchema = new Schema({
 
 const OrdersSchema = new Schema({
   UserId: { type: Schema.Types.ObjectId, ref: "user"},
-  Status: { type: String, default:"Pending"},
+  Status: { type: String, default: "Pending"},
   //status=pending, orderplaced, shiped, delivered, rejected
   Items: [{
      productId: { type: Schema.Types.ObjectId , ref: "products" },
@@ -48,7 +48,7 @@ const OrdersSchema = new Schema({
   ExpectedDeliveryDate:{type: String},
   // updatedStatus:{type: Date},
 
-  
+
 
   TotalPrice: { type: Number },
 

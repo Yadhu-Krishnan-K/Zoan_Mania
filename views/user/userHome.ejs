@@ -65,7 +65,7 @@
   <div class="container-fluid">
 <div class="row me-5">
   <% productModel.forEach(product => { %>
-    <% if (product.Image.length !== 0 && product.visible) { %>
+    <% if (product.Category.length > 0 && product.Image.length !== 0 && product.visible) { %>
       <div class="col-md-3 p-4">
         <div class="card shadow border" style="width: 18rem;margin-left: 25px;">
           <% if(product.catOffer.catPer>0){ %>

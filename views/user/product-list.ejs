@@ -69,7 +69,7 @@
     <div class="col-md-10"> 
       <div id="productContainer" class="row">
         <% productsList.forEach(product => { %>
-          <% if(product.Image.length !==0 && product.visible){ %>
+          <% if(product.Category.length > 0 && product.Image.length !==0 && product.visible){ %>
             <!-- Product card HTML goes here -->
             <div class="col-md-4  p-4">
               <div class="card shadow" style="width: 18rem;margin-left: 25px;">

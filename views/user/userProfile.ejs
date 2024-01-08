@@ -96,13 +96,13 @@
               
 
 
-            </div>
-            <a href="/walletHistory" style="text-decoration: none;">
-            <div class="card mb-4 p-3">
-              <h3 class="mb-4">Wallet History</h3>
-              <p>Available balance : <%= userData.Wallet.toFixed(2) %></p>
-            </div>
-            </a>
+              </div>
+              <a href="/walletHistory" style="text-decoration: none;">
+              <div class="card mb-4 p-3">
+                <h3 class="mb-4">Wallet History</h3>
+                <p>Available balance : <%= userData.Wallet.toFixed(2) %></p>
+              </div>
+              </a>
          
 
           <!-- userData edit modal -->
@@ -175,8 +175,8 @@
         .then((res) => res.json())
         .then((data) => {
             document.getElementById('recipient-name').value = "";
-        document.getElementById('recipient-email').value = "";
-        document.getElementById('recipient-Pnumber').value = "";
+            document.getElementById('recipient-email').value = "";
+            document.getElementById('recipient-Pnumber').value = "";
 
         // Close the modal (assuming you're using Bootstrap modal)
         $('#editModal').modal('hide');

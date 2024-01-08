@@ -18,6 +18,8 @@ const getAdminAddProduct = async (req, res) => {
   }
 };
 
+
+
 const postAddProduct = async (req, res) => {
   try {
     const images = req.files;
@@ -37,17 +39,17 @@ const postAddProduct = async (req, res) => {
     }
 
     console.log("when adding product, img==", imageUrls);
-    const {
+    let {
       Description,
       Pname,
       stock,
       price,
-      offer,
       Specification1,
       Specification2,
       Specification3,
       Suffix,
     } = req.body;
+
     const categories = Array.isArray(req.body.categories)
       ? req.body.categories
       : req.body.categories.split(",");
@@ -59,9 +61,6 @@ const postAddProduct = async (req, res) => {
     if (catWithOffer.length > 0) {
       // Iterate over each category in categories
       categories.forEach((categoryName) => {
-        console.log(
-          "Eeeeeeeeenttttttttttttttttttttttttered category offercheck"
-        );
         const matchingCategory = catWithOffer.find(
           (cat) => cat.catName === categoryName
         );
@@ -71,7 +70,6 @@ const postAddProduct = async (req, res) => {
           matchingCategoryName = categoryName;
           expDate = new Date(matchingCategory.offerExpiry);
         }
-        console.log("hiiiiiiiiiiiiiiiiiiiiiiiigest=", highestOffer);
       });
     }
     const discountedPrice = price - (price * highestOffer) / 100;
@@ -90,7 +88,7 @@ const postAddProduct = async (req, res) => {
     //     // try {
     const product = new products({
       Description: Description,
-      Name: Pname,
+      Name: Pname.replace(/ +/g,' ').trim(),
       Image: imageUrls,
       Stock: stock,
       Category: categories,
@@ -172,8 +170,9 @@ const postProductEdit = async (req, res) => {
 
     let cate = 0;
     let cateName = '';
-
-    const promises = req.body.Category.map(async (cat) => {
+    let catee = []
+    catee.push(req.body.Category)
+    const promises = catee.map(async (cat) => {
       const cater = await category.findOne({ catName: cat });
       return cater;
     });
@@ -209,7 +208,7 @@ const postProductEdit = async (req, res) => {
 
     const discountedPrice = req.body.Price - (req.body.Price * productData.catOffer.catPer) / 100;
     const data = {
-      Name: req.body.ProductName,
+      Name: req.body.ProductName.replace(/ +/g,' ').trim(),
       Description: req.body.Description,
       Category: req.body.Category,
       Stock: req.body.Stock,
