@@ -1005,28 +1005,39 @@ const pwSendOtp=async(req,res)=>{
 const passwordChange2 = async(req,res)=>{
   try {
     
-    console.log("inside check password")
+    // console.log("inside check password")
     // checking validator
       const user = await userModel.findOne({_id:req.session.userId})
       const Pass = req.body.Pass
-      const oldPass = req.body.oldPass
-      bcrypt.compare(oldPass,user.password,(err,res)=>{
-        if(err){
-          res.json({
-            success:false,
-            notfound:true
-          })
-        }
-      })
+      const oldPass = req.body.oldPass.trim()
+      console.log('oldPass=',oldPass)
+      if(oldPass.length == 0){
+        return res.json({
+          success:false,
+          lenErr:true
+        })
+      }
+      const result = await new Promise((resolve, reject) => {
+        bcrypt.compare(oldPass, user.password, (err, result) => {
+          if (err) reject(err);
+          resolve(result);
+        });
+      });
+  
+      if (!result) {
+        return res.json({
+          success: false,
+          notfound: true,
+        });
+      }
      
       const errors = pValidator.validate(Pass,{details:true})
     
       console.log("errors====",errors);
       if (errors.length === 0) {
         const hashPass = await bcrypt.hash(Pass,10)
-        // res.status(200).json({ message: "Password is valid." });
         await userModel.updateOne({_id:req.session.userId},{$set:{password:hashPass}})
-        res.json({
+        return res.json({
           success:true
           })
       }
@@ -1035,7 +1046,7 @@ const passwordChange2 = async(req,res)=>{
         const errorMessage = errors[0].message
        
         console.log("error:===",errorMessage);
-        res.json({ 
+        return res.json({ 
           success:false,
           errMsg:true,
           errors: errorMessage
@@ -1083,9 +1094,71 @@ const passwordChange2 = async(req,res)=>{
   //add address
   const addAddress = async(req,res)=>{
     try {
-      console.log("req.body==",req.body)
-    const {Name,Address,City,Pincode,State,Mobile} = req.body;
-    
+      // console.log("req.body==",req.body)
+    // const {Name,Address,City,Pincode,State,Mobile} = req.body;
+    const Name = req.body.Name.replace(/ +/g,'').trim()
+    const Address = req.body.Address.replace(/ +/g,'').trim()
+    const City = req.body.City.replace(/ +/g,'').trim()
+    const Pincode = req.body.Pincode
+    const State = req.body.State.replace(/ +/g,'').trim()
+    const Mobile = req.body.Mobile
+   
+   
+   
+    if(Name.length==0){
+      return res.json(
+        {
+          success:false,
+          error:'name'
+        }
+      )
+    }
+    if(Address.length==0){
+      return res.json(
+        {
+          success:false,
+          error:'address'
+        }
+      )
+    }
+    if(City.length==0){
+      return res.json(
+        {
+          success:false,
+          error:'city'
+        }
+      )
+    }
+    if(!validator.isPostalCode(Pincode,'any')){
+      return res.json(
+        {
+          success:false,
+          error:'pin'
+        }
+      )
+    }
+    if(State.length==0){
+      return res.json(
+        {
+          success:false,
+          error:'state'
+        }
+      )
+    }
+    if(!validator.isMobilePhone(Mobile,'any',{strictMode:false})){
+      return res.json(
+        {
+          success:false,
+          error:'mobile'
+        }
+      )
+    }
+
+
+
+
+
+
     console.log("Name=",Name,
       "AddressLine=",Address,
       "City=",City,
@@ -1111,26 +1184,87 @@ const passwordChange2 = async(req,res)=>{
   }
 //customer update Address
 
+
+
 const updateAddress = async(req,res)=>{
   try {
     
-    console.log("userId from updateAddress===",req.params.userId)
+    // console.log("userId from updateAddress===",req.params.userId)
     const userId = req.params.userId;
-  
-    const {addressId,Name,Address,City,Pincode,State,Mobile} = req.body;
-    console.log("AddressId====",addressId)
-    const addr = {
-      Name:Name,
-      AddressLine:Address,
-      City:City,
-      Pincode:Pincode,
-      State:State,
-      Mobile:Mobile
+    console.log('req.body===',req.body)
+    // const {addressId,Name,Address,City,Pincode,State,Mobile} = req.body;
+    const Name = req.body.Name.replace(/ +/g,'').trim()
+    const Address = req.body.Address.replace(/ +/g,'').trim()
+    const City = req.body.City.replace(/ +/g,'').trim()
+    const Pincode = req.body.Pincode
+    const State = req.body.State.replace(/ +/g,'').trim()
+    const Mobile = req.body.Mobile
+    const addressId = req.body.addressId
+   
+   
+    if(Name.length==0){
+      return res.json(
+        {
+          success:false,
+          error:'name'
+        }
+      )
     }
-    const userData = await userModel.findOne({_id:userId})
-    // console.log('ith userData======',userData)
-    // await userModel.updateOne({_id:userId},{$set:{}})
-    await userModel.findOneAndUpdate({'address._id':addressId},{$set: {'address.$':addr}})
+    if(Address.length==0){
+      return res.json(
+        {
+          success:false,
+          error:'address'
+        }
+      )
+    }
+    if(City.length==0){
+      return res.json(
+        {
+          success:false,
+          error:'city'
+        }
+      )
+    }
+    if(!validator.isPostalCode(Pincode,'any')){
+      return res.json(
+        {
+          success:false,
+          error:'pin'
+        }
+      )
+    }
+    if(State.length==0){
+      return res.json(
+        {
+          success:false,
+          error:'state'
+        }
+      )
+    }
+    if(!validator.isMobilePhone(Mobile,'any',{strictMode:false})){
+      return res.json(
+        {
+          success:false,
+          error:'mobile'
+        }
+      )
+    }
+
+
+    // console.log("AddressId====",addressId)
+    const updatedAddress = {
+      'address.$.Name': Name,
+      'address.$.AddressLine': Address,
+      'address.$.City': City,
+      'address.$.Pincode': Pincode,
+      'address.$.State': State,
+      'address.$.Mobile': Mobile,
+    };
+    console.log('updated=',updatedAddress)
+
+    await userModel.updateOne({ _id: req.session.userId, 'address._id': addressId }, { $set: updatedAddress });
+
     res.json({ success: true, message: "Address updated successfully" });
     
   } catch (error) {

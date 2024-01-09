@@ -2,7 +2,6 @@
 
     <div class="container-fluid gx-0">
         <div class="row gx-0 d-flex justify-content-center ">
-            <!-- <%- include('../layouts/user/profileSidbar'); -%> -->
             <div class="col-md-8 d-flex flex-column align-items-center">
                     <%if(userData && Array.isArray(userData.address) && userData.address.length === 0){%>
                     
@@ -15,34 +14,8 @@
                        <% userData.address.forEach((addr)=>{ %>
 
 
-                        <!-- Name: {type: String},
-                        AddressLine: { type: String },
-                        City: { type: String },
-                        Pincode: { type: Number },
-                        State: { type: String },
-                        Mobile: { type: Number }, -->
                         <div class="col-md-12 shadow rounded mt-4">
-                            <!-- <div class="row" style="width: 500px;">
-                            <div class="col-md-6 ">
-                                <div><h5>Name</h5></div>
-                                <div><h5>Address</h5></div>
-                                <div><h5>City</h5></div>
-                                <div><h5>Pincode</h5></div>
-                                <div><h5>State</h5></div>
-                                <div><h5>Mobile</h5></div>
-                            </div>
-                            <div class="col-md-6">
-                                <div><p class="gy-0">: <%= addr.Name %> </p></div>
-                                <div><p>: <%= addr.AddressLine %> </p></div>
-                                <div><p>: <%= addr.City %> </p></div>
-                                <div><p>: <%= addr.Pincode %> </p></div>
-                                <div><p>: <%= addr.State %> </p></div>
-                                <div><p>: <%= addr.Mobile %> </p></div>
-                                
-                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#EditAddressModal" onclick="openEditAddressModal('<%=addr._id%>')">Edit</button>
-                                    <a href="/deleteAddress/<%= userData._id %>/<%= addr._id %>" onclick="return confirm('Do you want delete the address')" class="btn btn-danger"> Delete </a>
-                            </div>
-                        </div> -->
+                           
                         <div class="card">
                             <div class="card-body">
                               <div class="row">
@@ -111,7 +84,7 @@
 
 
 
-                        <!-- modal2 -->
+                        <!-- Edit modal -->
             
                             <div class="modal fade" id="EditAddressModal<%= addr._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -123,28 +96,34 @@
                                     <div class="modal-body">
                                         <form>
                                             <div class="form-group">
-                                            <label for="recipient-name" class="col-form-label">Name:</label>
-                                            <input type="text" class="form-control" name="reci-name" value="<%= addr.Name %>" id="reci-name">
+                                            
+                                            <label for="recipient-name" class="col-form-label">Name:<span class="text-danger" id="nameErr<%= addr._id %>"></span></label>
+                                            <input type="text" class="form-control" name="reci-name" value="<%= addr.Name %>" id="reci-name<%= addr._id %>">
                                             </div>
                                             <div class="form-group">
-                                            <label for="message-text" class="col-form-label">Addrss:</label>
-                                            <textarea class="form-control" id="reci-address" name="reci-address"><%= addr.AddressLine %></textarea>
+                                              
+                                            <label for="message-text" class="col-form-label">Addrss:<span class="text-danger" id="addErr<%= addr._id %>"></span></label>
+                                            <textarea class="form-control" id="reci-address<%= addr._id %>" name="reci-address"><%= addr.AddressLine %></textarea>
                                             </div>
                                             <div class="form-group">
-                                                <label for="recipient-name" class="col-form-label">City:</label>
-                                                <input type="text" class="form-control" id="reci-City" name="reci-City"  value="<%= addr.City %>">
+                                              
+                                                <label for="recipient-name" class="col-form-label">City:<span class="text-danger" id="ctErr<%= addr._id %>"></span></label>
+                                                <input type="text" class="form-control" id="reci-City<%= addr._id %>" name="reci-City"  value="<%= addr.City %>">
                                             </div>
                                             <div class="form-group">
-                                                <label for="recipient-name" class="col-form-label">Pincode:</label>
-                                                <input type="number" class="form-control" id="reci-Pincode" name="reci-Pincode" value="<%= addr.Pincode %>">
+                                              
+                                                <label for="recipient-name" class="col-form-label">Pincode:<span class="text-danger" id="pinErr<%= addr._id %>"></span></label>
+                                                <input type="number" class="form-control" id="reci-Pincode<%= addr._id %>" name="reci-Pincode" value="<%= addr.Pincode %>">
                                             </div>
                                             <div class="form-group">
-                                                <label for="recipient-name" class="col-form-label">State:</label>
-                                                <input type="text" class="form-control" id="reci-State" name="reci-State" value="<%= addr.State %>">
+                                            
+                                                <label for="recipient-name" class="col-form-label">State:<span class="text-danger" id="stErr<%= addr._id %>"></span></label>
+                                                <input type="text" class="form-control" id="reci-State<%= addr._id %>" name="reci-State" value="<%= addr.State %>">
                                             </div>
                                             <div class="form-group">
-                                                <label for="recipient-name" class="col-form-label">Mobile:</label>
-                                                <input type="number" class="form-control" id="reci-Mobile" name="reci-Mobile" value="<%= addr.Mobile %>">
+                                              
+                                                <label for="recipient-name" class="col-form-label">Mobile:<span class="text-danger" id="mbErr<%= addr._id %>"></span></label>
+                                                <input type="number" class="form-control" id="reci-Mobile<%= addr._id %>" name="reci-Mobile" value="<%= addr.Mobile %>">
                                             </div>
                                         </form>
                                     </div>
@@ -156,16 +135,14 @@
                                 </div>
                             </div>
 
-
 <br>
                        <% }) %>
                     <%}%>
                 </div>
 
             </div>
-            <div class="col-md-2 mt-2 d-flex justify-content-center align-items-center " >
-                <span>Add Address</span>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add address</button>
+            <div class="col-md-12 d-flex justify-content-center align-items-center " >
+                <button class="btn btn-primary m-5" data-bs-toggle="modal" data-bs-target="#exampleModal">Add address</button>
             </div>
 
 
@@ -178,7 +155,7 @@
 
 
 
-            <!-- Modal -->
+            <!-- Add Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -189,27 +166,31 @@
                     <div class="modal-body">
                         <form>
                             <div class="form-group">
-                              <label for="recipient-name" class="col-form-label">Name:</label>
+                              <label for="recipient-name" class="col-form-label">Name:<span class="text-danger" id="nameErr1"></span></label> 
                               <input type="text" class="form-control" id="recipient-name">
                             </div>
                             <div class="form-group">
-                              <label for="message-text" class="col-form-label">Addrss:</label>
+                              <label for="message-text" class="col-form-label">Addrss:<span class="text-danger" id="addErr1"></span></label>
                               <textarea class="form-control" id="recipient-address"></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="recipient-name" class="col-form-label">City:</label>
+                              
+                                <label for="recipient-name" class="col-form-label">City:<span class="text-danger" id="ctErr1"></span></label>
                                 <input type="text" class="form-control" id="recipient-City">
                               </div>
                               <div class="form-group">
-                                <label for="recipient-name" class="col-form-label">Pincode:</label>
+                                
+                                <label for="recipient-name" class="col-form-label">Pincode:<span class="text-danger" id="pinErr1"></span></label>
                                 <input type="number" class="form-control" id="recipient-Pincode">
                               </div>
                               <div class="form-group">
-                                <label for="recipient-name" class="col-form-label">State:</label>
+                                
+                                <label for="recipient-name" class="col-form-label">State:<span class="text-danger" id="stErr1"></span></label>
                                 <input type="text" class="form-control" id="recipient-State">
                               </div>
                               <div class="form-group">
-                                <label for="recipient-name" class="col-form-label">Mobile:</label>
+                                
+                                <label for="recipient-name" class="col-form-label">Mobile:<span class="text-danger" id="mbErr1"></span></label>
                                 <input type="number" class="form-control" id="recipient-Mobile">
                               </div>
                           </form>
@@ -247,12 +228,12 @@
             const State = document.getElementById('recipient-State').value
             const Mobile = document.getElementById('recipient-Mobile').value
             
-            console.log("Name=",Name,
-            "AddressLine=",Address,
-            "City=",City,
-            "Pincode=",Pincode,
-            "State=",State,
-            "Mobile=",Mobile)   
+            // console.log("Name=",Name,
+            // "AddressLine=",Address,
+            // "City=",City,
+            // "Pincode=",Pincode,
+            // "State=",State,
+            // "Mobile=",Mobile)   
 
             const res = await fetch('/saveAddress',{
                 method: "POST",
@@ -292,6 +273,42 @@
             location.reload();
         },1800)
         
+    }else if (!data.success && data.error == 'name'){
+      // console.log('error')
+      $('#nameErr1').text('Enter a valid name')
+      setTimeout(()=>{
+      $('#nameErr1').text('')
+      },3000)
+    }
+    else if (!data.success && data.error == 'address'){
+      $('#addErr1').text('Enter a valid address')
+      setTimeout(()=>{
+      $('#addErr1').text('')
+      },3000)
+    }
+    else if (!data.success && data.error == 'city'){
+      $('#ctErr1').text('Enter a valid city')
+      setTimeout(()=>{
+      $('#ctErr1').text('')
+      },3000)
+    }
+    else if (!data.success && data.error == 'pin'){
+      $('#pinErr1').text('Enter a valid pin')
+      setTimeout(()=>{
+      $('#pinErr1').text('')
+      },3000)
+    }
+    else if (!data.success && data.error == 'state'){
+      $('#stErr1').text('Enter a valid state')
+      setTimeout(()=>{
+      $('#stErr1').text('')
+      },3000)
+    }
+    else if (!data.success && data.error == 'mobile'){
+      $('#mbErr1').text('Enter a valid mobile')
+      setTimeout(()=>{
+      $('#mbErr1').text('')
+      },3000)
     }
     
     
@@ -312,12 +329,12 @@
 
     const updateAddress = async(addressId,userId) => {
             console.log("address Id from console===",addressId)
-            const Name = document.getElementById('reci-name').value
-            const Address = document.getElementById('reci-address').value
-            const City = document.getElementById('reci-City').value
-            const Pincode = document.getElementById('reci-Pincode').value
-            const State = document.getElementById('reci-State').value
-            const Mobile = document.getElementById('reci-Mobile').value
+            const Name = document.getElementById('reci-name'+addressId).value
+            const Address = document.getElementById('reci-address'+addressId).value
+            const City = document.getElementById('reci-City'+addressId).value
+            const Pincode = document.getElementById('reci-Pincode'+addressId).value
+            const State = document.getElementById('reci-State'+addressId).value
+            const Mobile = document.getElementById('reci-Mobile'+addressId).value
 
         const res = await fetch(`/updateAddress/${userId}`,{
             method: "POST",
@@ -356,6 +373,42 @@
             location.reload();
         },1800)
         
+    }else if (!data.success && data.error == 'name'){
+      console.log('ivideerror');
+      $('#nameErr'+addressId).text('Enter a valid name')
+      setTimeout(()=>{
+      $('#nameErr'+addressId).text('')
+      },3000)
+    }
+    else if (!data.success && data.error == 'address'){
+      $('#addErr'+addressId).text('Enter a valid address')
+      setTimeout(()=>{
+      $('#addErr'+addressId).text('')
+      },3000)
+    }
+    else if (!data.success && data.error == 'city'){
+      $('#ctErr'+addressId).text('Enter a valid city')
+      setTimeout(()=>{
+      $('#ctErr'+addressId).text('')
+      },3000)
+    }
+    else if (!data.success && data.error == 'pin'){
+      $('#pinErr'+addressId).text('Enter a valid pin')
+      setTimeout(()=>{
+      $('#pinErr'+addressId).text('')
+      },3000)
+    }
+    else if (!data.success && data.error == 'state'){
+      $('#stErr'+addressId).text('Enter a valid state')
+      setTimeout(()=>{
+      $('#stErr'+addressId).text('')
+      },3000)
+    }
+    else if (!data.success && data.error == 'mobile'){
+      $('#mbErr'+addressId).text('Enter a valid mobile')
+      setTimeout(()=>{
+      $('#mbErr'+addressId).text('')
+      },3000)
     }
     
     }

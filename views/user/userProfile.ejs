@@ -117,10 +117,12 @@
                 <div class="modal-body">
                   <form>
                     <div class="mb-3">
+                      <span class="text-danger" id="nameErr"></span>
                       <label for="recipient-name" class="col-form-label">Name</label>
                       <input type="text" class="form-control"  value="<%= name %>" id="recipient-name">
                     </div>
                     <div class="mb-3">
+                      <span class="text-danger" id="emailErr"></span>
                       <label for="recipient-name" class="col-form-label">Email:</label>
                       <input type="text" class="form-control" value="<%= userData.email%>" id="recipient-email">
                     </div>
@@ -174,24 +176,33 @@
         })
         .then((res) => res.json())
         .then((data) => {
+          if(data.success){
             document.getElementById('recipient-name').value = "";
             document.getElementById('recipient-email').value = "";
             document.getElementById('recipient-Pnumber').value = "";
-
-        // Close the modal (assuming you're using Bootstrap modal)
-        $('#editModal').modal('hide');
-        
-        Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Your address has been updated',
-            showConfirmButton: false,
-            timer: 1500
-        })
-        setTimeout(()=>{
-            location.reload();
-        },1800)
-        // Optionally, you can update the address list on the page.
+            $('#editModal').modal('hide');
+            
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Your address has been updated',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            setTimeout(()=>{
+                location.reload();
+            },1800)
+          }else if(!data.success && data.error == 'name'){
+            $('#nameErr').text('Enter a valid name')
+            setTimeout(()=>{
+              $('#nameErr').text('')             
+            },3000)
+          }else if(!data.success && data.error == 'email'){
+            $('#emailErr').text('Enter a valid email')
+            setTimeout(()=>{
+              $('#emailErr').text('')             
+            },3000)
+          }
             });
         
     }

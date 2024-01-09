@@ -73,41 +73,46 @@
                                                 <div class="modal-body">
                                                     <form>
                                                         <div class="form-group">
-                                                            <label class="col-form-label">Name:</label>
-                                                            <span class="text-danger" id="nameErr"></span>
+                                                            <label class="col-form-label">Name: <span
+                                                                    class="text-danger" id="nameErr"></span></label>
+
                                                             <input type="text" class="form-control" id="recipient-name"
-                                                                onchange="nameCheck()" required>
+                                                                required>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label class="col-form-label">Addrss:</label>
-                                                            <span class="text-danger" id="addErr"></span>
+                                                            <label class="col-form-label">Addrss: <span
+                                                                    class="text-danger" id="addErr"></span></label>
                                                             <textarea class="form-control" id="recipient-address"
-                                                                onchange="addCheck()" required></textarea>
+                                                                required></textarea>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label class="col-form-label">City:</label>
-                                                            <span class="text-danger" id="cityErr"></span>
+                                                            <label class="col-form-label">City: <span
+                                                                    class="text-danger" id="cityErr"></span></label>
+
                                                             <input type="text" class="form-control" id="recipient-City"
-                                                                onchange="cityCheck()" required>
+                                                                required>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label class="col-form-label">Pincode:</label>
-                                                            <span class="text-danger" id="pinErr"></span>
+                                                            <label class="col-form-label">Pincode: <span
+                                                                    class="text-danger" id="pinErr"></span></label>
+
                                                             <input type="number" class="form-control"
-                                                                id="recipient-Pincode" onchange="pinCheck()" required>
+                                                                id="recipient-Pincode" required>
 
                                                         </div>
                                                         <div class="form-group">
-                                                            <label class="col-form-label">State:</label>
-                                                            <span class="text-danger" id="stateErr"></span>
+                                                            <label class="col-form-label">State: <span
+                                                                    class="text-danger" id="stateErr"></span></label>
+
                                                             <input type="text" class="form-control" id="recipient-State"
                                                                 onchange="stateCheck()" required>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label class="col-form-label">Mobile:</label>
-                                                            <span class="text-danger" id="mobErr"></span>
+                                                            <label class="col-form-label">Mobile: <span
+                                                                    class="text-danger" id="mobErr"></span></label>
+
                                                             <input type="number" class="form-control"
-                                                                id="recipient-Mobile" onchange="mobCheck()" required>
+                                                                id="recipient-Mobile" required>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -200,95 +205,6 @@
                 }, 3000)
             }
         }
-        // JavaScript to handle the radio button selections and form submission
-
-
-        let namech = true
-        let addch = true
-        let citych = true
-        let pinch = true
-        let statech = true
-        let phch = true
-        function nameCheck() {
-            let name = $('#recipient-name').val();
-            if (name === '' || /\s{2,}/.test(name)) {
-                $('#nameErr').text('Enter a valid name');
-
-                namech = false
-            } else {
-                $('#nameErr').text('');
-
-                namech = true
-            }
-        }
-
-        function addCheck() {
-            const address = $('#recipient-address').val();
-            if (address === '' || /\s{2,}/.test(address)) {
-                $('#addErr').text('Enter a valid address');
-
-
-                addch = false
-            } else {
-                $('#addErr').text('');
-
-                addch = true
-            }
-        }
-
-        function cityCheck() {
-            const cityCheck = $('#recipient-City').val();
-            if (cityCheck === '' || /\s{2,}/.test(cityCheck)) {
-                $('#cityErr').text('Enter a city');
-
-                citych = false
-            } else {
-                $('#cityErr').text('');
-
-                citych = true
-            }
-        }
-
-        function pinCheck() {
-            const pinCheck = $('#recipient-Pincode').val();
-            console.log("pin==", pinCheck)
-            if (pinCheck.length !== 6) {
-                $('#pinErr').text('Enter a valid Pincode');
-
-                pinch = false
-            } else {
-                $('#pinErr').text('');
-
-                pinch = true
-            }
-        }
-
-        function stateCheck() {
-            const stateCheck = $('#recipient-State').val();
-            if (stateCheck === '' || /\s{2,}/.test(stateCheck)) {
-                $('#stateErr').text('Enter a state name');
-
-                statech = false
-            } else {
-                $('#stateErr').text('');
-
-                statech = true
-            }
-        }
-
-        function mobCheck() {
-            const mobCheck = $('#recipient-Mobile').val();
-            if (mobCheck.length !== 10) {
-                $('#mobErr').text('Enter a valid mobile');
-
-                phch = false
-            } else {
-                $('#mobErr').text('');
-
-                phch = true
-            }
-        }
-
 
 
 
@@ -472,24 +388,24 @@
             const State = document.getElementById('recipient-State').value
             const Mobile = document.getElementById('recipient-Mobile').value
 
-            console.log("Name=", Name,
-                "AddressLine=", Address,
-                "City=", City,
-                "Pincode=", Pincode,
-                "State=", State,
-                "Mobile=", Mobile)
-            console.log("this===", namech, addch, citych, pinch, statech, phch)
-            if (namech && addch && citych && pinch && statech && phch) {
-                var res = await fetch('/saveAddress', {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        Name, Address, City, Pincode, State, Mobile
-                    })
+            // console.log("Name=", Name,
+            //     "AddressLine=", Address,
+            //     "City=", City,
+            //     "Pincode=", Pincode,
+            //     "State=", State,
+            //     "Mobile=", Mobile)
+            // console.log("this===", namech, addch, citych, pinch, statech, phch)
+            // if (namech && addch && citych && pinch && statech && phch) {
+            var res = await fetch('/saveAddress', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    Name, Address, City, Pincode, State, Mobile
                 })
-            }
+            })
+            // }
             const data = await res.json()
             // console.log(data)
             if (data.success) {
@@ -516,6 +432,42 @@
                     location.reload();
                 }, 1800)
 
+            } else if (!data.success && data.error == 'name') {
+                // console.log('error')
+                $('#nameErr').text('Enter a valid name')
+                setTimeout(() => {
+                    $('#nameErr').text('')
+                }, 3000)
+            }
+            else if (!data.success && data.error == 'address') {
+                $('#addErr').text('Enter a valid address')
+                setTimeout(() => {
+                    $('#addErr').text('')
+                }, 3000)
+            }
+            else if (!data.success && data.error == 'city') {
+                $('#cityErr').text('Enter a valid city')
+                setTimeout(() => {
+                    $('#cityErr').text('')
+                }, 3000)
+            }
+            else if (!data.success && data.error == 'pin') {
+                $('#pinErr').text('Enter a valid pin')
+                setTimeout(() => {
+                    $('#pinErr').text('')
+                }, 3000)
+            }
+            else if (!data.success && data.error == 'state') {
+                $('#stateErr').text('Enter a valid state')
+                setTimeout(() => {
+                    $('#stateErr').text('')
+                }, 3000)
+            }
+            else if (!data.success && data.error == 'mobile') {
+                $('#mobErr').text('Enter a valid mobile')
+                setTimeout(() => {
+                    $('#mobErr').text('')
+                }, 3000)
             }
 
         }
