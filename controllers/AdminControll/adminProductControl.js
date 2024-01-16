@@ -84,6 +84,46 @@ const postAddProduct = async (req, res) => {
       ", eD=",
       expDate
     );
+      if(Pname.replace(/ +/g,' ').trim().length == 0){
+        return res.status(400).json({
+          success:false,
+          nameErr:true,
+          msg:"Product name cannot be empty"
+        })
+      }
+      if(Description.trim().length==0){
+        return res.json({
+          success:false,
+          DesErr:true,
+          msg:'Description cannot be empty'
+        })
+      }
+      if(stock<0){
+        return res.json({
+          success: false,
+          stkErr : true ,
+          msg : "Stock can not be negative"
+        })
+      }
+      if(categories.length==0){
+        return res.json({
+          success : false ,
+          catErr : true ,
+          msg : "At least one category must be selected."
+        })
+      }
+      if(price<=0){
+        return res.json({
+          success : false ,
+          priceErr : true ,
+          msg : "Price should be greater than zero."
+        })
+      }
+
+
+
+
+
 
     //     // try {
     const product = new products({

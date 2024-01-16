@@ -13,6 +13,7 @@ const userModel = require('../../models/user')
 const Orders = require('../../models/order')
 const wallet = require('../../models/walletPayment');
 const products = require('../../models/products');
+const coupon = require('../../models/coupons');
 // require('pdfkit-tables');
 
 
@@ -73,8 +74,14 @@ const updateReturnStatus = async(req,res)=>{
     console.log("num from updateReturnStatus===",num)
     if (num == 0) {
       item.returnStatus = 'returned';
+      if(item.quantity * item.discounted < order.Returned){
+        order.Returned -= item.quantity * item.discounted;
+        var Wamount = item.quantity * item.discounted
+      }else{
+        var Wamount = order.Returned
+        order.Returned = 0
+      }
       await order.save();
-      let Wamount = item.quantity * item.productId.discountedPrice
       await userModel.findByIdAndUpdate({_id: order.UserId},{$inc:{Wallet:Wamount}})
       const walletHistory = await wallet.findOne({userId:order.UserId})
       // console.log('wallet==',walletHistory)
@@ -113,8 +120,11 @@ const orderDetailPage = async(req,res)=>{
   try {
     let orderId=req.params.orderId;
     let order = await orderModel.findOne({_id: orderId}).populate('Items.productId')
+    if(order.couponAmount.amount>0){
+      var Coupon =await coupon.findOne({_id:order.couponAmount.coupnId})
+    }
     let ProductAllDetails = order.Items
-    res.render('supAdmin/adminSide-order-detail-page',{title:"Order Detail", ProductAllDetails, order,Page:"Orders"})    
+    res.render('supAdmin/adminSide-order-detail-page',{title:"Order Detail", ProductAllDetails, order,Page:"Orders",Coupon})    
     
   } catch (error) {
     console.error("error 500 :",error);

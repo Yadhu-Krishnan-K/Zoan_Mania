@@ -68,6 +68,7 @@
 
     <div class="col-md-10"> 
       <div id="productContainer" class="row">
+        <% if(productsList.length>0){ %>
         <% productsList.forEach(product => { %>
           <% if(product.Category.length > 0 && product.Image.length !==0 && product.visible){ %>
             <!-- Product card HTML goes here -->
@@ -122,6 +123,12 @@
             </div>
           <% } %>
         <% }) %>
+          <% }else{ %>
+            <div class="col-md-12 d-flex flex-column justify-content-center align-items-center">
+              <h1>404</h1>
+              <p>Search item not found</p>
+            </div>
+          <% } %>
       </div>
     </div>
   </div>
@@ -181,7 +188,7 @@
     function updateUI(data) {
   const productContainer = document.getElementById('productContainer');
   productContainer.innerHTML = '';
-
+  if(data.products.length>0){
   data.products.forEach(product => {
     const productCard = document.createElement('div');
     productCard.className = 'col-md-4 p-4';
@@ -224,6 +231,14 @@
     productCard.innerHTML = cardHtml;
     productContainer.appendChild(productCard);
   });
+}else{
+  console.log('error here ivide ind')
+  const noProductMessage = document.createElement('div');
+    noProductMessage.className = 'col-md-12 text-center d-flex flex-column align-items-center';
+    noProductMessage.innerHTML = `<h1>404</h1><p>Search item not found!</p>`;
+    productContainer.appendChild(noProductMessage);
+}
+
 }
 
 

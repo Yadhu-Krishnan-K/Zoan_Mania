@@ -4,7 +4,7 @@
     <div class="container py-5">
       <div class="row">
         <div class="col-md-12 col-lg-12 col-xl-12">
-          <% if(orderDetails){ %>
+          <% if(orderDetails.length>0){ %>
             <% orderDetails.forEach((order)=> { %>
               <div class="card card-stepper mt-5" style="border-radius: 16px;">
                 <div class="card-header p-4">
@@ -127,9 +127,9 @@
                 </div>
               </div>
               <% }) %>
-                <% } else { %>
-                  <h1 style="text-align: center;">No Orders</h1>
-                  <% } %>
+              <% } else { %>
+                  <h1 style="text-align: center;" class="p-5">No Orders are placed yet</h1>
+              <% } %>
         </div>
       </div>
     </div>

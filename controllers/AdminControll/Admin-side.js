@@ -26,9 +26,10 @@ const DashBoard = async(req,res) => {
             }},
             {$limit : 6}
         ])
-        const orders = await order.find().sort({ OrderDate: 1 }).exec();
+        const orders = await order.find().sort({ OrderDate: -1 }).exec();
         const earliestOrder = orders[0]
-        console.log('order[0]==',earliestOrder)
+        console.log('order listed==',orders);
+        console.log('earliest order ==',earliestOrder)
 
         res.render('supAdmin/DashBoard',{title:"Admin Dash",Page:"Dashboard",products,earliestOrder})
     

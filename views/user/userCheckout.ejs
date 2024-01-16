@@ -252,6 +252,11 @@
         })
 
 
+
+
+
+        
+
         const confirmOrderButton = document.getElementById('confirmOrderButton');
 
         confirmOrderButton.addEventListener('click', async () => {
@@ -314,10 +319,6 @@
                 "image": "https://example.com/your_logo",
                 "order_id": orderId.id,
                 "handler": function (response) {
-                    // console.log("response of razor ==== ", response)
-                    // alert(response.razorpay_payment_id)
-                    // alert(response.razorpay_order_id)
-                    // alert(response.razorpay_signature)
                     verifyPayment(response, orderId)
                 },
                 "prefill": {
@@ -388,14 +389,7 @@
             const State = document.getElementById('recipient-State').value
             const Mobile = document.getElementById('recipient-Mobile').value
 
-            // console.log("Name=", Name,
-            //     "AddressLine=", Address,
-            //     "City=", City,
-            //     "Pincode=", Pincode,
-            //     "State=", State,
-            //     "Mobile=", Mobile)
-            // console.log("this===", namech, addch, citych, pinch, statech, phch)
-            // if (namech && addch && citych && pinch && statech && phch) {
+            
             var res = await fetch('/saveAddress', {
                 method: "POST",
                 headers: {

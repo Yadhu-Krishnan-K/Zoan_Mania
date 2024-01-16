@@ -49,8 +49,8 @@ const OrdersSchema = new Schema({
   // updatedStatus:{type: Date},
 
 
-
   TotalPrice: { type: Number },
+  Returned: {type: Number},
 
   PaymentStatus: {type: String, default: "Pending"},
   // CouponId: { type: Schema.Types.ObjectId },

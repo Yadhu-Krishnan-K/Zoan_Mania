@@ -3,7 +3,8 @@ const coupon = require("../../models/coupons");
 
 const manageCoupons = async (req, res) => {
   try {
-    const cartcount = cartHelper;
+    const cartcount = await cartHelper.cartCount(req);
+    console.log('cartcount==',cartcount)
     const coupons = await coupon.find();
     console.log("Cpns===", coupons);
     const name = req.session.name;
@@ -32,14 +33,14 @@ const applyCoupon = async (req, res) => {
 
     // if(coupon ==
     // console.log("check inside apply coupon====",coupons)
-    if (coupons == null) {
+    if (coupons == null||coupons.expired) {
       res.json({
         success: false,
         message: "Invalid Coupon",
       });
-    } else {
+    }else{
       coupons.usedBy.forEach((id) => {
-        if (id == req.session.userId) {
+        if (JSON.stringify(id) == JSON.stringify(req.session.userId)) {
           return res.json({
             success: false,
             message: "Already applied",

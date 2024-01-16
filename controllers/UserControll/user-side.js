@@ -266,10 +266,13 @@ const searchOptions = async(req,res)=>{
     const minPrice = Math.min(...Products.map(product => product.Price));
     const maxPrice = Math.max(...Products.map(product => product.Price));
 
-
+      // if(productsList.length>0){
     res.render('user/product-list',{
       productsList,categories,name, title:'Product List',cartcount,cartData, pageNums,currentPage,minPrice, maxPrice, value
     })
+  // }else{
+  //   res.sendFile(__dirname,'../errorPages/404.html')
+  // }
     
   } catch (error) {
     console.error("error 500 :",error);
@@ -1325,13 +1328,13 @@ const checkoutUser = async (req, res)=>{
 const filter = async (req, res) => {
   try {
     const selectedCategories = req.body.categories;
-    console.log('selected categories = ', selectedCategories);
+    // console.log('selected categories = ', selectedCategories);
 
     // Parse the selected price range string into an array with lower and upper bounds
-    console.log('price range===',req.body.priceRange);
+    // console.log('price range===',req.body.priceRange);
     const priceRangeArray = req.body.priceRange?req.body.priceRange.split('-').map(Number):null;
 
-    console.log("price range to = ", priceRangeArray);
+    // console.log("price range to = ", priceRangeArray);
 
     const cartData = await cart.findOne({ userId: req.session.userId });
 
@@ -1347,7 +1350,7 @@ const filter = async (req, res) => {
       filterCriteria.Price = { $gte: priceRangeArray[0]};
     }}
 
-    console.log("filterCriteria ===", filterCriteria);
+    // console.log("filterCriteria ===", filterCriteria);
 
     // Query the database to find products based on the filter criteria
     const filteredProducts = await products.find(filterCriteria);

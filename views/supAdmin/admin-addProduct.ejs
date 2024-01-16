@@ -1,32 +1,33 @@
 <%- include('../layouts/admin/header'); -%>
     <div class="col-md-12 p-2">
         <h1>Add Products</h1>
-        <form action="/admin/inventory/adding-product" id="sub" method="post" class="p-3 bg-white rounded"
+        <form action="/admin/inventory/adding-product" id="sub" method="post" class=" p-3 bg-white rounded"
             enctype="multipart/form-data">
             <div class="details row gx-0" style="background: #fff;">
                 <span id="nameErr" class="text-danger"></span>
-                <input type="text" name="Pname" onchange="nameCheck()" id="Pname" placeholder="Product Name" class="mt-3 p-2 border rounded"
-                    required><br>
-                <input type="text" name="Suffix" id="Suffix" placeholder="Suffix" class="mt-3 p-2 border rounded"><br>
+                <input type="text" name="Pname" id="Pname" placeholder="Product Name" class="mt-3 p-2 border rounded"
+                    ><br>
+                    <input type="text" name="Suffix" id="Suffix" placeholder="Suffix" class="mt-3 p-2 border rounded"><br>
+                    <span id="DesErr" class="text-danger"></span><br>
                 <textarea name="Description" class="mt-3 rounded" id="Description" placeholder="Add description"
-                    cols="50" rows="10" required></textarea>
+                    cols="50" rows="10" ></textarea>
             </div>
             <div class="form-group border p-3 mt-3 mb-3 rounded" style="background: #fff;">
                 <label for="productSpecification">Specification:</label>
                 <textarea class="form-control bg-light p-2" name="Specification1" id="productSpecification1"
-                    placeholder="Enter product Specification" required></textarea>
+                    placeholder="Enter product Specification" ></textarea>
                 <label for="productSpecification2">Specification:</label>
                 <textarea class="form-control bg-light" name="Specification2" id="productSpecification"
-                    placeholder="Enter product Specification" required></textarea>
+                    placeholder="Enter product Specification" ></textarea>
                 <label for="productSpecification3">Specification:</label>
                 <textarea class="form-control bg-light" name="Specification3" id="productSpecification"
-                    placeholder="Enter product Specification" required></textarea>
+                    placeholder="Enter product Specification" ></textarea>
             </div>
             <div class="details mt-3 border p-3 rounded" style="background: #fff;">
                 <p>Add image</p>
                 <div class="imgarea" style="width: 100%; height: 200px;">
                     <input type="file" name="images" id="image1" accept="image/*" onchange="limNpre()" multiple
-                        required><br>
+                        ><br>
                     <!-- <label for="image1">add images</label> -->
                     <span id="doc" style="color: rgb(255, 2, 2); display: none;">Maximum 4 images allowed</span>
                     <div class="img-preview-container">
@@ -38,20 +39,16 @@
             </div>
         </div>
         <div class=" pricing mt-3 border p-3 rounded" style="background: #fff;">
-                                <p>pricing</p>
-                                <span id="priceErr" class="text-danger"></span>
-                                <input type="number" class="p-2 border rounded" name="price" id="price" required>
+                                <span>pricing: <span id="priceErr" class="text-danger"></span></span><br>
+                                <input type="number" class="p-2 border rounded" name="price" id="price" >
                     </div>
                     <!-- <div class="pricing mt-3 border p-3 rounded" style="background: #fff;">
                         <p>Offer<span style="font-weight: 100;">(optional)</span></p>
                         <input type="number" class="p-2 border rounded" name="offer" id="offer" required>
                     </div> -->
                     <div class="pricing mt-3 border p-3 rounded" style="background: #fff;">
-                        <p>Category</p>
-                        <span id="caterr" class="text-danger"></span>
+                        <span>Category: <span id="caterr" class="text-danger"></span></span><br>                        
                         
-                        
-                        <span id="cateErr" class="text-danger"></span>
                         <div class="dropdown" onchange="cateCheck()">
                             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
@@ -74,9 +71,8 @@
 
                     </div>
                     <div class="stock mt-3 mb-5 border p-3 rounded" style="background: #fff; border: 1px solid black;">
-                        <p>stock</p>
-                        <span class="text-danger" id="stocker""></span>
-                        <input type="number" class="p-2 border rounded" name="stock" id="stock" required>
+                        <span>stock: <span class="text-danger" id="stocker""></span></span><br>
+                        <input type="number" class="p-2 border rounded" name="stock" id="stock" >
                     </div>
                     <div class="d-flex justify-content-end" style="width: 100%;">
                         <div>
@@ -112,14 +108,7 @@
 
 
     <script>
-        function nameCheck(){
-            let name = $('#Pname').val().trim()
-            if(name.length==0){
-                $('#nameErr').text('Product Name should be valid')
-            }else{
-                $('#nameErr').text('')
-            }
-        }
+        
 
         
         
@@ -212,17 +201,36 @@
 
         document.getElementById('sub').addEventListener("submit", async (e) => {
             e.preventDefault();
-
+            let name = $('#Pname').val().trim()
+            if(name.length==0){
+                document
+                .querySelector("#nameErr")
+                .scrollIntoView({ behavior: "smooth", block: "center" });
+                $('#nameErr').text('Product Name should be valid')
+                setTimeout(()=>{
+                    $('#nameErr').text("")
+                },3000)
+                return
+            }
+            let Des = document.getElementById('Description').value.trim()
             let stock = document.getElementById('stock').value;
             let price = document.getElementById('price').value;
             let err = document.getElementById('stocker');
             let prerr = document.getElementById('priceErr');
             let caterr = document.getElementById('caterr');
 
+            if(Des.length == 0){
+                scrollTo
+                document.getElementById('DesErr').innerHTML = 'Enter valid description'
+                setTimeout(() => {
+                    document.getElementById('DesErr').innerHTML = ''
+                }, 3000);
+                return
+            }
             if (stock < 0) {
                 err.innerHTML = 'stock should be greater than or equal to 0';
                 setTimeout(() => {
-                    err.innerHTML = 'none';
+                    err.innerHTML = '';
                 }, 3000);
                 return;
             }
@@ -230,7 +238,7 @@
             if (price <= 0) {
                 prerr.innerHTML = 'price should be greater than 0';
                 setTimeout(() => {
-                    prerr.innerHTML = 'none';
+                    prerr.innerHTML = '';
                 }, 3000);
                 return;
             }
@@ -252,15 +260,61 @@
                     method: 'POST',
                     body: formData
                 });
-
+                const data = response.json()
                 // Check the appropriate property based on your response structure
                 if (response.status === 200) {
                     // Handle successful response, e.g., redirect to another page
                     window.location.replace('/admin/inventory');
-                } else {
+                } else if(!data.success && data.nameErr){
                     // Handle error response
-                    console.error('Error submitting form:', response.statusText);
+                    // console.error('Error submitting form:', response.statusText);
+                     document
+                .querySelector("#nameErr")
+                .scrollIntoView({ behavior: "smooth", block: "center" });
+                $('#nameErr').text('Product Name should be valid')
+                    $('#nameErr').text(data.msg)
+                    setTimeout(()=>{
+                        $('#nameErr').text('')
+                    },3000)
+
+                }else if(!data.success && data.DesErr){
+                    document
+                .querySelector("#DesErr")
+                .scrollIntoView({ behavior: "smooth", block: "center" });
+                    $('#DesErr').text(data.msg)
+                    setTimeout(()=>{
+                        $('#DesErr').text('')
+                    },3000)
                 }
+                
+                else if(!data.success && data.stkErr){
+                    err.scrollIntoView({ behavior: "smooth", block: "center" });
+                    err.innerHTML = data.msg;
+                setTimeout(() => {
+                    err.innerHTML = '';
+                }, 3000);
+                }
+                
+                
+                else if(!data.success && data.catErr){
+                    caterr.scrollIntoView({ behavior: "smooth", block: "center" });
+
+                    caterr.innerHTML = data.msg;
+                setTimeout(() => {
+                    caterr.innerHTML = '';
+                }, 3000);
+                }
+                
+                
+                else if(!data.success && data.priceErr){
+                    prerr.scrollIntoView({ behavior: "smooth", block: "center" });
+
+                    prerr.innerHTML = data.msg;
+                setTimeout(() => {
+                    prerr.innerHTML = '';
+                }, 3000);
+                }
+
             } catch (error) {
                 console.error('Error submitting form:', error);
             }

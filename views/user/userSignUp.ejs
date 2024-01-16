@@ -1,56 +1,64 @@
 <%-include('header');-%>
 
-<section class="main-body">
-    <div class="left-section d-flex justify-content-center align-items-center">
-            <div class="login d-flex justify-content-center align-items-center">
-                <div class="inner">
-                    <div class="logo"> 
-                        
+    <section class="main-body mt-3">
+        <div class="left-section d-flex justify-content-center align-items-center">
+            <div class="pt-3 pb-3 p-2 d-flex justify-content-center align-items-center">
+                <div class="p-3 border-0 rounded shadow">
+                    <div class="logo">
+
                     </div>
                     <p class="text">Come clean us out!!!</p>
-                    <h4>Sign up</h4>
-                            <div style="display:  none;" id="alertDiv" class="alert alert-success text-center">
+                    <h4 class="mt-5">Sign up</h4>
+                    <!-- <div style="display:  none;" id="alertDiv" class="alert alert-success text-center">
  
                             </div>
-                            <% if(locals.exist){ %>
+                            < if(locals.exist){ %>
                                 <div class="alert alert-success text-center" id="disapear">
-                                    <%= exist %>
+                                    < exist %>
                                 </div>
-                            <% } %>
+                            < } %> -->
 
-                    <form id="for-password"  action="/otpsend" method="post" >
-                        <input type="text" class=" box p-3" name="name" id="name" placeholder="Name" required style="outline: none;"><br>
-                        <input type="email" class="mt-3 p-3 box" name="email" id="email" placeholder="Email" required style="outline: none;"><br>
-                        
-                        <div class="d-flex align-items-center box mt-3 pe-3">
-                            <input type="password" class=" box mt-1 ps-3 pe-3" name="password" id="password"
-                                placeholder="Password" style="outline: none;" required>
-                            <span toggle="#password-field"
-                                class="fa fa-fw fa-eye field-icon toggle-password"></span>
-                        </div><br>
+                    <!-- <form id="for-password"  action="/otpsend" method="post" class="d-flex flex-column align-items-start"> -->
+                    <form action="" id="smt" class="d-flex flex-column align-items-start mt-3"></form>
+                    <label class="mt-3" for="#name"><span id="nameErr" class="text-danger"></span></label>
+                    <input type="text" class=" box p-3" name="name" id="name" placeholder="Name" required
+                        style="outline: none;"><br>
 
-                        <div class="d-flex align-items-center box  pe-3">
-                            <input type="password" class=" box mt-1 ps-3 pe-3" name="confirmPassword" id="confirmPassword"
-                                placeholder="confirmPassword" style="outline: none;" required>
-                            <span toggle="#password-field"
-                                class="fa fa-fw fa-eye field-icon toggle-password">
-                            </span>
-                        </div><br>
-                        
-                        <div style="width: 100%; display: flex; justify-content: center;"><input type="submit" class="mt-5 btn" value="Sign up" onclick="checkPass()" id="submit" ></div>
-                        <!-- <div class="mt-3" style="width: 100%; display: flex; justify-content: center;"><a href="/auth/google">Login with google</a></div> -->
+                    <label class="mt-1" for="#email"><span id="emailErr" class="text-danger"></span></label>
+                    <input type="email" class=" p-3 box" name="email" id="email" placeholder="Email" 
+                        style="outline: none;"><br>
+
+                    <label class="mt-1" for="password"><span id="passErr" class="text-danger"></span></label>
+                    <div class="d-flex align-items-center box pe-3">
+                        <input type="password" class=" box ps-3 pe-3" name="password" id="password"
+                            placeholder="Password" style="outline: none;" required>
+                        <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                    </div><br>
+
+                    <label class="mt-1" for="confirmPassword"><span id="conpassErr" class="text-danger"></span></label>
+                    <div class="d-flex align-items-center box  pe-3">
+                        <input type="password" class=" box ps-3 pe-3" name="confirmPassword" id="confirmPassword"
+                            placeholder="confirmPassword" style="outline: none;" required>
+                        <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password">
+                        </span>
+                    </div><br>
+
+                    <div class="mt-3" style="width: 100%; display: flex; justify-content: center;">
+                        <button class="btn" onclick="smt()">Submit</button>
+                    </div>
+                    <!-- <div class="mt-3" style="width: 100%; display: flex; justify-content: center;"><a href="/auth/google">Login with google</a></div> -->
                     </form>
                 </div>
 
             </div>
-    </div>
-    <div class="right-section">
+        </div>
+        <div class="right-section">
 
-    </div>
-</section>
+        </div>
+    </section>
 
-<script>
-       $(document).ready(function () {
+    <script>
+        $(document).ready(function () {
             $(".toggle-password").click(function () {
                 $(this).toggleClass("fa-eye fa-eye-slash");
                 var input = $(this).siblings("input");
@@ -69,79 +77,74 @@
             }
         });
 
-        
-    function checkPass(){
-        document.getElementById("for-password").addEventListener("submit", function (event) {
-        
-        var password = document.getElementById('password').value;
-        var username = document.getElementById('name').value;
-        // var usernamePattern = /^[^\s]+$/;
-
-       
-            console.log(username)
-//-----------------------------------------------------------------------------------------------------------------
-        var confirmPassword = document.getElementById('confirmPassword').value;
-
-        if(/^[  \s]+$/.test(username)){
-            event.preventDefault()
-            document.getElementById('alertDiv').style.display = "block";
-            document.getElementById('alertDiv').innerHTML = "should not contain any spaces user name";
-        // alertDiv.style.display = "block";
-
-        // Hide the error message after 5 seconds
-        setTimeout(function () {
-            document.getElementById('alertDiv').style.display = "none";
-        }, 5000);
-        }
-        //-----------------------------------------------------------------------------------------
-        if(/\s/.test(username) || /\d/.test(username) || /[!@#$%^&*()_+{}\[\]:;<>,.?~\\\-]/.test(username)){
-            event.preventDefault()
-            document.getElementById('alertDiv').style.display = "block";
-            document.getElementById('alertDiv').innerHTML = "Check your user name";
-        // alertDiv.style.display = "block";
-
-        // Hide the error message after 5 seconds
-        setTimeout(function () {
-            document.getElementById('alertDiv').style.display = "none";
-        }, 5000);
-        }
-//------------------------------------------------------------------------------------------------------------
-        //email validation
 
 
 
-
-
-//=======================================================================================================
-        if(password===confirmPassword && password.length>=8 && /[a-zA-Z]/.test(password) && /\d/.test(password) && /[!@#$%^&*()_+{}\[\]:;<>,.?~\\\-]/.test(password) && !/\s/.test(password)){
-            
-        }else{
-            event.preventDefault()
-            document.getElementById('alertDiv').style.display = "block";
-            document.getElementById('alertDiv').innerHTML = "Password must contain at least 8 characters, including one alphabetic letter, one number, one special character, and no spaces. Passwords must also match.";
-        // alertDiv.style.display = "block";
-
-        // Hide the error message after 5 seconds
-        setTimeout(function () {
-            document.getElementById('alertDiv').style.display = "none";
-        }, 5000);
-        }
-
-    })
-//----------------------------------------------------------------------------------------------------------
-
-    }
-    setTimeout(function() {
-            var message = document.getElementById('disapear');
-            if (message) {
-                message.style.display = 'none';
+        function smt() {
+            // event.preventDefault();
+            let name = $('#name').val().trim()
+            var email = $('#email').val()
+            var password = $('#password').val().trim()
+            var conPass = $('#confirmPassword').val().trim()
+            // console.log('hei its clickde')
+            if (name.length == 0) {
+                $('#nameErr').text('Name should not be blank')
+                setTimeout(() => {
+                    $('#nameErr').text('')
+                }, 3000)
+                return
             }
-        }, 4000);
+            if (password !== conPass || password.length == 0 || conPass.length == 0) {
+                $('#passErr').text('Check your Passwords')
+                setTimeout(() => {
+                    $('#passErr').text('')
+                }, 3000)
+                return
+            }
+            fetch('/otpsend', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name, password, conPass, email
+                })
+            })
+                .then(res => res.json())
+                .then((data) => {
+                    console.log("data===", data)
 
-</script>
-<!-- <script>
+                    if (data.success) {
+                        window.location.replace('/otpsen');
+                    } else if (!data.success && data.errName) {
+                        $('#nameErr').text(data.message)
+                        setTimeout(() => {
+                            $('#nameErr').text('')
+                        }, 3000)
+                    } else if(!data.success && data.errEmail){
+                        $('#emailErr').text(data.message)
+                        setTimeout(()=>{
+                            $('#emailErr').text('')
+                        },3000)
+                    } else if(!data.success && data.errPass){
+                        $('#passErr').text(data.message);
+                        setTimeout(()=>{
+                            $('#passErr').text('')
+                        },3000)
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error during login:', error);
+                    displayError('An unexpected error occurred. Please try again later.');
+                });
+        };
+
+
+
+    </script>
+    <!-- <script>
 
 </script> -->
 
 
-<%-include('footer');-%>
+    <%-include('footer');-%>

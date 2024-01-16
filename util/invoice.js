@@ -35,7 +35,7 @@ const easyInvoice = async (req, res) => {
         date: order.OrderDate 
       },
       "products": ar,
-      "bottom-notice": "Thank you for your purchase",
+      "bottom-notice": `Thank you for your purchase`,
       settings: {
         "currency": "INR",
         "tax-notation": "GST",

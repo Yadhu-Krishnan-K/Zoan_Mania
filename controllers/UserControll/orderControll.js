@@ -17,7 +17,10 @@ const getPlaceOrder = (req,res)=>{
     console.log("req.session.visited==",req.session.visited);
     if(req.session.visited < 2){
     res.render('user/userOrderConfirm',{name, title:"Oreder Confirmed",orderId})
-  }else{res.redirect('/userHome')}
+  }else{
+    console.log('here')
+    res.redirect('/userHome')
+  }
     
   } catch (error) {
     console.error("error 500 :",error);
@@ -96,12 +99,14 @@ const postPlaceOrder = async(req,res)=>{
             Items: cartData.Items.map(cartItem => ({
               productId: cartItem.ProductId,
               quantity: cartItem.Quantity,
-              discounted: cartItem.ProductId.discountedPrice
+              discounted: cartItem.ProductId.discountedPrice,
+              RealPrice: cartItem.ProductId.Price
             })),
             PaymentMethod: paymentMethod,
             OrderDate: moment(new Date()).format("llll"),
             ExpectedDeliveryDate: moment().add(4, "days").format("llll"),
             TotalPrice: req.session.totalAmount,
+            Returned: req.session.totalAmount,
             couponAmount: couponAmount,
             Address: add
         });
@@ -194,6 +199,7 @@ const postPlaceOrder = async(req,res)=>{
             OrderDate: moment(new Date()).format("llll"),
             ExpectedDeliveryDate: moment().add(4, "days").format("llll"),
             TotalPrice: req.session.totalAmount,
+            Returned: req.session.totalAmount,
             Address: add
           });
           req.session.newOrder = newOrder
@@ -280,7 +286,7 @@ const postPlaceOrder = async(req,res)=>{
     }
     let total = order.TotalPrice
     let userId = req.session.userId
-    if(order.PaymentMethod == 'online'){
+    if(order.PaymentMethod == 'online'||order.PaymentMethod=='Wallet'){
       await userModel.findByIdAndUpdate({_id:userId},{$inc:{Wallet:total}},{new:true})
       const walletHisto = await wallet.findOne({userId:req.session.userId})
       walletHisto.payment.push( {
@@ -292,7 +298,7 @@ const postPlaceOrder = async(req,res)=>{
     })
     await walletHisto.save()
     }
-    console.log("ordermodel====",order)
+    // console.log("ordermodel====",order)
     res.json({
       success:true
     })

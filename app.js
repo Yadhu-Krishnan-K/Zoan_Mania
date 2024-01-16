@@ -28,6 +28,7 @@ socketManager.initialize(io);
 
 
 app.use(express.json())
+// app.use(mongoSanitize());    
 app.use(express.urlencoded({extended: true}))
 
 mongoose.set('strictQuery', false);

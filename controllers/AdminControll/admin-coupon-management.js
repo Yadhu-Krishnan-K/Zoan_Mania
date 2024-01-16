@@ -20,12 +20,13 @@ const addCoupons = async(req,res)=>{
         let exist = await coupons.findOne({
             $or:[
                 {code:req.body.Ccode},
-                {name:naem}
+                {name: {$regex: naem, $options: 'i'}}
             ]
         })
+        
         if(exist){
             return res.json({
-                success:false
+                success:false,
             })
         }
     // console.log("exist==",exist)
@@ -56,11 +57,12 @@ const EditCoupon = async(req,res) => {
         let exist = await coupons.findOne({
             $or:[
                 {code:req.body.Ccode},
-                {name:name}
+                {name: {$regex: name, $options: 'i'}}
             ]
         })
         
         if(exist&& JSON.stringify(exist._id)!==JSON.stringify(req.params.couponId)){
+            console.log('error ind')
             return res.json({
                 success:false
             })

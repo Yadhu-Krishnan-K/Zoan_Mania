@@ -117,18 +117,15 @@
                 <div class="modal-body">
                   <form>
                     <div class="mb-3">
-                      <span class="text-danger" id="nameErr"></span>
-                      <label for="recipient-name" class="col-form-label">Name</label>
+                      <label for="recipient-name" class="col-form-label">Name: <span class="text-danger" id="nameErr"></span></label>
                       <input type="text" class="form-control"  value="<%= name %>" id="recipient-name">
                     </div>
                     <div class="mb-3">
-                      <span class="text-danger" id="emailErr"></span>
-                      <label for="recipient-name" class="col-form-label">Email:</label>
+                      <label for="recipient-name" class="col-form-label">Email: <span class="text-danger" id="emailErr"></span></label>
                       <input type="text" class="form-control" value="<%= userData.email%>" id="recipient-email">
                     </div>
                     <div class="mb-3">
-                      <span class="text-danger" id="pherr"></span>
-                      <label for="recipient-name" class="col-form-label">Phone Number:</label>
+                      <label for="recipient-name" class="col-form-label">Phone Number: <span class="text-danger" id="pherr"></span></label>
                       <input type="text" class="form-control" value="<%= userData.MobileNumber %>" id="recipient-Pnumber">
                     </div>
                     
@@ -155,13 +152,17 @@
     function saveDetail(){
 
         const name = document.getElementById('recipient-name').value
-        console.log("name==",name)
+        // console.log("name==",name)
         const email = document.getElementById('recipient-email').value
-        console.log("email==",email)
+        // console.log("email==",email)
         const phone = document.getElementById('recipient-Pnumber').value
-        console.log("phone==",phone)
+        // console.log("phone==",phone)
         if(phone.length!==10){
-         return document.getElementById('pherr').innerHTML = 'should include 10 digits'
+          document.getElementById('pherr').innerHTML = 'should include 10 digits'
+          setTimeout(()=>{
+            document.getElementById('pherr').innerHTML=''
+          },3000)
+          return
         }
 
         const data = {

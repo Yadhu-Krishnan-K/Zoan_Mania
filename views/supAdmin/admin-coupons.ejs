@@ -87,33 +87,42 @@
                   <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Edit coupon</h1>
                   </div>
+                  <div
+                  class="alert alert-warning"
+                  role="alert" style="display: none;" id="couponNC<%= coupon._id %>"
+                >
+                  <h4 class="alert-heading">Coupon already exists</h4>
+                  <hr />
+                  <p class="mb-0">The coupon code or name already exist in your Coupons</p>
+                </div>
                   <div class="modal-body">
                     <form>
                       <div class="mb-3">
                         <label class="col-form-label">Coupon Name:</label>
                         <span class="text-danger" id="CnameEdrr"></span>
-                        <input id="CnameEd" value="<%= coupon.name %>" type="text" class="form-control">
+                        <input id="CnameEd<%= coupon._id %>" value="<%= coupon.name %>" type="text" class="form-control">
                       </div>
+                  
                       <div class="mb-3">
                         <label class="col-form-label">Coupon Code:</label>
-                        <span class="text-danger" id="CcodeEdrr"></span>
-                        <input id="CcodeEd" type="text" value="<%= coupon.code %>" class="form-control">
+                        <span class="text-danger" id="CcodeEdrr<%= coupon._id %>"></span>
+                        <input id="CcodeEd<%= coupon._id %>" type="text" value="<%= coupon.code %>" class="form-control">
                       </div>
                       <div class="mb-3">
                         <label class="col-form-label">Discount amount:</label>
-                        <span class="text-danger" id="DiscountEdrr"></span>
-                        <input id="DiscountEd" type="Number" value="<%= coupon.discount %>" class="form-control">
+                        <span class="text-danger" id="DiscountEdrr<%= coupon._id %>"></span>
+                        <input id="DiscountEd<%= coupon._id %>" type="Number" value="<%= coupon.discount %>" class="form-control">
                       </div>
                       <div class="mb-3">
                         <label class="col-form-label">For Puchase Above:</label>
-                        <span class="text-danger" id="PAmountEdrr"></span>
-                        <input type="number" class="form-control" value="<%= coupon.forPuchace %>" id="PAmountEd">
+                        <span class="text-danger" id="PAmountEdrr<%= coupon._id %>"></span>
+                        <input type="number" class="form-control" value="<%= coupon.forPuchace %>" id="PAmountEd<%= coupon._id %>">
                       </div>
                       <div class="mb-3">
                         <label class="col-form-label">Expiry Date:</label>
-                        <span class="text-danger" id="EdateEdrr"></span>
+                        <span class="text-danger" id="EdateEdrr<%= coupon._id %>"></span>
                         <input type="date" min="<%= new Date().toISOString().split('T')[0] %>" class="form-control" value="<%= coupon.Expiry.toISOString().split('T')[0] %>"
-                          id="EdateEd">
+                          id="EdateEd<%= coupon._id %>">
                       </div>
 
                     </form>
@@ -163,6 +172,16 @@
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Create coupon</h1>
         </div>
+        
+        <div
+          class="alert alert-warning"
+          role="alert" style="display: none;" id="couponNC"
+        >
+          <h4 class="alert-heading">Coupon already exists</h4>
+          <hr />
+          <p class="mb-0">The coupon code or name already exist in your Coupons</p>
+        </div>
+        
         <div class="modal-body">
           <form>
             <div class="mb-3">
@@ -302,9 +321,9 @@
                 location.reload();
               }, 1800)
             } else {
-              $('#CcodeErr').text('Code already exists');
+              $('#couponNC').show()
               setTimeout(() => {
-                $('#CcodeErr').text('');
+                $('#couponNC').hide();
               }, 3000);
               return;
             }
@@ -316,51 +335,51 @@
 
     function editCoup(couponId) {
       console.log('Clicked')
-      let Cname = $('#CnameEd').val()
+      let Cname = $('#CnameEd'+couponId).val()
       let spacePattern = /\s{2,}/;
       if (spacePattern.test(Cname) || Cname == '' || Cname == ' ') {
-        $('#CnameEdrr').text('Coupon should not be blank or Coupon name should not contain two spaces together');
+        $('#CnameEdrr'+couponId).text('Coupon should not be blank or Coupon name should not contain two spaces together');
         setTimeout(() => {
-          $('#CnameEdrr').text('');
+          $('#CnameEdrr'+couponId).text('');
         }, 3000);
         return
       }
 
-      let Ccode = $('#CcodeEd').val()
+      let Ccode = $('#CcodeEd'+couponId).val()
       let CcodePattern = /^(?=.*[A-Z])(?=.*\d)(?=.*-).*$/;
       if (!CcodePattern.test(Ccode) || Ccode == '') {
-        $('#CcodeEdrr').text('Must have one capital letter, one number, and one "-" sign.');
+        $('#CcodeEdrr'+couponId).text('Must have one capital letter, one number, and one "-" sign.');
         setTimeout(() => {
-          $('#CcodeEdrr').text('');
+          $('#CcodeEdrr'+couponId).text('');
         }, 3000);
         return;
       }
 
-      let Discount = $('#DiscountEd').val()
+      let Discount = $('#DiscountEd'+couponId).val()
       if (Discount <= 0 || Discount == ''|| Discount>100) {
-        $('#DiscountEdrr').text('Should be positive and less than 100')
+        $('#DiscountEdrr'+couponId).text('Should be positive and less than 100')
         setTimeout(() => {
-          $('#DiscountEdrr').text('')
+          $('#DiscountEdrr'+couponId).text('')
         }, 3000)
         return
       }
 
-      let PAmount = $('#PAmountEd').val()
+      let PAmount = $('#PAmountEd'+couponId).val()
       if (PAmount <= 0 || PAmount == '') {
-        $('#PAmountEdrr').text('Should be positive')
+        $('#PAmountEdrr'+couponId).text('Should be positive')
         setTimeout(() => {
-          $('#PAmountEdrr').text('')
+          $('#PAmountEdrr'+couponId).text('')
         }, 3000)
         return
       }
 
-      let Edate = $('#EdateEd').val()
+      let Edate = $('#EdateEd'+couponId).val()
       let modDate = new Date(Edate)
       let currentDate = new Date()
       if (modDate.getTime() <= currentDate.getTime()) {
-        $('#EdateEdrr').text('should be greater than current date')
+        $('#EdateEdrr'+couponId).text('should be greater than current date')
         setTimeout(() => {
-          $('#EdateEdrr').text('')
+          $('#EdateEdrr'+couponId).text('')
         }, 3000)
         return
       }
@@ -378,11 +397,11 @@
         .then((data) => {
           // console.log("data====",data)
           if (data.success) {
-            $('#CnameEd').val("")
-            $('#CcodeEd').val("")
-            $('#DiscountEd').val("")
-            $('#PAmountEd').val("")
-            $('#EdateEd').val("")
+            $('#CnameEd'+couponId).val("")
+            $('#CcodeEd'+couponId).val("")
+            $('#DiscountEd'+couponId).val("")
+            $('#PAmountEd'+couponId).val("")
+            $('#EdateEd'+couponId).val("")
 
 
             // Optionally, you can update the address list on the page.
@@ -398,9 +417,9 @@
               location.reload();
             }, 1800)
           }else{
-              $('#CcodeEdrr').text('Code already exists');
+              $('#couponNC'+couponId).show();
               setTimeout(() => {
-                $('#CcodeEdrr').text('');
+                $('#couponNC'+couponId).hide();
               }, 3000);
               return;
             }

@@ -1,7 +1,11 @@
 <%- include('../layouts/admin/header'); -%>
 
   <div class="col-md-12">
-    <h1 class="ms-3">Admin Dashboard</h1>
+    <div class="d-flex justify-content-between">
+      <h1 class="ms-3 mb-5">Admin Dashboard</h1> 
+      <!-- < include('./button'); -%> -->
+    
+    </div>
     <div class="row d-flex justify-content-center">
       <div class="col-10 mb-3 rounded d-flex justify-content-center border p-3 bg-light">
         <div class="row">
@@ -16,12 +20,12 @@
             </div>
             <h3 class="mt-4">Graph based on price</h3>
             <div class="row d-flex justify-content-center">
-              <canvas id="barChart" style="width:100%;max-width:600px"></canvas>
+              <canvas id="barChart" class="col-10"></canvas>
             </div>
 
             <h3 class="mt-4">Graph based on sale</h3>
             <div class="row d-flex justify-content-center">
-              <canvas id="lineChart" style="width:100%;max-width:600px"></canvas>
+              <canvas id="lineChart" ></canvas>
             </div>
 
 
