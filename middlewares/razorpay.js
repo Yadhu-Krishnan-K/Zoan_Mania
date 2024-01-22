@@ -35,16 +35,7 @@ var instance = new Razorpay({
           console.log("details-==",details)
           console.log("orderId===",orderId)
           console.log("env.secret====",process.env.RAZORPAY_KEY_SECRET)
-          // let hmac = crypto.createHmac('sha256',process.env.RAZORPAY_KEY_SECRET)
-          // let generated_signature = hmac_sha256(orderId.id+ "|" + details.payment.razorpay_payment_id, process.env.RAZORPAY_KEY_SECRET);
-          // // hmac.update(orderId+'|'+,process.env.RAZORPAY_KEY_SECRET);
-          // console.log("after generated signature")
-          // if(generated_signature == details['payment[razorpay_signature]']){
-          //     console.log("success payment");
-          //     resolve()
-          // }else{
-          //     reject()
-          // }
+
           let hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
           console.log(
             details.payment.razorpay_order_id +
@@ -63,18 +54,7 @@ var instance = new Razorpay({
             "hmacccccccccccccccccccccc------------------------------------------"
           );
           if (hmac === details.payment.razorpay_signature) {
-            // const orderId = req.body.order.receipt;
-            // console.log(orderId, "orderIdddddddddddddddddddddddddd");
-            // console.log("reciept", req.body.order.receipt);
-            // console.log(
-            //   req.body.orderId,
-            //   "-------------------------------------------------------------------------------------------------------------------orderid"
-            // );
-            // const orderID = req.body.orderId;
-            // const updateOrderDocument = await order.findByIdAndUpdate(orderID, {
-            //   PaymentStatus: "Paid",
-            //   paymentMethod: "Online",
-            // });
+
             console.log("hmac success");
             // res.json({ success: true });
             resolve()

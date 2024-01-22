@@ -16,7 +16,7 @@ const addBanner = async (req, res) => {
 
         for (let i = 0; i < Math.min(imageUrls.length, 3); i++) {
             const imagePath = path.join(__dirname, '../../public/Banners', imageUrls[i]); // Update the path here
-            console.log('imagePath=',imagePath)
+            // console.log('imagePath=',imagePath)
             // Specify the desired dimensions for cropping
             const width = 1200;
             const height = 500;
@@ -41,7 +41,7 @@ const addBanner = async (req, res) => {
             images: croppedImageUrls,
         });
 
-        console.log('newBanner===', newBanner);
+        // console.log('newBanner===', newBanner);
         res.json({
             status: true,
         });

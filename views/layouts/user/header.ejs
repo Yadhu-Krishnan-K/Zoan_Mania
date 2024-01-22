@@ -38,7 +38,7 @@
                     <div class="col-md-4 my-auto rounded">
                         <form role="search" action="/search" method="post">
                             <div class="input-group">
-                                <input name="value" type="search" value="<%= locals.value?value:'' %>" placeholder="Search product" class="form-control"/>
+                                <input name="value" onchange="backToShop()" type="search" value="<%= locals.value?value:'' %>" placeholder="Search product" class="form-control" id="bckShp"/>
                                 <button class="btn bg-white border" type="submit">
                                     <i class="fa fa-search"></i>
                                 </button>
@@ -91,3 +91,11 @@
             </div>
         </div>
     </div>
+    <script>
+        function backToShop(){
+            // /Product-list
+            if(document.getElementById('bckShp').value.trim().length==0){
+                window.location.replace('/Product-list')
+            }
+        }
+    </script>

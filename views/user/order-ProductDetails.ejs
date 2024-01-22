@@ -223,11 +223,7 @@
                 returnReason = checkboxes[0].value;
             }
 
-            // Now you can send 'returnReason' and 'comments' to your server using AJAX
-            // Update the following lines based on your server-side implementation
-            // const P_id = 'your_product_id';
-            // const P_qty = 'your_product_quantity';
-            // const O_id = 'your_order_id';
+
 
             fetch('/returnedItem', {
                 method: 'POST',

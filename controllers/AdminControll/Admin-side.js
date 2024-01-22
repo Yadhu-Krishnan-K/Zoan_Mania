@@ -28,8 +28,8 @@ const DashBoard = async(req,res) => {
         ])
         const orders = await order.find().sort({ OrderDate: -1 }).exec();
         const earliestOrder = orders[0]
-        console.log('order listed==',orders);
-        console.log('earliest order ==',earliestOrder)
+        // console.log('order listed==',orders);
+        // console.log('earliest order ==',earliestOrder)
 
         res.render('supAdmin/DashBoard',{title:"Admin Dash",Page:"Dashboard",products,earliestOrder})
     
@@ -54,19 +54,19 @@ const Banner = async(req,res) => {
 
 const AdminCheck = async(req,res)=>{
     try {
-        console.log("reached /check")
+        // console.log("reached /check")
         let email = req.body.email;
         let password = req.body.password;
         
         // Hash the password and then query the database
         let adminL = await admin.findOne({ adminGmail: email, adminPassword: password });
-        console.log('adminL===',adminL)
+        // console.log('adminL===',adminL)
         if (!adminL) {
             res.json({
                 success: false
             });
         } else {
-            console.log("Success");
+            // console.log("Success");
             req.session.adminAuth = true;
             res.json({
                 success: true

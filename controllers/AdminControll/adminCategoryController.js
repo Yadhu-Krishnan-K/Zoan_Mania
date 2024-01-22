@@ -14,7 +14,7 @@ const addCategory = async(req,res)=>{
         let catOffer = req.body.offer
         let date = req.body.offerEnd
         const ofer = moneyVal.categoryOffer(catOffer)
-        console.log("ofer===",ofer)
+        // console.log("ofer===",ofer)
         const name = validator.categoryValidator(catName)
 
         
@@ -33,7 +33,7 @@ const addCategory = async(req,res)=>{
             date = null
         }
         const cat = await category.find({catName:{$regex: "^" + catName, $options: "i"}})
-        console.log(cat)
+        // console.log(cat)
     if(cat.length == 0){
         if(ofer.status && name.status){
             const colleeeection = await category.create({
@@ -131,7 +131,7 @@ const categoryUpdate = async(req,res)=>{
                 product.save()
             }
             
-            console.log('products when updating',Product)
+            // console.log('products when updating',Product)
 
             await category.updateOne({_id:req.params.id},{
                 catName:catName.toUpperCase(),

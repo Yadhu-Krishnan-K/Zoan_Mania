@@ -170,6 +170,7 @@ router.get('/Orders',adminauth.adminLoggedinAuthguard,ordercontroller.getOrder)
 
 //admin order update
 router.put('/orders/updateStatus/:orderId',ordercontroller.updateOrderStatus)
+router.put('/updateCancelStatus',ordercontroller.cancelOrder)
 // /add-category
 
 //admin order detail view page

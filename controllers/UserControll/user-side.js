@@ -5,13 +5,11 @@ const Mailgen = require('mailgen')
 const bcrypt = require('bcrypt')
 const validator = require('validator')
 
-// const { password } = require('../../util/passwordValidator')
-//c//onst products = require('../../models/products')
+
 const saltRounds = 10
 const Fotp = require('../../util/forgotPassword')
 const pValidator = require('../../util/passwordValidator')
 const userModel = require('../../models/user')
-// const productInHome = require('./home-page-products')
 const products = require('../../models/products')
 const cartModel = require('../../models/cartModel')
 const category = require('../../models/category')
@@ -21,7 +19,6 @@ const controller = require('../../util/for-otp')
 const cart = require('../../models/cartModel')
 const banner = require('../../models/banner')
 const wallet = require('../../models/walletPayment')
-// require('razorpay/dist/types/items')
 
 
   
@@ -56,7 +53,6 @@ const userSignup = (req,res)=>{
   
 }
 
-
 const getHome =async (req, res) => {
   try {
     req.session.loggedIn = true;
@@ -77,6 +73,7 @@ const getHome =async (req, res) => {
         cartcount += cart.Quantity;
       });
     }
+
     const BAnner = await banner.findOne()
     const catWithOffer = 
 
@@ -125,7 +122,7 @@ const postEnteringHOme = async(req, res) => {
       let userOtp = req.body.number1;
       const vaotp = req.session.vaotp;
       console.log(vaotp);
-      console.log(req.session.data);
+      // console.log(req.session.data);
       const name = req.session.name;
       const email = req.session.email;
      
@@ -138,12 +135,12 @@ const postEnteringHOme = async(req, res) => {
 
 
               const logged = await userModel.create({ name, email, password: hashPass });
-              console.log(logged);
+              // console.log(logged);
 
               const user = await userModel.findOne({ email: email });
               req.session.userId = user._id;
               const walletHistory = await wallet.create({userId:req.session.userId})
-              console.log('wallet===',walletHistory)
+              // console.log('wallet===',walletHistory)
 
               res.json({ success: true});
           } else {
@@ -167,7 +164,7 @@ const userLoginBackend = async(req,res)=>{
   try {
     
     const {email,password} = req.body;
-    console.log('email===',email,"    passord===",password);
+    // console.log('email===',email,"    passord===",password);
     const logins = await userModel.findOne({email: email})
   
     if(!logins){
@@ -186,7 +183,7 @@ const userLoginBackend = async(req,res)=>{
             req.session.email = email
             req.session.userId = logins._id
             req.session.save()
-            console.log('userId='+req.session.userId)
+            // console.log('userId='+req.session.userId)
             res.json({
               success:true
             })
@@ -302,7 +299,7 @@ const productList1 = async(req,res)=>{
     const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
     let cartcount = 0
     let categories = await category.find()
-    console.log("cartData====",cartData);
+    // console.log("cartData====",cartData);
     if (cartData === null || cartData.Items == (null||0)) {
       
       cartcount = 0
@@ -323,7 +320,7 @@ const productList1 = async(req,res)=>{
   const Products = await products.find()
   const minPrice = Math.min(...Products.map(product => product.Price));
   const maxPrice = Math.max(...Products.map(product => product.Price));
-  console.log("minmax and maxprize currespondingly==== ",minPrice,maxPrice)
+  // console.log("minmax and maxprize currespondingly==== ",minPrice,maxPrice)
   res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount,pageNums,listCount,page,currentPage,categories,minPrice,maxPrice});
     
     
@@ -345,9 +342,9 @@ const producDetail = async(req,res)=>{
     const name = req.session.name
     const P_id = req.params.id
     const userId = req.session.userId
-    console.log("Product id=",P_id)
+    // console.log("Product id=",P_id)
     const P_detail = await products.findOne({_id: P_id})
-    console.log(P_detail)
+    // console.log(P_detail)
     const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
   
   
@@ -423,7 +420,7 @@ const forgotOtp = async(req,res)=>{
         res.redirect('/forgotPasswordOtpGenerate')
     }
     
-    console.log(user);
+    // console.log(user);
     
   } catch (error) {
     console.error("error 500 :",error);
@@ -446,56 +443,9 @@ const getConfirmPass = async(req,res)=>{
     console.error("error 500 :",error);
   }
   
-    }
+}
 
 
-
-
-
-
-//user-add-cart-========-=-----------------==============------------------======================-------------=
-
-// const userAddtoCart =  async (req, res) => {
-//     try {
-//       const userData = await userModel.findOne({ name: req.session.name });
-//       const productId = req.params.id;
-//       const userId = userData._id || req.session.userId;
-//       const userExist = await cartModel.findOne({ userId: userId });
-//       const ProductId = new mongoose.Types.ObjectId(productId)
-//       if (!userExist) {
-
-//         const cart = await cartModel.create({
-//           userId: userId,
-//           Items: [{ ProductId: ProductId }]
-//         });
-  
-//       } else {
-//         const product = await cartModel.findOne({userId: userId,'Items.ProductId':ProductId})
-
-//         if(!product){
-  
-//           await cartModel.findByIdAndUpdate(userExist._id, {
-//             $push: {
-//               Items: { ProductId: ProductId }
-//             }
-//           });
-  
-//         }else{
-  
-//           await cartModel.findByIdAndUpdate({userId: userId,'Items.ProductId':ProductId},{$inc:{'Items.Quantity': 1}})
-//           .then(()=>{console.log('success')})
-//           .catch((err)=>{console.log(err)})
-//         }
-//       }
-  
-//       // res.redirect('/Product-list');
-//       res.json({
-//         success:true
-//       })
-//     } catch (error) {
-//       console.error("error=",error);
-//     }
-//   }
 const userAddtoCart = async (req, res) => {
   try {
     const userData = await userModel.findOne({ name: req.session.name });
@@ -600,13 +550,13 @@ const userGetCart = async(req,res)=>{
         const carts=cartDetail.Items
         
         let sum=0
-        console.log("carts==",carts)
+        // console.log("carts==",carts)
 
           carts.forEach(cart => {
             // console.log(cart.ProductId.Price)
             sum+=(cart.Quantity * cart.ProductId.discountedPrice)
           });
-          console.log("cartcount when entering cartpage====",cartcount)
+          // console.log("cartcount when entering cartpage====",cartcount)
           req.session.totalAmount = sum;
           const totalPrice = await  cartModel.updateOne({userId: userId}, {$set:{totalAmount: sum}})
           req.session.usedCoupon = false
@@ -624,62 +574,7 @@ const userGetCart = async(req,res)=>{
 
 
 
-//Quantity uupdation-cart
 
-// const cartQuantityUpdate = async(req,res)=>{
-//   try {
-    
-//     console.log(req.body);
-//     const {inc,productId} = req.body
-  
-//     //product detail
-//     const product = await products.findOne({_id: productId})
-//     const userId=new mongoose.Types.ObjectId(req.session.userId)
-//     const productItem = new mongoose.Types.ObjectId(product._id)
-//     const cartDetail = await cartModel.findOne({userId: userId})
-//     console.log("cartDetail===",cartDetail)
-//     //cart detail
-//     const cartItem = cartDetail.Items.find((item)=>{
-//       return item.ProductId.equals(productItem)
-//     })
-  
-//     //total amount
-//     cartDetail.totalAmount += Number(inc)*product.Price
-//     req.session.totalAmount = cartDetail.totalAmount
-//     //newQuandity
-//     const newQuantity = cartItem.Quantity+Number(inc)
-    
-//     //cart Items price
-//     if(newQuantity>=1 && newQuantity <= product.Stock){
-//       cartDetail.totalQuantity += Number(inc)
-//       cartItem.Price = newQuantity * product.Price
-    
-//     //
-//     cartItem.Quantity = newQuantity
-//     cartDetail.save()
-//     }
-    
-  
-    
-  
-  
-//     res.json(
-//       {
-//         success:true,
-//         Quantity:newQuantity,
-//         Stock:product.Stock,
-//         price:cartItem.Price,
-//         totalPrice: cartDetail.totalAmount,
-//         totalQuantity: cartDetail.totalQuantity
-//       }
-//       )
-    
-//   } catch (error) {
-//     console.error("error 500 :",error);
-//   }
-  
-  
-//   }
 const cartQuantityUpdate = async (req, res) => {
   try {
     const { inc, productId } = req.body;
@@ -740,8 +635,8 @@ const cartItemDeletion = async(req,res)=>{
     try {
       const ParentId = req.body.ParentId
       const cartId = req.params.cartId
-      console.log("ParentId====",ParentId);
-      console.log("cartId=====",cartId)
+      // console.log("ParentId====",ParentId);
+      // console.log("cartId=====",cartId)
       await cartModel.updateOne({_id: ParentId},{
         $pull:{
             Items:{_id: cartId}
@@ -775,7 +670,7 @@ const getUserProfile = async(req,res)=>{
     const userData = await userModel.findOne({name:name})
     req.session.email = userData.email
     req.session.save()
-    console.log("email==="+userData.email);
+    // console.log("email==="+userData.email);
     const cartData = await cartModel.findOne({userId:userId})
     let cartcount = 0
     if (cartData === null || cartData.Items == (null||0)) {
@@ -809,7 +704,7 @@ const updateUserProfile = async(req,res)=>{
   try {
     
     const userId = req.session.userId
-    console.log("req.body===",req.body)
+    // console.log("req.body===",req.body)
     // const {name, email, phone} = req.body
     const name = req.body.name.replace(/ +/g,' ').trim()
     if(name.length == 0){
@@ -818,6 +713,15 @@ const updateUserProfile = async(req,res)=>{
         error:'name'
       })
     }
+    const nameExist = await userModel.findOne({name:name})
+    // console.log('name = ',nameExist)
+    if(nameExist && name !== req.session.name){
+      return res.json({
+        success: false,
+        nameErr:true,
+        errMsg: "Name already exist"
+        });
+    }
 
     const email = req.body.email
     if(!validator.isEmail(email)){
@@ -825,6 +729,16 @@ const updateUserProfile = async(req,res)=>{
         success:false,
         error:'email'
       })
+    }
+    const emailExist = await userModel.findOne({email:email})
+    if(emailExist){
+      if (email != req.user.email) {
+        return res.json({
+          success:false,
+          emailErr:true,
+          errMsg:"This Email is already registered."
+        })
+      }
     }
     const phone = req.body.phone
 
@@ -1013,7 +927,7 @@ const passwordChange2 = async(req,res)=>{
       const user = await userModel.findOne({_id:req.session.userId})
       const Pass = req.body.Pass
       const oldPass = req.body.oldPass.trim()
-      console.log('oldPass=',oldPass)
+      // console.log('oldPass=',oldPass)
       if(oldPass.length == 0){
         return res.json({
           success:false,
@@ -1036,7 +950,7 @@ const passwordChange2 = async(req,res)=>{
      
       const errors = pValidator.validate(Pass,{details:true})
     
-      console.log("errors====",errors);
+      // console.log("errors====",errors);
       if (errors.length === 0) {
         const hashPass = await bcrypt.hash(Pass,10)
         await userModel.updateOne({_id:req.session.userId},{$set:{password:hashPass}})
@@ -1048,7 +962,7 @@ const passwordChange2 = async(req,res)=>{
         // Map error codes to user-friendly error messages
         const errorMessage = errors[0].message
        
-        console.log("error:===",errorMessage);
+        // console.log("error:===",errorMessage);
         return res.json({ 
           success:false,
           errMsg:true,
@@ -1162,12 +1076,12 @@ const passwordChange2 = async(req,res)=>{
 
 
 
-    console.log("Name=",Name,
-      "AddressLine=",Address,
-      "City=",City,
-      "Pincode=",Pincode,
-      "State=",State,
-      "Mobile=",Mobile)
+    // console.log("Name=",Name,
+    //   "AddressLine=",Address,
+    //   "City=",City,
+    //   "Pincode=",Pincode,
+    //   "State=",State,
+    //   "Mobile=",Mobile)
   
     const addr = {
       Name:Name,
@@ -1194,7 +1108,7 @@ const updateAddress = async(req,res)=>{
     
     // console.log("userId from updateAddress===",req.params.userId)
     const userId = req.params.userId;
-    console.log('req.body===',req.body)
+    // console.log('req.body===',req.body)
     // const {addressId,Name,Address,City,Pincode,State,Mobile} = req.body;
     const Name = req.body.Name.replace(/ +/g,'').trim()
     const Address = req.body.Address.replace(/ +/g,'').trim()
@@ -1264,7 +1178,7 @@ const updateAddress = async(req,res)=>{
       'address.$.State': State,
       'address.$.Mobile': Mobile,
     };
-    console.log('updated=',updatedAddress)
+    // console.log('updated=',updatedAddress)
 
     await userModel.updateOne({ _id: req.session.userId, 'address._id': addressId }, { $set: updatedAddress });
 
@@ -1280,17 +1194,17 @@ const updateAddress = async(req,res)=>{
 const deleteAddress = async(req,res)=>{
   try {
    let userId = req.params.userId
-   console.log("reached /delete address")
+  //  console.log("reached /delete address")
    
    let id = req.params.addresId
-   console.log(id);
+  //  console.log(id);
    const data = await userModel.findOne({ _id: userId })
    await userModel.updateOne({_id: data._id},{
        $pull:{
            address:{_id: id}
        }
    })
-   console.log("delete:" + data);
+  //  console.log("delete:" + data);
    res.redirect('/manageAddress')
   } catch (error) {
    console.log(error)
@@ -1354,7 +1268,7 @@ const filter = async (req, res) => {
 
     // Query the database to find products based on the filter criteria
     const filteredProducts = await products.find(filterCriteria);
-    console.log('filteredProducts==',filteredProducts)
+    // console.log('filteredProducts==',filteredProducts)
 
     // Send the filtered products to the client
     res.json({ products: filteredProducts, cartData });

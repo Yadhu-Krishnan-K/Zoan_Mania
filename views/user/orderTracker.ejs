@@ -17,17 +17,24 @@
                           <%= order.OrderDate %>
                         </span> </p>
 
-                      <% if(order.Status !=="Canceled" ){ %>
-                        <p class="text-muted mb-0">Will be delivered on or before <span class="fw-bold text-body">
-                            <%= order.ExpectedDeliveryDate %>
+                        <% if(order.Status !=="Canceled" ){ %>
+                          <p class="text-muted mb-0">Will be delivered on or before <span class="fw-bold text-body">
+                              <%= order.ExpectedDeliveryDate %>
                           </span></p>
+                        <!-- < }else if(order.Cancel.requested && order.Cancel.AdminReply.length == 0){ %>
+                          <p class="text-muted mb-0">Requested to cancel order<span class="fw-bold text-body"></p>
+                        < }else if(order.Cancel.requested && order.Cancel.AdminReply=='Denied'){ %>
+                          <p class="text-muted mb-0">Request for cancelling order denied<span class="fw-bold text-body"></p> -->
                         <% } else if(order.Status==="Canceled" ){ %>
                           <p class="text-muted mb-0">Order Canceled<span class="fw-bold text-body"></p>
-                          <% } else { %>
-                            <p class=" text-muted mb-0">Order Rejected<span class="fw-bold text-body"></span></p>
-                            <% } %>
+                        <% } else { %>
+                          <p class=" text-muted mb-0">Order Rejected<span class="fw-bold text-body"></span></p>
+                        <% } %>
 
                     </div>
+                    <!-- <div>
+                      
+                    </div> -->
                   </div>
                 </div>
 
@@ -51,12 +58,20 @@
 
                             <%} else if(order.Status==="Canceled" || order.Status==="Rejected" ){%>
 
-                              <%} else {%>
+                            <%} else if(!order.Cancel.requested){%>
 
                                 <button class="btn btn-outline-danger" type="button"
-                                  onclick="cancelOrder('<%= order._id%>')">Cancel Order</button>
+                                  data-bs-toggle="modal" data-bs-target="#cancelModaprodul<%= order._id%>" %>">Cancel Order</button>
 
-                                <%}%>
+                                  
+                            <%}else if(order.Cancel.requested && order.Cancel.AdminReply.length == 0){ %>
+                              <!-- <p class="text-muted mb-0">Requested to cancel order<span class="fw-bold text-body"></p> -->
+                                <button class="btn btn-outline-warning">Requested for order cancellation</button>
+                            <% }else if(order.Cancel.requested && order.Cancel.AdminReply=='Denied'){ %>
+                              <!-- <p class="text-muted mb-0">Request for cancelling order denied<span class="fw-bold text-body"></p> -->
+                                <button class="btn btn-outline-warning">Sorry..., Request for cancelling order denied</button>
+
+                            <% } %>
                         </div>
                       </div>
                       <hr class="my-4">
@@ -126,6 +141,34 @@
                   </div>
                 </div>
               </div>
+              <div class="modal fade" id="cancelModaprodul<%= order._id%>" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Cancel Order</h1>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>  
+                        <div class="modal-body">
+                            <form id="returnForm">
+                                <div class="mb-3">
+                                    <label for="return-comment"
+                                        class="col-form-label">Reason for Cancelling: <span id="Cerr" class="text-danger"></span></label>
+                                    <textarea class="form-control"
+                                        id="cancel-comment"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary"
+                            onclick="cancelOrder('<%= order._id%>')">Cancel Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
               <% }) %>
               <% } else { %>
                   <h1 style="text-align: center;" class="p-5">No Orders are placed yet</h1>
@@ -133,6 +176,7 @@
         </div>
       </div>
     </div>
+    
   </section>
 
   <%- include('../layouts/user/footer'); -%>
@@ -175,9 +219,16 @@
       }
 
       function cancelOrder(orderId) {
+        let comment = document.getElementById('cancel-comment').value.trim()
+        if(comment.length==0){
+          document.getElementById('Cerr').innerHTML = 'Please enter a valid reason'
+          setTimeout(()=>{document.getElementById("Cerr").innerHTML=''},3000)
+          return
+        }
+        
         Swal.fire({
           title: "Are you sure?",
-          text: "You won't be able to revert this!",
+          // text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -185,13 +236,21 @@
           confirmButtonText: "Yes, Cancel it!"
         }).then((result) => {
           if (result.isConfirmed) {
-            fetch(`/cancelOrderData/${orderId}`)
+            fetch(`/cancelOrderData/${orderId}`,{
+              method:'POST',
+              headers:{
+                'Content-Type':'application/json'
+              },
+              body:JSON.stringify({
+                comment
+              })
+            })
               .then((res) => res.json())
               .then((data) => {
                 if (data.success) {
                   Swal.fire({
-                    title: "Order Canceled!",
-                    text: "Your order has been canceled.",
+                    title: "Requsted for Cancelling order",
+                    // text: "Your order has been canceled.",
                     icon: "success"
                   })
                     .then(

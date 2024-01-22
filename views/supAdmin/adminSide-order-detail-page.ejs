@@ -130,7 +130,7 @@
     <script>
 
         function whatToDo(num, productId, orderId) {
-            console.log("Clicked", num, productId, orderId);
+            // console.log("Clicked", num, productId, orderId);
             fetch(`/admin/updatReturnStatus/${orderId}`, {
                 method: 'PUT',
                 headers: {

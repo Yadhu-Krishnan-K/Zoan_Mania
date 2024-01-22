@@ -14,11 +14,11 @@ const getPlaceOrder = (req,res)=>{
     let name = req.session.name
     let orderId = req.session.orderID
     req.session.visited++
-    console.log("req.session.visited==",req.session.visited);
+    // console.log("req.session.visited==",req.session.visited);
     if(req.session.visited < 2){
     res.render('user/userOrderConfirm',{name, title:"Oreder Confirmed",orderId})
   }else{
-    console.log('here')
+    // console.log('here')
     res.redirect('/userHome')
   }
     
@@ -32,7 +32,7 @@ const getPlaceOrder = (req,res)=>{
 const postPlaceOrder = async(req,res)=>{
  
   
-    console.log("Entered to place order");
+    // console.log("Entered to place order");
     const email = req.session.email;
     
     const Address = req.body.selectedAddress;
@@ -51,10 +51,10 @@ const postPlaceOrder = async(req,res)=>{
         const userID = userData._id;
   
         const cartData = await cartModel.findOne({ userId: userID }).populate('Items.ProductId')
-        console.log("cartData====================----------------=================",cartData.Items);
+        // console.log("cartData====================----------------=================",cartData.Items);
   
         if (!cartData) {
-            console.log("Cart data not available");
+            // console.log("Cart data not available");
             return;
         }
   
@@ -93,7 +93,7 @@ const postPlaceOrder = async(req,res)=>{
           amount: 0,       
         }
       }
-      console.log('coupon==',couponAmount)
+      // console.log('coupon==',couponAmount)
         let newOrder = new orderModel({
             UserId: userID,
             Items: cartData.Items.map(cartItem => ({
@@ -111,10 +111,10 @@ const postPlaceOrder = async(req,res)=>{
             Address: add
         });
         if(paymentMethod=='cod'){
-          console.log("inside payment method = cod and order model is creating")
+          // console.log("inside payment method = cod and order model is creating")
         const order = await newOrder.save();
         if(req.session.usedCoupon){
-          console.log("verifyPayment coupon== ",req.session.userId)
+          // console.log("verifyPayment coupon== ",req.session.userId)
           await coupon.updateOne({code: req.session.couponCode},{ $push: { usedBy: req.session.userId } })
         }
         req.session.orderID = order._id;
@@ -140,13 +140,13 @@ const postPlaceOrder = async(req,res)=>{
         }
   //just redirect if code to some route
             req.session.visited = 0
-            console.log("order response back");
+            // console.log("order response back");
             res.json({ success: true, method:'cod' });
         }else if(paymentMethod=='Wallet'){
-          console.log("inside payment method = cod and order model is creating")
+          // console.log("inside payment method = cod and order model is creating")
         const order = await newOrder.save();
         if(req.session.usedCoupon){
-          console.log("verifyPayment coupon== ",req.session.userId)
+          // console.log("verifyPayment coupon== ",req.session.userId)
           await coupon.updateOne({code: req.session.couponCode},{ $push: { usedBy: req.session.userId } })
         }
         req.session.orderID = order._id;
@@ -181,12 +181,12 @@ const postPlaceOrder = async(req,res)=>{
         }
   //just redirect if code to some route
             req.session.visited = 0
-            console.log("order response back");
+            // console.log("order response back");
             res.json({ success: true, method:'Wallet' });
         }else if(paymentMethod == 'online'){
           const orderId =await razor.createOrder(req.session.totalAmount)
-          console.log("order Id=====",orderId)
-          console.log("id of order===",orderId.id);
+          // console.log("order Id=====",orderId)
+          // console.log("id of order===",orderId.id);
           req.session.orderID = orderId.id;
           
           let newOrder = new orderModel({
@@ -223,13 +223,13 @@ const postPlaceOrder = async(req,res)=>{
   const verifyPayment = async(req,res)=>{
     try {
       if(req.session.usedCoupon){
-        console.log("verifyPayment coupon== ",req.session.userId)
+        // console.log("verifyPayment coupon== ",req.session.userId)
         await coupon.updateOne({code: req.session.couponCode},{ $push: { usedBy: req.session.userId } })
       }
-      console.log("data from body==== in verify payment====",req.body,"orderId from sesssion=========",req.session.orderID)
+      // console.log("data from body==== in verify payment====",req.body,"orderId from sesssion=========",req.session.orderID)
       razor.verifyPayment(req.body,req.session.orderID).then(async()=>{
-        console.log("payment success")
-        console.log("req.session.newOrder===",req.session.newOrder)
+        // console.log("payment success")
+        // console.log("req.session.newOrder===",req.session.newOrder)
         let newOrder = new orderModel(req.session.newOrder)
         await newOrder.save()
         const cartData = await cartModel.findOne({userId:req.session.userId})
@@ -277,28 +277,33 @@ const postPlaceOrder = async(req,res)=>{
     // console.log("inside cancel order route")
   
    try {
-    const order = await orderModel.findByIdAndUpdate({_id:req.params.orderId},{Status:"Canceled"})
-    console.log(order)
-    for (const product of order.Items) {
-      const P_id = product.productId;
-      const count = product.quantity;
-      await products.findByIdAndUpdate({ _id: P_id }, { $inc: { Stock: count } });
-    }
-    let total = order.TotalPrice
-    let userId = req.session.userId
-    if(order.PaymentMethod == 'online'||order.PaymentMethod=='Wallet'){
-      await userModel.findByIdAndUpdate({_id:userId},{$inc:{Wallet:total}},{new:true})
-      const walletHisto = await wallet.findOne({userId:req.session.userId})
-      walletHisto.payment.push( {
-        amount:total,
-        date:new Date(),
-        purpose:'Order Cancelled',
-        income:'Debited'
+    console.log('reached')
+    const order = await orderModel.findByIdAndUpdate({_id:req.params.orderId},{Cancel:{
+      requested: true,
+      msg:req.body.comment,
+      AdminReply:''
+    }})
+    // const order = await orderModel.findByIdAndUpdate({_id:req.params.orderId},{Status:"Canceled"})
 
-    })
-    await walletHisto.save()
-    }
-    // console.log("ordermodel====",order)
+    // console.log(order)
+    // for (const product of order.Items) {
+    //   const P_id = product.productId;
+    //   const count = product.quantity;
+    //   await products.findByIdAndUpdate({ _id: P_id }, { $inc: { Stock: count } });
+    // }
+    // let total = order.TotalPrice
+    // let userId = req.session.userId
+    // if(order.PaymentMethod == 'online'||order.PaymentMethod=='Wallet'){
+    //   await userModel.findByIdAndUpdate({_id:userId},{$inc:{Wallet:total}},{new:true})
+    //   const walletHisto = await wallet.findOne({userId:req.session.userId})
+    //   walletHisto.payment.push( {
+    //     amount:total,
+    //     date:new Date(),
+    //     purpose:'Order Cancelled',
+    //     income:'Debited'
+    // })
+    // await walletHisto.save()
+    // }
     res.json({
       success:true
     })
@@ -343,7 +348,7 @@ const postPlaceOrder = async(req,res)=>{
 
   const returnedItem = async(req,res)=>{
     try {
-      console.log("data from body = ",req.body);
+      // console.log("data from body = ",req.body);
     const productId = new mongoose.Types.ObjectId(req.body.P_id);
     const P_qty = req.body.P_qty;
     const O_id = new mongoose.Types.ObjectId(req.body.O_id);

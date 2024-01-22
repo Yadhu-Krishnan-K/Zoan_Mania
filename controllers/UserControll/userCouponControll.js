@@ -4,9 +4,9 @@ const coupon = require("../../models/coupons");
 const manageCoupons = async (req, res) => {
   try {
     const cartcount = await cartHelper.cartCount(req);
-    console.log('cartcount==',cartcount)
+    // console.log('cartcount==',cartcount)
     const coupons = await coupon.find();
-    console.log("Cpns===", coupons);
+    // console.log("Cpns===", coupons);
     const name = req.session.name;
     const userId = req.session.userId;
     res.render("user/userCoupons", {
@@ -27,9 +27,9 @@ const applyCoupon = async (req, res) => {
     // let exist = await coupon.findOne({eq.code:code})
 
     let totalAmount = req.session.totalAmount;
-    console.log("total Amount===", totalAmount);
+    // console.log("total Amount===", totalAmount);
     let coupons = await coupon.findOne({ code: code });
-    console.log(req.session.userId);
+    // console.log(req.session.userId);
 
     // if(coupon ==
     // console.log("check inside apply coupon====",coupons)

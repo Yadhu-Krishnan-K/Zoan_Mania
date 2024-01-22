@@ -70,8 +70,8 @@ const updateReturnStatus = async(req,res)=>{
     let order = await orderModel.findOne({_id:O_id}).populate('Items.productId')
     console.log("order === ",order)
     let item = order.Items.find((item)=>item.productId._id == P_id)
-    console.log("item in updateReturnStatus===",order.Items)
-    console.log("num from updateReturnStatus===",num)
+    // console.log("item in updateReturnStatus===",order.Items)
+    // console.log("num from updateReturnStatus===",num)
     if (num == 0) {
       item.returnStatus = 'returned';
       if(item.quantity * item.discounted < order.Returned){
@@ -138,13 +138,13 @@ const downloadCSV = async(req,res) => {
     const salesData = []
     let startDate = new Date(req.body.startDate).toISOString().split('T')[0]
     let endDate = new Date(req.body.endDate).toISOString().split('T')[0]
-    console.log('startDate=',startDate,' ,endDate=',endDate)
+    // console.log('startDate=',startDate,' ,endDate=',endDate)
 
     const data = await Orders.find().populate('Items.productId').populate('UserId')
     // console.log('data==',data)
     data.forEach((order)=>{
       let orderDate = new Date(order.OrderDate).toISOString().split('T')[0]
-      console.log('orderDate=',orderDate)
+      // console.log('orderDate=',orderDate)
       // Check if the order date is within the specified range
       if (orderDate >= startDate && orderDate <= endDate) {
         order.Items.forEach((product) => {
@@ -160,7 +160,7 @@ const downloadCSV = async(req,res) => {
         });
       }
     })
-console.log('salesData==',salesData)
+// console.log('salesData==',salesData)
   
     // Convert JSON data to CSV format
     const csv = json2csv(salesData, { fields: ['_id', 'product', 'purchaseDate','orderedBy','quantity','price'] });
@@ -186,7 +186,7 @@ console.log('salesData==',salesData)
 
 const downloadPdf = async (req, res) => {
   try{
-    console.log('reached...')
+    // console.log('reached...')
     let startDate = new Date(req.body.startDate).toISOString().split('T')[0]
       // const format = req.body.fileFormat;
       let endDate = new Date(req.body.endDate).toISOString().split('T')[0]
@@ -199,15 +199,15 @@ const downloadPdf = async (req, res) => {
         //     $lte: endDate,
         //   },
         // })
-        console.log('orders before pdf==',orders)
+        // console.log('orders before pdf==',orders)
       let filteredOrders = orders.filter(order=>startDate<=new Date(order.OrderDate).toISOString().split('T')[0]&&endDate>=new Date(order.OrderDate).toISOString().split('T')[0]&&order.PaymentStatus!=='Pending')
-      console.log('orders===when====pdfdownlod===',filteredOrders)
+      // console.log('orders===when====pdfdownlod===',filteredOrders)
       let totalSales = 0;
       filteredOrders.forEach((order) => {
         totalSales += order.TotalPrice || 0;
       });
 
-      console.log(totalSales, "orderssss");
+      // console.log(totalSales, "orderssss");
       const sum = totalSales.length > 0 ? totalSales[0].totalSales : 0;
       const pdfBuffer = await pdf.generatePdfBuffer(filteredOrders, startDate, endDate, totalSales);
 
@@ -228,6 +228,72 @@ const downloadPdf = async (req, res) => {
 
 
 
+const cancelOrder = async(req,res) => {
+
+// const order = await orderModel.findByIdAndUpdate({_id:req.params.orderId},{Status:"Canceled"})
+
+    // console.log(order)
+    // for (const product of order.Items) {
+    //   const P_id = product.productId;
+    //   const count = product.quantity;
+    //   await products.findByIdAndUpdate({ _id: P_id }, { $inc: { Stock: count } });
+    // }
+    // let total = order.TotalPrice
+    // let userId = req.session.userId
+    // if(order.PaymentMethod == 'online'||order.PaymentMethod=='Wallet'){
+    //   await userModel.findByIdAndUpdate({_id:userId},{$inc:{Wallet:total}},{new:true})
+    //   const walletHisto = await wallet.findOne({userId:req.session.userId})
+    //   walletHisto.payment.push( {
+    //     amount:total,
+    //     date:new Date(),
+    //     purpose:'Order Cancelled',
+    //     income:'Debited'
+    // })
+    // await walletHisto.save()
+    // }
+
+ try {
+  const num = req.body.num
+  // console.log(req.body.orderId)
+  let orderId = new mongoose.Types.ObjectId(req.body.orderId)
+  const order = await orderModel.findOne({_id:orderId})
+  const userId = order.UserId
+  if(num == 0){
+    order.Cancel.AdminReply = 'Accepted'
+    order.Status = 'Canceled'
+      for (const product of order.Items) {
+      const P_id = product.productId;
+      const count = product.quantity;
+      await products.findByIdAndUpdate({ _id: P_id }, { $inc: { Stock: count } });
+    }
+    let total = order.TotalPrice
+    
+    if(order.PaymentMethod == 'online'||order.PaymentMethod=='Wallet'){
+      await userModel.findByIdAndUpdate({_id:userId},{$inc:{Wallet:total}},{new:true})
+      const walletHisto = await wallet.findOne({userId:userId})
+      walletHisto.payment.push( {
+        amount:total,
+        date:new Date(),
+        purpose:'Order Cancelled',
+        income:'Debited'
+    })
+    await walletHisto.save()
+    }
+  }else if(num == 1){
+    order.Cancel.AdminReply = 'Denied'
+  }
+  await order.save()
+  res.json({
+    success:true
+  })
+
+ } catch (error) {
+  console.error('internall server error:500:',error)
+ }
+}
+
+
+
 
 
 
@@ -244,5 +310,6 @@ module.exports = {
     updateReturnStatus,
     orderDetailPage,
     downloadCSV,
-    downloadPdf
+    downloadPdf,
+    cancelOrder
 }

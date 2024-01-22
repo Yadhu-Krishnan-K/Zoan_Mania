@@ -62,6 +62,22 @@ const OrdersSchema = new Schema({
     }
   },
   Address: { type: ShippedAddressSchema },
+  Cancel:{
+    requested:{
+      type:Boolean,
+      default:false
+    },
+    msg:{
+      type:String,
+      default:''
+    },
+    AdminReply:{
+      type:String,
+      default:''
+      //Accepted/Denied
+    }
+  },
+  
 });
 
 OrdersSchema.plugin(mongoosePaginate)

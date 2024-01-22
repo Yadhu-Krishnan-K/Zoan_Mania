@@ -39,6 +39,9 @@
             </td>
             <td>
               <% if (ordersData[i].Status !=='Canceled' ) { %>
+                <% if(ordersData[i].Cancel.requested && ordersData[i].Cancel.AdminReply.length==0){ %>
+                  <button class="badge text-bg-danger border-0" data-bs-toggle="modal" data-bs-target="#exampleModal<%= ordersData._id %>">Request for Cancel</button>
+                <% }else{ %>
                 <% const currentStatus=ordersData[i].Status || 'Order Placed' ; %>
                   <select class="form-select" id="statusSelect<%= i %>"
                     onchange="updateOrderStatus('<%= ordersData[i]._id %>', this.value)">
@@ -50,10 +53,10 @@
                     <option class="text-danger" value="Rejected" <%=currentStatus==='Rejected' ? 'selected' : '' %>
                       >Rejected</option>
                   </select>
-
-                  <% } else { %>
-                    <p class="text-danger">Cancelled</p>
-                    <% } %>
+                <% } %>
+              <% } else { %>
+                  <p class="text-danger">Cancelled</p>
+              <% } %>
 
             </td>
             <td>
@@ -100,6 +103,27 @@
                                
             </td>
           </tr>
+          <div class="modal fade" id="exampleModal<%= ordersData._id %>" tabindex="-1"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Reason for return</h1>
+                    </div>
+                    <div class="modal-body">
+                        <%= ordersData[i].Cancel.msg %>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success"
+                            onclick="whatToDo(0,'<%= ordersData[i]._id %>')">Accept</button>
+                        <button type="button" class="btn btn-danger"
+                            onclick="whatToDo(1,'<%= ordersData[i]._id %>')">Decline</button>
+                    </div>
+                </div>
+            </div>
+        </div>
           <% } %>
       </tbody>
     </table>
@@ -119,6 +143,23 @@
   </div>
 
   <script>
+    function whatToDo(num, orderId) {
+            // console.log("Clicked", num, productId, orderId);
+            fetch(`/admin/updateCancelStatus`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },  
+                body:JSON.stringify( {
+                    num, orderId
+                })
+            })
+            .then(res => res.json())
+            .then((data) => {
+                location.reload()
+            })
+        }
+
     function updateOrderStatus(orderId, newStatus) {
       fetch(`/admin/orders/updateStatus/${orderId}`, {
         method: 'PUT',

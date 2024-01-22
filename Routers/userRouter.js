@@ -176,7 +176,7 @@ router.get('/orderDetails',authGuard.userLoginAuthGuard,userAccess,orderControll
 
 
 //cancel order
-router.get('/cancelOrderData/:orderId',orderControll.cancelOrder)
+router.post('/cancelOrderData/:orderId',orderControll.cancelOrder)
 
 
 

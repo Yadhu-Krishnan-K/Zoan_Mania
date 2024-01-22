@@ -7,6 +7,7 @@
  
 
 <!-- Carousel wrapper -->
+<% if(BAnner && BAnner.images.length>0){ %>
 <div id="carouselBasicExample" class="carousel slide carousel-fade" data-bs-ride="carousel">
   <!-- Indicators -->
   <div class="carousel-indicators">
@@ -19,6 +20,7 @@
         aria-label="Slide <%= i + 1 %>"
       ></button>
     <% } %>
+    
   </div>
 
   <!-- Inner -->
@@ -45,6 +47,7 @@
     <span class="visually-hidden">Next</span>
   </button>
 </div>
+<% } %>
 <!-- Carousel wrapper -->
 
 

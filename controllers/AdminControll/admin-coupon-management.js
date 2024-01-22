@@ -38,7 +38,7 @@ const addCoupons = async(req,res)=>{
             Expiry: req.body.Edate,
             userId:req.session.userId,
         })
-        console.log("saved Data")
+        // console.log("saved Data")
         if(coupon){
             res.json({
                 success:true
@@ -62,7 +62,7 @@ const EditCoupon = async(req,res) => {
         })
         
         if(exist&& JSON.stringify(exist._id)!==JSON.stringify(req.params.couponId)){
-            console.log('error ind')
+            // console.log('error ind')
             return res.json({
                 success:false
             })

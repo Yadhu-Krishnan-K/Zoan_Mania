@@ -7,7 +7,7 @@ const { default: mongoose, isObjectIdOrHexString } = require("mongoose");
 const getAdminAddProduct = async (req, res) => {
   try {
     const cate = await category.find();
-    console.log("category ===", cate);
+    // console.log("category ===", cate);
     res.render("supAdmin/admin-addProduct", {
       titel: "Admin|Add Product",
       cate,
@@ -38,7 +38,7 @@ const postAddProduct = async (req, res) => {
       }
     }
 
-    console.log("when adding product, img==", imageUrls);
+    // console.log("when adding product, img==", imageUrls);
     let {
       Description,
       Pname,
@@ -54,7 +54,7 @@ const postAddProduct = async (req, res) => {
       ? req.body.categories
       : req.body.categories.split(",");
     const catWithOffer = await category.find({ catOffer: { $gt: 0 } });
-    console.log("catWithOffer ==== ", catWithOffer);
+    // console.log("catWithOffer ==== ", catWithOffer);
     let highestOffer = 0;
     let matchingCategoryName = null;
     let expDate = null;
@@ -73,17 +73,7 @@ const postAddProduct = async (req, res) => {
       });
     }
     const discountedPrice = price - (price * highestOffer) / 100;
-    // const BigOffer
-    // console.log(Description,Pname,stock,price,category,"offer====",offer,Specification1,Specification2,Specification3,Suffix)
-    console.log("categories from adding products====", categories);
-    console.log(
-      "hO=",
-      highestOffer,
-      ", mC=",
-      matchingCategoryName,
-      ", eD=",
-      expDate
-    );
+    // Create a new Product and save it to the database
       if(Pname.replace(/ +/g,' ').trim().length == 0){
         return res.status(400).json({
           success:false,
@@ -147,7 +137,7 @@ const postAddProduct = async (req, res) => {
     });
     const newProduct = await product.save();
     // console.log(newProduct);
-    console.log(newProduct);
+    // console.log(newProduct);
 
     //  res.json(('/admin/inventory')
     res.json({
@@ -223,15 +213,15 @@ const postProductEdit = async (req, res) => {
       if (cater.catOffer > cate) {
         cate = cater.catOffer;
         cateName = cater.catName;
-        console.log("inside if cate===", cate);
+        // console.log("inside if cate===", cate);
       }
     });
 
-    console.log('outside cate==', cate);
+    // console.log('outside cate==', cate);
     let cateOffer;
     if (cate > 0) {
       const cater = await category.findOne({ catName: cateName });
-      console.log("cater===");
+      // console.log("cater===");
       cateOffer = {
         catName: cater.catName,
         catPer: cater.catOffer,
@@ -244,7 +234,7 @@ const postProductEdit = async (req, res) => {
         till: null,
       };
     }
-    console.log("cateOffer====", cateOffer);
+    // console.log("cateOffer====", cateOffer);
 
     const discountedPrice = req.body.Price - (req.body.Price * productData.catOffer.catPer) / 100;
     const data = {
@@ -279,8 +269,8 @@ const deleteSingleImage = async (req, res) => {
 
     const productDetail = await products.findOneAndUpdate({ _id: P_id }, {});
     let removed = productDetail.Image.splice(num, 1);
-    console.log("productDetail after deleting an image from an array");
-    console.log(removed);
+    // console.log("productDetail after deleting an image from an array");
+    // console.log(removed);
     await productDetail.save();
     res.json({ success: true });
   } catch (error) {

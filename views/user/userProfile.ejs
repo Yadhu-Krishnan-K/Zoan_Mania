@@ -203,8 +203,18 @@
             setTimeout(()=>{
               $('#emailErr').text('')             
             },3000)
+          }else if(!data.success && data.nameErr){
+            $('#nameErr').text(data.errMsg)
+            setTimeout(()=>{
+              $('#nameErr').text('')             
+            },3000)
+          }else if(!data.success && data.emailErr){
+            $('#emailErr').text(data.errMsg)
+            setTimeout(()=>{
+              $('#emailErr').text('')             
+            },3000)
           }
-            });
+          });
         
     }
     
