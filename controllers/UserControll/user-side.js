@@ -90,7 +90,7 @@ const getHome =async (req, res) => {
 const otpForm = (req,res)=>{
   try {
     
-    req.session.vaotp = controller.vaotp() 
+    req.session.vaotp = req.session.otp
     let time = new Date()
    
     console.log("signup otp ==",req.session.vaotp)

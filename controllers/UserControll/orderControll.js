@@ -283,27 +283,7 @@ const postPlaceOrder = async(req,res)=>{
       msg:req.body.comment,
       AdminReply:''
     }})
-    // const order = await orderModel.findByIdAndUpdate({_id:req.params.orderId},{Status:"Canceled"})
 
-    // console.log(order)
-    // for (const product of order.Items) {
-    //   const P_id = product.productId;
-    //   const count = product.quantity;
-    //   await products.findByIdAndUpdate({ _id: P_id }, { $inc: { Stock: count } });
-    // }
-    // let total = order.TotalPrice
-    // let userId = req.session.userId
-    // if(order.PaymentMethod == 'online'||order.PaymentMethod=='Wallet'){
-    //   await userModel.findByIdAndUpdate({_id:userId},{$inc:{Wallet:total}},{new:true})
-    //   const walletHisto = await wallet.findOne({userId:req.session.userId})
-    //   walletHisto.payment.push( {
-    //     amount:total,
-    //     date:new Date(),
-    //     purpose:'Order Cancelled',
-    //     income:'Debited'
-    // })
-    // await walletHisto.save()
-    // }
     res.json({
       success:true
     })
@@ -396,5 +376,4 @@ module.exports = {
     cancelOrder,
     getOrderProductView,
     returnedItem,
-
 }

@@ -28,6 +28,7 @@ const vaotp= () => { var vtp = otpGenerator.generate(4,
  const  otp = async(req,res)=>{
 
   try {
+    req.session.otp = vaotp()
     const test = 24
      
     let {name,email,password}=req.body;
@@ -97,7 +98,7 @@ const vaotp= () => { var vtp = otpGenerator.generate(4,
           let response = {
             body:{
               name:name,
-              intro:`YOUR OTP FOR ZOAN MANiA ${vaotp()}`,
+              intro:`YOUR OTP FOR ZOAN MANiA ${req.session.otp}`,
               outro:"Looking forward to do more business"
             }
     
