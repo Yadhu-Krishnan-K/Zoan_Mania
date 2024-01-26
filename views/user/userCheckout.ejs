@@ -61,70 +61,7 @@
                                         data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Add
                                         Address</button>
 
-                                    <div class="modal fade" id="exampleModal" tabindex="-1"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content bg-secondary">
-                                                <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Address</h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form>
-                                                        <div class="form-group">
-                                                            <label class="col-form-label">Name: <span
-                                                                    class="text-danger" id="nameErr"></span></label>
 
-                                                            <input type="text" class="form-control" id="recipient-name"
-                                                                required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-form-label">Addrss: <span
-                                                                    class="text-danger" id="addErr"></span></label>
-                                                            <textarea class="form-control" id="recipient-address"
-                                                                required></textarea>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-form-label">City: <span
-                                                                    class="text-danger" id="cityErr"></span></label>
-
-                                                            <input type="text" class="form-control" id="recipient-City"
-                                                                required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-form-label">Pincode: <span
-                                                                    class="text-danger" id="pinErr"></span></label>
-
-                                                            <input type="number" class="form-control"
-                                                                id="recipient-Pincode" required>
-
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-form-label">State: <span
-                                                                    class="text-danger" id="stateErr"></span></label>
-
-                                                            <input type="text" class="form-control" id="recipient-State"
-                                                                onchange="stateCheck()" required>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-form-label">Mobile: <span
-                                                                    class="text-danger" id="mobErr"></span></label>
-
-                                                            <input type="number" class="form-control"
-                                                                id="recipient-Mobile" required>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="button" id="addAddressBtn" class="btn btn-primary">Save
-                                                    Address</button>
-                                            </div>
-                                        </div>
-                                    </div>
                 </div>
 
 
@@ -190,6 +127,59 @@
             </div>
         </div>
     </form>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-secondary">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Address</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label class="col-form-label">Name: <span class="text-danger" id="nameErr"></span></label>
+
+                            <input type="text" class="form-control" id="recipient-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">Addrss: <span class="text-danger" id="addErr"></span></label>
+                            <textarea class="form-control" id="recipient-address" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">City: <span class="text-danger" id="cityErr"></span></label>
+
+                            <input type="text" class="form-control" id="recipient-City" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">Pincode: <span class="text-danger" id="pinErr"></span></label>
+
+                            <input type="number" class="form-control" id="recipient-Pincode" required>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">State: <span class="text-danger" id="stateErr"></span></label>
+
+                            <input type="text" class="form-control" id="recipient-State" onchange="stateCheck()"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">Mobile: <span class="text-danger" id="mobErr"></span></label>
+
+                            <input type="number" class="form-control" id="recipient-Mobile" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="addAddressBtn" class="btn btn-success">Save
+                        Address</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         function checkWallet(walletAmount, total) {
@@ -255,7 +245,7 @@
 
 
 
-        
+
 
         const confirmOrderButton = document.getElementById('confirmOrderButton');
 
@@ -289,7 +279,9 @@
                     .then((data) => {
                         if (data.success && (data.method == 'cod' || data.method == 'Wallet')) {
                             // console.log(data.success)
+                            console.log('before replacing')
                             window.location.replace('/placeOrder')
+                            console.log('replaced the link')
                         }
                         if (data.success && data.method == 'online') {
                             var orderId = data.orderId
@@ -363,7 +355,9 @@
                 .then((data) => {
                     // console.log(data.status == 'payment success');
                     if (data.status == 'payment success') {
-                        window.location.replace('/placeOrder')
+
+                            window.location.replace('/placeOrder')
+  
                     } else if (data.status == 'payment failed') {
                         alert('payment failed')
                     }
@@ -389,7 +383,7 @@
             const State = document.getElementById('recipient-State').value
             const Mobile = document.getElementById('recipient-Mobile').value
 
-            
+
             var res = await fetch('/saveAddress', {
                 method: "POST",
                 headers: {
@@ -465,7 +459,10 @@
             }
 
         }
-        document.getElementById('addAddressBtn').addEventListener('click', saveAddress);
+        $('#addAddressBtn').on('click', () => {
+            saveAddress();
+        });
+
 
 
 

@@ -13,9 +13,8 @@ const getPlaceOrder = (req,res)=>{
   try {
     let name = req.session.name
     let orderId = req.session.orderID
-    req.session.visited++
-    // console.log("req.session.visited==",req.session.visited);
-    if(req.session.visited < 2){
+    if(req.session.visited){
+      req.session.visited = false
     res.render('user/userOrderConfirm',{name, title:"Oreder Confirmed",orderId})
   }else{
     // console.log('here')
@@ -139,7 +138,7 @@ const postPlaceOrder = async(req,res)=>{
             }
         }
   //just redirect if code to some route
-            req.session.visited = 0
+            req.session.visited = true
             // console.log("order response back");
             res.json({ success: true, method:'cod' });
         }else if(paymentMethod=='Wallet'){
@@ -180,7 +179,7 @@ const postPlaceOrder = async(req,res)=>{
             }
         }
   //just redirect if code to some route
-            req.session.visited = 0
+            req.session.visited = true
             // console.log("order response back");
             res.json({ success: true, method:'Wallet' });
         }else if(paymentMethod == 'online'){
@@ -192,8 +191,11 @@ const postPlaceOrder = async(req,res)=>{
           let newOrder = new orderModel({
             UserId: userID,
             Items: cartData.Items.map(cartItem => ({
-              productId: cartItem.ProductId, // Assuming this is the correct property name
+              productId: cartItem.ProductId,
               quantity: cartItem.Quantity,
+              discounted: cartItem.ProductId.discountedPrice,
+              RealPrice: cartItem.ProductId.Price
+
             })),
             PaymentMethod: paymentMethod,
             OrderDate: moment(new Date()).format("llll"),
@@ -231,6 +233,7 @@ const postPlaceOrder = async(req,res)=>{
         // console.log("payment success")
         // console.log("req.session.newOrder===",req.session.newOrder)
         let newOrder = new orderModel(req.session.newOrder)
+        console.log('neworder when verifying',newOrder)
         await newOrder.save()
         const cartData = await cartModel.findOne({userId:req.session.userId})
         await cartModel.findByIdAndDelete(cartData._id);

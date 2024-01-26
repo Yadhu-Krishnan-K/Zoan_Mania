@@ -732,7 +732,7 @@ const updateUserProfile = async(req,res)=>{
     }
     const emailExist = await userModel.findOne({email:email})
     if(emailExist){
-      if (email != req.user.email) {
+      if (email !== req.session.email) {
         return res.json({
           success:false,
           emailErr:true,
