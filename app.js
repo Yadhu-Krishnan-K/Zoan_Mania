@@ -81,7 +81,7 @@ app.use('/admin',admin)
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['email','profile'] }));
 
-app.get('/auth/google/callback', 
+app.get('/google/callback', 
   passport.authenticate('google', { failureRedirect: '/' }),
   function(req, res) {
     // Successful authentication, redirect home.
@@ -93,7 +93,8 @@ app.get('/auth/google/callback',
 
 const port = process.env.port || 8080
 
-mongoose.connect(process.env.DB_URI).then(()=>{
+mongoose.connect(process.env.DB_URI)
+.then(()=>{
 //  cron.start()
 
     httpServer.listen(port, () => {
