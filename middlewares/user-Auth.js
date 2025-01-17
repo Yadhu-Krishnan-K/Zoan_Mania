@@ -1,5 +1,5 @@
 //goes for every route otherthan login/signup
-const userLoginAuthGuard = (req,res,next)=>{
+ const userLoginAuthGuard = (req,res,next)=>{
     try {
     
         if(req.session.userAuth){

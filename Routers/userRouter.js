@@ -33,14 +33,10 @@ const walletHistory = require('../models/walletPayment')
 
 
 
-
-
-
-
-
 router.get('/',authGuard.userLoggedinAuthGuard,async(req,res)=>{
     const productModel = await products.find().sort({Selled: -1}).limit(8)
     res.render('user/anonymous',{productModel})
+    
 })
   
 //user login-------------------------------------------------------------------------
