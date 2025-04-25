@@ -51,11 +51,12 @@ router.get('/userHome',authGuard.userLoginAuthGuard,userAccess,us.getHome)
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //otp control---------------------------------------------------------
-router.post('/otpsend',controller.otp);
-
+router.route('/otp')
+      .post(controller.otp)
+      .get(authGuard.userLoggedinAuthGuard,us.otpForm)
 //=----------==-----------------------=-------------------------------------=--------------------------------------------------------------------
 //otp form--------
-router.get('/otpsen',authGuard.userLoggedinAuthGuard,us.otpForm)
+// router.get('/otpsen',authGuard.userLoggedinAuthGuard,us.otpForm)
  
 //--------------------------------------------------------------------------------------------------
 //entering to home route --------------------===------------------=--------

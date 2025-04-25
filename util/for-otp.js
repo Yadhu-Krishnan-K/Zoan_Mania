@@ -68,7 +68,7 @@ const vaotp= () => { var vtp = otpGenerator.generate(4,
       return res.json({
         success :false ,
         errName:true,
-        message : 'User name Already Exists'
+        message : 'User Already Exists'
       })
   
     }

@@ -19,7 +19,7 @@
                             < } %> -->
 
                     <!-- <form id="for-password"  action="/otpsend" method="post" class="d-flex flex-column align-items-start"> -->
-                    <form action="" id="smt" class="d-flex flex-column align-items-start mt-3"></form>
+                    <form  id="smt" class="d-flex flex-column align-items-start mt-3"></form>
                     <label class="mt-3" for="#name"><span id="nameErr" class="text-danger"></span></label>
                     <input type="text" class=" box p-3" name="name" id="name" placeholder="Name" required
                         style="outline: none;"><br>
@@ -101,7 +101,7 @@
                 }, 3000)
                 return
             }
-            fetch('/otpsend', {
+            fetch('/otp', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -115,7 +115,7 @@
                     console.log("data===", data)
 
                     if (data.success) {
-                        window.location.replace('/otpsen');
+                        window.location.replace('/otp');
                     } else if (!data.success && data.errName) {
                         $('#nameErr').text(data.message)
                         setTimeout(() => {
