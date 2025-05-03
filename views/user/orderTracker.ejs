@@ -1,0 +1,134 @@
+
+
+  <%- include('../layouts/user/header') %>
+
+  <section class="gradient-custom-2">
+    <div class="container py-5">
+      <div class="row">
+        <div class="col-md-12 col-lg-12 col-xl-12">
+          <% if(orderDetails){ %>
+            <% orderDetails.forEach((order) => { %>
+              <div class="card card-stepper mt-5" style="border-radius: 16px;">
+                <div class="card-header p-4">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <p class="text-muted mb-2"> Order ID <span class="fw-bold text-body"><%= order._id %></span></p>
+                      <p class="text-muted mb-0"> Place On <span class="fw-bold text-body"><%= order.OrderDate %></span> </p>
+
+                      <% if(order.Status !=="Canceled" ){ %>
+                        <p class="text-muted mb-0">Will be delivered on or before <span class="fw-bold text-body"><%= order.ExpectedDeliveryDate %></span></p>
+                      <% } else if(order.Status === "Canceled" ){ %>
+                        <p class="text-muted mb-0">Order Canceled<span class="fw-bold text-body"></p>
+                      <% } else { %>
+                        <p class=" text-muted mb-0">Order Rejected<span class="fw-bold text-body"></span></p>
+                      <% } %>
+
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col">
+
+                  <div class="card card-stepper m-3" style="border-radius: 10px;">
+                    <div class="card-body p-4">
+                      <div class="d-flex justify-content-between alig  n-items-center">
+                        <div class="d-flex flex-column">
+                          <h4>Your order is <%= order.Status %>
+                          </h4>
+                        </div>
+                        <div>
+                          <a href="/orderProductView/<%= order._id%>">
+                            <button class="btn btn-outline-success" type="button">Details</button>
+                          </a>
+                          <%if(order.Status==="Delivered" ){%>
+                            <a href="#">
+                              <button class="btn btn-outline-warning" type="button">Download Invoice</button>
+                            </a>
+                          <%} else if(order.Status==="Canceled" || order.Status==="Rejected" ){%>
+
+                          <%} else {%>
+                            <a href="/cancelOrderData/<%= order._id%>">
+                              <button class="btn btn-outline-danger" type="button">Cancel Order</button>
+                            </a>
+                          <%}%>
+                        </div>
+                      </div>
+                      <hr class="my-4">
+
+                      <% if(order.Status !=="Canceled" || order.Status!=="Rejected" ){ %>
+
+                        <ul id="progressbar-2" class="d-flex justify-content-between mx-0 mt-0 mb-5 px-0 pt-0 pb-2">
+                          <% if (order.Status==="Pending" ) { %>
+                            <li class="step0 active text-center" id="step1"></li>
+                            <li class="step0 text-center" id="step2"></li>
+                            <li class="step0 text-center" id="step3"></li>
+                            <li class="step0 text-end" id="step4"></li>
+                          <% } else if (order.Status==="Order Placed" ) { %>
+                              <li class="step0 active text-center" id="step1"></li>
+                              <li class="step0 active text-center" id="step2"></li>
+                              <li class="step0 text-center" id="step3"></li>
+                              <li class="step0 text-end" id="step4"></li>
+                          <% } else if (order.Status==="Shipped" ) { %>
+                                <li class="step0 active text-center" id="step1"></li>
+                                <li class="step0 active text-center" id="step2"></li>
+                                <li class="step0 active text-center" id="step3"></li>
+                                <li class="step0 text-end" id="step4"></li>
+                          <% } else if (order.Status==="Delivered" ) { %>
+                                  <li class="step0 active text-center" id="step1"></li>
+                                  <li class="step0 active text-center" id="step2"></li>
+                                  <li class="step0 active text-center" id="step3"></li>
+                                  <li class="step0 active text-end" id="step4"></li>
+                          <% } %>
+
+                        </ul>
+                        <div class="d-flex justify-content-between">
+                          <div class="d-lg-flex align-items-center">
+                            <i class="fas fa-clipboard-list fa-3x me-lg-4 mb-3 mb-lg-0"></i>
+                            <div>
+                              <p class="fw-bold mb-1">Order</p>
+                              <p class="fw-bold mb-0">Pending</p>
+                            </div>
+                          </div>
+                          <div class="d-lg-flex align-items-center">
+                            <i class="fas fa-box-open fa-3x me-lg-4 mb-3 mb-lg-0"></i>
+                            <div>
+                              <p class="fw-bold mb-1">Order</p>
+                              <p class="fw-bold mb-0">Placed</p>
+                            </div>
+                          </div>
+                          <div class="d-lg-flex align-items-center">
+                            <i class="fas fa-shipping-fast fa-3x me-lg-4 mb-3 mb-lg-0"></i>
+                            <div>
+                              <p class="fw-bold mb-1">Order</p>
+                              <p class="fw-bold mb-0">Shiped</p>
+                            </div>
+                          </div>
+                          <div class="d-lg-flex align-items-center">
+                            <i class="fas fa-home fa-3x me-lg-4 mb-3 mb-lg-0"></i>
+                            <div>
+                              <p class="fw-bold mb-1">Order</p>
+                              <p class="fw-bold mb-0">Delivered</p>
+                            </div>
+                          </div>
+                        </div>
+                        <% } else if(order.Status==="Canceled" ){ %>
+                          <h1>Order Canceled</h1>
+                        <% } else if(order.Status==="Rejected" ){ %>
+                            <h1>Order Rejected</h1>
+                        <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <h1 style="text-align: center;">No Orders</h1>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%- include('../layouts/user/footer'); -%>
+
+

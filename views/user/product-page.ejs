@@ -1,0 +1,122 @@
+<%- include('../layouts/user/header') -%>
+
+
+
+
+                          
+                          
+                        
+            <div class="col-12">
+
+                <div class="row">
+                    <div class="col-md-5 d-flex flex-column align-items-center">
+                        <div class="mt-4" style=" width: 350px; z-index: 1;" id="img-container"><img src="/uploads/<%=P_detail.Image[0].mainimage%>" class="img-fluid rounded-top" alt=""  height="300px"></div>
+                        <div class="mt-5 d-flex justify-content-evenly" style="width: 100%;">
+                          <div style="height: 100px; width: 100px; border-radius: 12px; background: rgb(27, 187, 73);"><img src="/uploads/<%=P_detail.Image[0].mainimage%>" height="100px" width="100px" alt=""></div>
+                          <div style="height: 100px; width: 100px; border-radius: 12px; background: cadetblue;"><img src="/uploads/<%=P_detail.Image[0].image1%>" height="100px" width="100px" alt=""></div>
+                          <div style="height: 100px; width: 100px; border-radius: 12px; background: chocolate;"><img src="/uploads/<%=P_detail.Image[0].image2%>" height="100px" width="100px" alt=""></div>
+                        </div>
+                    </div>
+                    <div class="col-md-7 Description">
+                        <div class="rightinn ms-5 mt-4">
+                            <h4><%= P_detail.Name %></h4>
+                            <p style="font-weight: 100;"><span><%= P_detail.Suffix %></span></p>
+                            <div class="rating" style="height: 30px; width: 100px; ; "><p>Rating</p></div>
+                            <hr>
+                            <h3 style="font-weight: 300;">₹  <%= P_detail.Price %>/-</h3>
+                            <p class="text-success-emphasis">inclusive of all taxes</p>
+                            <p>Select Size</p>
+                            <div class="size d-flex">
+                            <a href="" style="text-decoration: none; color: #000;"><div class=" ms-3 rounded-circle bg-light d-flex justify-content-evenly align-items-center" style="height: 60px; width: 60px; ">Sm</div></a>
+                            <a href="" style="text-decoration: none; color: #000;"><div class="ms-3 rounded-circle bg-light d-flex justify-content-evenly align-items-center" style="height: 60px; width: 60px;">L</div></a>
+                            <a href="" style="text-decoration: none; color: #000;"><div class="ms-3 rounded-circle bg-light d-flex justify-content-evenly align-items-center" style="height: 60px; width: 60px;">XL</div></a>
+                            </div>
+                            <% if( P_detail.Stock < 1 ){ %>
+                              <h4 class="text-danger mt-4">Out Of Stock!!!</h4>
+                            
+                            <div class="Options mt-5 d-flex">
+                              <a class="ms-3"><button style="height: 40px; width: 200px; border-radius: 20px;" disabled>Buy Now</button></a>
+                              <a href="" class="ms-3"><img src="/icons/like.png" alt=""></a>
+                              <a href="" class="ms-3"><img src="/icons/basket.png" alt=""></a>
+                            </div>  
+                            <% }else{ %>
+                              <div class="Options mt-5 d-flex">
+                                <a href="" class="ms-3"><button style="height: 40px; width: 200px; border-radius: 20px;">Buy Now</button></a>
+                                <!-- <a href="" class="ms-3"><img src="/icons/like.png" alt=""></a> -->
+                                <a href="/addToCart/<%= P_detail._id %>" class="ms-3"><img src="/icons/basket.png" alt=""></a>
+                              </div>  
+                            <% } %>
+                            <hr>
+                            <h4 style="font-weight: 300;"><u>Details</u></h4>
+                            <ul>
+                              <li> <%= P_detail.Spec1 %> </li>
+                              <li> <%= P_detail.Spec2 %> </li>
+                              <li> <%= P_detail.Spec3 %> </li>
+                            </ul>
+                            <h4 style="font-weight: 300;"><u>Description</u></h4>
+                            <p><%= P_detail.Description %></p>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <footer class="container mt-5" style="height: 300px;background: #000;">
+                  <div class="row">
+                    <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
+                      <h4 class="footer-head ">Get In Touch</h4>
+                      <p class="tefo">Life is too short to wear boring clothes</p>
+                      <div class="social-media">
+                        <a href=""><img src="/icons/facebook.png" alt=""></a>
+                        <a href=""><img src="/icons/instagram.png" alt=""></a>
+                        <a href=""><img src="/icons/twitter.png" alt=""></a>
+                      </div>
+            
+                    </div>
+            
+                    <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
+                      <h4 class="footer-head">Company info</h4>
+                      <p><a href=""class="tefo">About us</a></p>
+                      <p><a href="" class="tefo">Carrier</a></p>
+                      <p><a href=""class="tefo">We are hiring</a></p>
+                      <p><a href=""class="tefo">Blog</a></p>
+                    </div>
+            
+                    <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
+                      <h4 class="footer-head">Features</h4>
+                      <p><a href=""class="tefo">Business Marketing</a></p>
+                      <p><a href=""class="tefo">User Analystic</a></p>
+                      <p><a href=""class="tefo">Live Chat</a></p>
+                      
+                    </div>
+                  </div>
+            </footer>
+
+              
+
+            </div>    
+                
+            </div>
+        
+        </div>
+
+            
+    
+    </div>
+    <script>
+    
+    // Your code here
+    var options = {
+        width: 300,
+        zoomWidth: 200,
+        offset: { vertical: 0, horizontal: 10 }
+    };
+    new ImageZoom(document.getElementById("img-container"), options);
+
+    
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
+
+
+

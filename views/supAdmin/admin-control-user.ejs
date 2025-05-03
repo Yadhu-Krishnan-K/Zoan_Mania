@@ -1,0 +1,47 @@
+<%- include('../layouts/admin/header'); -%>
+<div class="col-md-12">
+    <h1>Customers</h1>
+    <div class=" d-flex justify-content-end align-items-center" style="height: 50px;">
+        <!-- <input type="search" name="" id="search">
+        <button for="search">search</button> -->
+    </div>
+                <table class="mt-5 table table-striped table-bordered">
+                    <thead>
+                        <tr> 
+                            <th class="thed" scope="col">No.</th>
+                            <th class="thed" scope="col">Name</th>
+                            <th class="thed" scope="col">Email</th>
+                            <th class="thed" scope="col">Status</th>
+                            <!-- <th class="thed" scope="col">Edit</th> -->
+                            <th class="thed" scope="col">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%userData.forEach((x)=>{ %>
+                            <tr>
+                                <td><i><%=++i%></i></td>
+                                <td><i><%=x.name%></i></td>
+                                <td><i><%=x.email%></i></td>
+                                <% if(x.access){%>
+                                    <td><i><a href="/admin/userBUB/<%- x._id %>"><button onclick="blo()" class="togg btn btn-success">Active</button></a></i></td>
+                                <%}else{%>
+                                    <td><i><a href="/admin/userBUB/<%- x._id %>"><button onclick="blo()" class="togg btn btn-danger">Blocked</button></a></i></td>
+                                <% } %> 
+                                <!-- <td><i style="display: block;"><a href="/admin/userEdit/<%- x._id %>"><i class="fa-regular fa-pen-to-square "></i></a></i></td> -->
+                                <td><i style="display: block;"><a href="/admin/userDelete/<%- x._id %>" onclick="return confirm('Do you want to delete this user <%- x.name %>')"><i class="fa-solid fa-trash "></i></a></i></td>
+                            </tr>
+                        <%}) %> 
+                    </tbody>
+                </table>
+</div>
+<script>
+    // function blo(){
+    //     var x = document.getElementsByClassName('togg');
+    //     if(x.innerHTML==='blocked'){
+    //         x.innerHTML='active'
+    //     }else{
+    //         x.innerHTML= 'blocked'
+    //     }
+    // }
+</script>
+<%- include('../layouts/admin/footer'); -%>

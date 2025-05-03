@@ -1,6 +1,11 @@
 require('dotenv').config()
 const express = require("express")
+const nocache = require("nocache")
+const morgan = require('morgan')
+require('./auth/authentication')
+
 const path = require("path")
+
 
 const user = require('./Routers/userRouter')
 const admin = require('./Routers/supAdminRoute')
@@ -8,36 +13,32 @@ const mongoose = require('mongoose')
 const app = express()
 const session = require('express-session')
 const {v4:uuidv4} = require('uuid')
-
+const passport = require('passport')
+const sessionSecret = uuidv4();
 
 app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-// mongoose.connect(process.env.DB_URI,{
-//     useNewUrlParser:true,useUnifiedTopology:true
-// },(err)=>{
-//     if(err){
-//         console.log(err)
-//     }else{
-//         console.log("Successfully connected");
-//     }
-// })
+app.use(express.urlencoded({extended: true}))
 
-// const sch = {
-//     name:String,
-//     email:String,
-//     id:Number
-// }
-// 
-// app.post('/pos',async(req,res)=>{
-//     const data = new monmodel({
-//         name:req.body.name,
-//         email:req.body.email,
-//         id:req.body.id
-//     })
-//     const val = await data.save()
-//     res.json(val)
-//     console.log(val);
-// })
+app.set('view engine','ejs')
+app.use(express.static(path.join(__dirname,'public')));
+
+app.use(morgan('tiny'))
+app.use(nocache())
+
+
+app.use(session({
+    resave: false,
+    saveUninitialized: true,
+    secret: sessionSecret ,
+    cookie:{
+      secure:false,
+      maxAge: 3600000
+    }
+  }));
+
+  app.use(passport.initialize());
+
+
 
 
 
@@ -46,11 +47,47 @@ app.use(express.urlencoded({extended:true}))
 
 
 app.use('/',user)
-app.use('/admin-login',admin)
+app.use('/admin',admin)
 
 
-app.set('view engine','ejs')
-app.use(express.static(path.join(__dirname,'public')));
+
+
+
+
+
+
+
+
+
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['email','profile'] }));
+
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/userHome');
+  });
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const port = process.env.port || 8080
 
 mongoose.connect(process.env.DB_URI).then(()=>{
