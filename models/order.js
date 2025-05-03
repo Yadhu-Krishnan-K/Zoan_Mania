@@ -4,7 +4,7 @@
 
 // })
 const mongoose = require('mongoose');
-
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const { Schema, ObjectId } = mongoose;
 
@@ -22,7 +22,11 @@ const OrdersSchema = new Schema({
   Status: { type: String, default:"Pending"},
   Items: [{
      productId: { type: Schema.Types.ObjectId , ref: "products" },
-     quantity: { type: Number }
+     quantity: { type: Number },
+     removed: {
+      type:Boolean,
+      default:false
+     }
   }],
   PaymentMethod: {type: String},
   OrderDate: { type: String },
@@ -32,6 +36,9 @@ const OrdersSchema = new Schema({
   CouponId: { type: Schema.Types.ObjectId },
   Address: { type: ShippedAddressSchema },
 });
+
+OrdersSchema.plugin(mongoosePaginate)
+ShippedAddressSchema.plugin(mongoosePaginate)
 
 const Orders = mongoose.model('Orders', OrdersSchema);
 

@@ -35,13 +35,55 @@
                         </div>
                         <br>
                         <div class="border p-3 mb-3">
-                            <input type="file" name="image1" accept="image/*" style="width: 188px; height:188px;" onchange="Cimg(event)">
-                            <img src="/uploads/<%=P_detail.Image[0].mainimage %>" alt="" width="80px" id="mainImage" >
-                            <input type="file" name="image2" accept="image/*" style="width: 188px; height:188px;" onchange="C2img(event)">
-                            <img src="/uploads/<%= P_detail.Image[0].image1 %>" alt="" width="80px" id="image1">
-                            <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;" onchange="C3img(event)">
-                            <img src="/uploads/<%= P_detail.Image[0].image2 %>" alt="" width="80px" id="image2">
-                            <!-- <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;"> -->
+                        
+
+                            <div class="p-2">
+                                <input type="file" name="image1" accept="image/*" onchange="Cimg(event)">
+                            <% if(P_detail.Image[0]){ %>                                
+                                <img src="/uploads/<%= P_detail.Image[0] %>" id="DmainImage" alt="" width="80px"  >
+                                <button type="button" class="ms-3 btn btn-danger" onclick="deletePic('<%=P_detail._id%>',0)">delete</button>
+
+                            <% } %>
+                                <img src="" alt="" id="mainImage" style="display: none;" width="80px">
+                                
+                            </div>
+
+
+                            <div class="p-2">
+                                <input type="file" name="image2" accept="image/*" onchange="C2img(event)">
+                            <% if(P_detail.Image[1]){ %>                                
+                                <img src="/uploads/<%= P_detail.Image[1] %>" id="Dimage1" alt="" width="80px">
+                                <button type="button" class="ms-3 btn btn-danger" onclick="deletePic('<%=P_detail._id%>',1)">delete</button>
+
+                            <% } %>
+                                <img src="" alt="" id="image1" style="display: none;" width="80px">
+
+                            </div>
+
+                            
+                            <div class="p-2">
+                                <input type="file" name="image3" accept="image/*" onchange="C3img(event)">
+                            <% if(P_detail.Image[2]){ %>                                
+                                <img src="/uploads/<%= P_detail.Image[2] %>" id="Dimage2" alt="" width="80px" >
+                                <button type="button" class="ms-3 btn btn-danger" onclick="deletePic('<%=P_detail._id%>',2)">delete</button>
+
+                            <% } %>
+                                <img src="" alt="" id="image2" style="display: none;" width="80px">
+
+                            </div>
+
+                        
+                           <div class="p-2">
+                            <input type="file" name="image4" accept="image/*" onchange="C4img(event)">
+                            <% if(P_detail.Image[3]){ %>                                
+                                <img src="/uploads/<%= P_detail.Image[3] %>" alt="" width="80px" id="Dimage3">
+                                <button type="button" class="ms-3 btn btn-danger" onclick="deletePic('<%=P_detail._id%>',3)">delete</button>
+                            <% } %>
+                                <img src="" alt="" id="image3" style="display: none;" width="80px">
+
+                           </div>
+
+
                         </div>
         
         
@@ -101,6 +143,27 @@
         </main>
     </div>
     <script>
+        function deletePic(P_id,num){
+            fetch(`/admin/deleteImage/${P_id}`,{
+                method:'PUT',
+                headers: {
+                "Content-Type":"application/json"
+                },
+                body: JSON.stringify({
+                    num:num,
+                })
+            })
+            .then(res=>res.json())
+            .then((data)=>{
+                // console.log(data);
+                if(data.success){
+                    location.reload();
+                }
+
+            })
+        }
+
+
         function Clicked(){
             document.getElementById('sub').addEventListener("submit",(e)=>{
                 let stock = document.getElementById('stock').value;
@@ -127,12 +190,23 @@
         }
         function Cimg(ev){
             document.getElementById('mainImage').src = URL.createObjectURL(ev.target.files[0]);
+            document.getElementById('DmainImage').style.display = 'none'
+            document.getElementById('mainImage').style.display = 'block';
         }
         function C2img(ev){
             document.getElementById('image1').src = URL.createObjectURL(ev.target.files[0]);
+            document.getElementById('Dimage1').style.display = 'none'
+            document.getElementById('image1').style.display = 'block';
         }
         function C3img(ev){
             document.getElementById('image2').src = URL.createObjectURL(ev.target.files[0]);
+            document.getElementById('Dimage2').style.display = 'none'
+            document.getElementById('image2').style.display = 'block';
+        }
+        function C4img(ev){
+            document.getElementById('image3').src = URL.createObjectURL(ev.target.files[0]);
+            document.getElementById('Dimage3').style.display = 'none'
+            document.getElementById('image3').style.display = 'block';
         }
     
     </script>

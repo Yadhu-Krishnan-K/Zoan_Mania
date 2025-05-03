@@ -7,12 +7,13 @@ const bcrypt = require('bcrypt')
 // const { password } = require('../../util/passwordValidator')
 //c//onst products = require('../../models/products')
 const saltRounds = 10
-
+const Fotp = require('../../util/forgotPassword')
 const pValidator = require('../../util/passwordValidator')
 const userModel = require('../../models/user')
 // const productInHome = require('./home-page-products')
 const products = require('../../models/products')
 const cartModel = require('../../models/cartModel')
+const category = require('../../models/category')
 const controller = require('../../util/for-otp')
 
 
@@ -44,7 +45,13 @@ const getHome = async(req,res)=>{
     const userId = loger._id
     console.log("userId====",userId)
     req.session.userId = userId
-    const productModel = await products.find()
+    // const Pcount = await products.find().count()
+
+    // const page = Number(req.query.page) || 1
+    // const currentPage = page
+    // const pageNums = Math.ceil(Pcount/8)
+    const productModel = await products.find().sort({Selled: -1}).limit(8)
+   
     const cartData = await cartModel.findOne({userId:userId}).populate('userId')
     let cartcount = 0
     if (cartData === null || cartData.Items == (null||0)) {
@@ -57,8 +64,8 @@ const getHome = async(req,res)=>{
     })
     }
     await cartModel.updateOne({userId:userId},{$set:{totalQuantity:cartcount}})
-    console.log("cartcount=====",cartcount)
-    console.log("cartData====",cartData);
+    // console.log("cartcount=====",cartcount)
+    // console.log("cartData====",cartData);
     
     res.render('user/userHome',{title:"Zoan Home",productModel,name,cartData,cartcount})
     
@@ -131,12 +138,15 @@ const postEnteringHOme = async(req,res)=>{
 
 const userLoginBackend = async(req,res)=>{
     const {email,password} = req.body;
-    
+    console.log('email===',email,"    passord===",password);
     const logins = await userModel.findOne({email: email})
 
     if(!logins){
         req.session.txt ="No users found"
-        res.redirect('/login')
+        res.json({
+          success:false,
+          err:"No users found"
+        })
     }else{
         let isChecked = await bcrypt.compare(password,logins.password)
         
@@ -148,15 +158,21 @@ const userLoginBackend = async(req,res)=>{
             req.session.userId = logins._id
             req.session.save()
             console.log('userId='+req.session.userId)
-            res.redirect('/userHome')
-        }else if(logins.access == false){
-            req.session.txt = "User is blocked"
-            req.session.err = true
-            res.redirect('/login')
-        }else if(isChecked == false){
-            req.session.txt = "Check your password"
-            req.session.err = true
-            res.redirect('/login')
+            res.json({
+              success:true
+            })
+        }else if(logins.access === false){
+           
+            res.json({
+              success:false,
+              err:"User is blocked"
+            })
+        }else if(isChecked === false){
+           
+            res.json({
+              success:false,
+              err:"Check your password"
+            })
         }
     }
 }
@@ -174,24 +190,36 @@ const logout = (req,res)=>{
 
 
 
-//product list user-side
+//product list user-side==============
 const productList1 = async(req,res)=>{
-    const productsList = await products.find();
+
+    const listCount = await products.find().count()
     const name = req.session.name
     const userId = req.session.userId
     const cartData = await cartModel.findOne({userId:userId}).populate('Items.ProductId')
     let cartcount = 0
+    let categories = await category.find()
+    console.log("cartData====",cartData);
     if (cartData === null || cartData.Items == (null||0)) {
       
       cartcount = 0
-
+      
     }else{
-    cartData.Items.forEach((cart)=>{
-      cartcount += cart.Quantity
+      cartData.Items.forEach((cart)=>{
+        cartcount += cart.Quantity
+      })
+    }
     
-    })
-  }
-    res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount});
+    let page = Number(req.query.page) || 1;
+    let perPage = 8
+    let pageNums = Math.ceil(listCount/perPage)
+    let currentPage = page;
+  const productsList = await products.find().sort({_id: -1})
+  .skip((page-1)*perPage)
+  .limit(perPage)
+  
+  res.render('user/product-list',{name,productsList,title:"Zoan List",cartData,cartcount,pageNums,listCount,page,currentPage,categories});
+
 }
 
 
@@ -278,7 +306,7 @@ const userAddtoCart =  async (req, res) => {
       const userExist = await cartModel.findOne({ userId: userId });
       const ProductId = new mongoose.Types.ObjectId(productId)
       if (!userExist) {
-        // Create a new cart and associate it with the user
+
         const cart = await cartModel.create({
           userId: userId,
           Items: [{ ProductId: ProductId }]
@@ -303,7 +331,10 @@ const userAddtoCart =  async (req, res) => {
         }
       }
   
-      res.redirect('/Product-list');
+      // res.redirect('/Product-list');
+      res.json({
+        success:true
+      })
     } catch (error) {
       console.error("error=",error);
     }
@@ -378,14 +409,14 @@ const cartQuantityUpdate = async(req,res)=>{
     })
   
     //total amount
-    cartDetail.totalAmount += inc*product.Price
+    cartDetail.totalAmount += Number(inc)*product.Price
     req.session.totalAmount = cartDetail.totalAmount
     //newQuandity
     const newQuantity = cartItem.Quantity+Number(inc)
     
     //cart Items price
     if(newQuantity>=1 && newQuantity <= product.Stock){
-      cartDetail.totalQuantity+=Number(inc)
+      cartDetail.totalQuantity += Number(inc)
       cartItem.Price = newQuantity * product.Price
     
     //
@@ -624,7 +655,17 @@ const pwSendOtp=async(req,res)=>{
 const passwordChange2 = async(req,res)=>{
   console.log("inside check password")
   // checking validator
+    const user = await userModel.findOne({_id:req.session.userId})
     const Pass = req.body.Pass
+    const oldPass = req.body.oldPass
+    bcrypt.compare(oldPass,user.password,(err,res)=>{
+      if(err){
+        res.json({
+          success:false,
+          notfound:true
+        })
+      }
+    })
    
     const errors = pValidator.validate(Pass,{details:true})
   
@@ -642,7 +683,8 @@ const passwordChange2 = async(req,res)=>{
       const errorMessage = errors[0].message
      
       console.log("error:===",errorMessage);
-      res.status(400).json({ 
+      resjson({ 
+        success:false,
         errors: errorMessage
        });
     }
@@ -755,7 +797,7 @@ const checkoutUser = async (req, res)=>{
   const userData= await userModel.findOne({name:name})
   const cartData = await cartModel.findOne({userId:userId})
   if(cartData){
-    let cartcount = 0
+    var cartcount = 0
     cartData.Items.forEach((cart)=>{
       cartcount += cart.Quantity
     })

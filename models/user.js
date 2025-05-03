@@ -1,10 +1,13 @@
 const mongoose = require('mongoose')
 
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 const sch = mongoose.Schema({
     name:{
         type:String,
         required:true
     },
+
     profileImage:{
         type:String
     },
@@ -17,6 +20,7 @@ const sch = mongoose.Schema({
     Gender: {
         type:String
     },
+
     password:{
         type:String,
         required:true
@@ -30,12 +34,16 @@ const sch = mongoose.Schema({
             Mobile: { type: Number },
         }
         ],
+        
     MobileNumber:{type:Number},
     access:{
         type:Boolean, 
         default:true
     }
 })
+
+sch.plugin(mongoosePaginate);
+
 const monmodel = mongoose.model("user",sch);
 
 module.exports = monmodel

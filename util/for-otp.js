@@ -64,7 +64,7 @@ const vaotp= () => { var vtp = otpGenerator.generate(4,
         let response = {
           body:{
             name:name,
-            intro:`YOUR OTP FOR ZOAN MANiA ${vaotp}`,
+            intro:`YOUR OTP FOR ZOAN MANiA ${vaotp()}`,
             outro:"Looking forward to do more business"
           }
   
@@ -79,15 +79,12 @@ const vaotp= () => { var vtp = otpGenerator.generate(4,
   
         
         transporter.sendMail(message).then(()=>{
-          return res.status(201).json({
-            msg:"you should receive an email"
-          })
+          return res.redirect('/otpsen')
         }).catch(error => {
           return res.status(500)
         })
         
-  
-      res.redirect('/otpsen')
+      
       }else{
         
         res.render('user/userSignUp',{title: "SignUp",exist:"The email already exists"})

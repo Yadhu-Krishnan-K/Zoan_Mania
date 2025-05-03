@@ -15,17 +15,45 @@ const { fileLoader } = require('ejs');
 const catController = require('../controllers/AdminControll/adminCategoryController')
 const adminUserControl = require('../controllers/AdminControll/adminUserControl')
 const adminProductControl = require('../controllers/AdminControll/adminProductControl')
-const orderModel = require('../models/order')
+const orderModel = require('../models/order');
+const { default: mongoose } = require('mongoose');
 
 
 
 router.get('/',adminauth.adminLoginAuthguard,adminrouter.getAdminLogin)
 // router.get('',)
 //-image upload----------------------------------------------------------------------------------------------------------------///
+router.post('/check',adminauth.adminLoggedinAuthguard,async(req,res)=>{
+    try {
+        let email = req.body.email;
+        let password = req.body.password;
+        
+        // Hash the password and then query the database
+        let adminL = await admin.findOne({ adminGmail: email, adminPassword: password });
+        
+        if (!adminL) {
+            res.json({
+                success: false
+            });
+        } else {
+            console.log("Success");
+            req.session.adminAuth = true;
+            res.json({
+                success: true
+            });
+        }
+    } catch (error) {
+        console.error("Error during login:", error);
+        res.status(500).json({
+            success: false,
+            error: "Internal Server Error"
+        });
+    }
+})
 
 
-
-
+//dasboard
+// router.get('/dashboard',adminauth.adminLoggedinAuthguard,adminrouter.getDashboard)
 
 
 //----------------------------------------------------------------------------------
@@ -39,12 +67,10 @@ router.get('/inventory',adminauth.adminLoggedinAuthguard,adminrouter.getInventor
         
 //----------------------------------------------------------------------------------------------
 //Category------------------------<%= ++i %>----------------
-
 router.get('/Category',adminauth.adminLoggedinAuthguard,adminrouter.getCategory)
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 //add category
-
 router.get('/addCatgory',adminauth.adminLoggedinAuthguard,adminrouter.addCategory)
 
 ///add-category
@@ -68,7 +94,7 @@ router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,adminrouter.
 //admin email&password check----------------------------------------------------------------------------------------------//
 
 
-router.post('/check',adminrouter.adminNpasswordCheck) 
+// router.post('/check',adminrouter.adminNpasswordCheck) 
 
 
 // ------------------------------------------------------------------------------------------------------------//
@@ -81,30 +107,34 @@ router.get('/inventory/addProduct',adminauth.adminLoggedinAuthguard,adminProduct
 
 //''''''''''''''''''''''''''''''''''''''''''''''''''''------------------------------------------------------------------------//
 //add product
-router.post('/inventory/adding-product',multi.fields([
-    { name: 'image1', maxCount: 1 },
-    { name: 'image2', maxCount: 1 },
-    { name: 'image3', maxCount: 1 }
-]),async(req,res)=>{
+router.post('/inventory/adding-product',multi.array('images',4),async(req,res)=>{
     // const name = req.body.name
 //    console.log(req.body);
-//    console.log(req.files,'files');
+   console.log("req.files====",req.files,'files');
 
-   const image1 = req.files['image1'][0];
-   const image2 = req.files['image2'][0];
-   const image3 = req.files['image3'][0];
+   const images = req.files;
+   console.log("images===",images)
+   
+    const imageUrls = images.map(file=>file.filename)
+   let arr =[]
 
-   const imageUrls = {
-    mainimage: image1.filename, // Use .path to get the file path
-    image1: image2.filename,
-    image2: image3.filename,
-   };
+    for(i=0;i<imageUrls.length;i++){
+       let ar=imageUrls[i].split('.')
+       arr.push(ar[1])
+    }
+    for(i=0;i<arr.length;i++){
+        if(!(arr[i].includes("jpg","jpeg","png"))){
+            return res.render('supAdmin/422error')
+        }
+    }
+
+console.log("when adding product, img==",imageUrls);
    const {Description,Pname,stock,price,category,Specification1,Specification2,Specification3,Suffix}=req.body
 //     // try {
         const product =await new products({
             Description:Description,
             Name:Pname,
-            Image:[imageUrls],
+            Image:imageUrls,
             Stock:stock,
             Category:category,
             Price:price,
@@ -115,11 +145,9 @@ router.post('/inventory/adding-product',multi.fields([
         })
         const newProduct = await product.save();
         // console.log(newProduct);
+
         res.redirect('/admin/inventory')
-        // res.send('success')
-    // } catch (error) {
-    //     res.status(500).json({error:'Error adding data to the collection'})
-    // }
+        
 })
 
 
@@ -178,46 +206,49 @@ router.get('/edit-product/:id',adminauth.adminLoggedinAuthguard,async(req,res)=>
         const P_detail = await products.findOne({_id: id})
         const cate = await Cate.find()
         console.log("efef",cate);
-        // console.log(P_detail);
-        res.render('supAdmin/admin-edit-product',{P_detail,cate,title:"Edit Product",currentPage:"Inventory"});
+        console.log(P_detail.Image);
+        res.render('supAdmin/admin-edit-product',{P_detail,cate,title:"Edit Product",Page:"Inventory"});
     })
 
+
     //updating product
-    router.post('/update-productPage/:P_id',multi.fields([
+router.post('/update-productPage/:P_id',multi.fields([
         { name: 'image1', maxCount: 1 },
         { name: 'image2', maxCount: 1 },
-        { name: 'image3', maxCount: 1 }
+        { name: 'image3', maxCount: 1 },
+        { name: 'image4', maxCount: 1 }
     ]),async(req,res)=>{
 
         const P_id = req.params.P_id
         const productData = await products.findOne({_id:P_id})
-        // console.log("image1",productData.Image[0].mainimage)
-        // console.log("image1",productData.Image[0].image1)
-        // console.log("image1",productData.Image[0].image2)
-        const image1 = req.files && req.files['image1'] ? req.files['image1'][0] : { filename: productData.Image[0].mainimage };
-        const image2 = req.files && req.files['image2'] ? req.files['image2'][0] : { filename: productData.Image[0].image1 };
-        const image3 = req.files && req.files['image3'] ? req.files['image3'][0] : { filename: productData.Image[0].image2 };
+        const image1 = req.files && req.files.image1 ? req.files.image1[0].filename : (productData.Image[0] ? productData.Image[0] : '0');
+        const image2 = req.files && req.files.image2 ? req.files.image2[0].filename : (productData.Image[1] ? productData.Image[1] : '0');
+        const image3 = req.files && req.files.image3 ? req.files.image3[0].filename : (productData.Image[2] ? productData.Image[2] : '0');
+        const image4 = req.files && req.files.image4 ? req.files.image4[0].filename : (productData.Image[3] ? productData.Image[3] : '0');
 
         console.log("image.filename===",image1)
-        const imageUrls = {
-            mainimage: image1.filename ,
-            image1: image2.filename ,
-            image2: image3.filename 
-        };
+        const imageUrls = [
+            image1,
+            image2,
+            image3,
+            image4
+        ];
+        const images = imageUrls.filter(img=>img!=='0')
+        console.log("/update-product=======",images)
 
 
             // const {Description,ProductName,Category,Stock,Price} = req.body
 
         const data = {
-            Name:req.body.ProductName,
-            Description:req.body.Description,
-            Category:req.body.Category,
-            Stock:req.body.Stock,
-            Price:req.body.Price,
-            Image:[imageUrls],
-            Spec1:req.body.Spec1,
-            Spec2:req.body.Spec2,
-            Spec3:req.body.Spec3
+            Name: req.body.ProductName,
+            Description: req.body.Description,
+            Category: req.body.Category,
+            Stock: req.body.Stock,
+            Price: req.body.Price,
+            Image: images,
+            Spec1: req.body.Spec1,
+            Spec2: req.body.Spec2,
+            Spec3: req.body.Spec3
 
         }
         const updatedProduct = await products.findByIdAndUpdate(P_id, data);
@@ -231,6 +262,22 @@ router.get('/edit-product/:id',adminauth.adminLoggedinAuthguard,async(req,res)=>
     
     )
 
+
+
+//product image delete==================
+router.put('/deleteImage/:P_id',async(req,res)=>{
+    const P_id = new mongoose.Types.ObjectId(req.params.P_id)
+    const num = req.body.num
+
+    const productDetail = await products.findOneAndUpdate({_id:P_id},{})
+    let removed = productDetail.Image.splice(num,1)
+    console.log("productDetail after deleting an image from an array")
+    console.log(removed)
+    await productDetail.save()
+    res.json({success:true})    
+    
+})
+
 //----------------------------------
 //product delete
 
@@ -243,14 +290,30 @@ router.get('/delete-product/:id',adminProductControl.deleteProduct)
 //============================================================================================================================================================
 
 router.get('/Orders',adminauth.adminLoggedinAuthguard,async(req,res)=>{
-    const ordersData = await orderModel.find()
-    res.render('supAdmin/admin-order-tracker',{title:"Orders",ordersData,currentPage:"Orders"})
+    // const ordersData = await orderModel.find()
+    // res.render('supAdmin/admin-order-tracker',{title:"Orders",ordersData,currentPage:"Orders"})
+    const page = parseInt(req.query.page) || 1;
+    const options = {
+      page: page,
+      limit: 6,
+      sort: { _id: -1 }
+    };
+
+    const ordersData = await orderModel.paginate({}, options);
+
+    res.render('supAdmin/admin-order-tracker', {
+      title: "Orders",
+      ordersData: ordersData.docs,
+      Page: 'Orders',
+      totalPages: ordersData.totalPages,
+      currentPage: ordersData.page
+    }); 
+    
 })
 
 
 
 //admin order update
-
 router.put('/orders/updateStatus/:orderId',async(req,res)=>{
     const orderId = req.params.orderId
     const newStatus = req.body.newStatus
@@ -263,9 +326,7 @@ router.get('/orders/details/:orderId',adminauth.adminLoggedinAuthguard,async(req
     let orderId=req.params.orderId;
     let order = await orderModel.findOne({_id: orderId}).populate('Items.productId')
     let ProductAllDetails = order.Items
-    // console.log("Order items in adminside====",ProductAllDetails)
-    res.render('supAdmin/adminSide-order-detail-page',{title:"Order Detail",ProductAllDetails})
-    
+    res.render('supAdmin/adminSide-order-detail-page',{title:"Order Detail",ProductAllDetails, Page:"Orders"})    
 })
 
 

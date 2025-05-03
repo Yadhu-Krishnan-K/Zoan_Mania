@@ -12,7 +12,7 @@ const schema = new Schema({
         Price: {type: Number}
     }],
     totalAmount:{type:Number}, 
-    totalQuantity:{type: Number}
+    totalQuantity:{type: Number, default: 0}
 },
 {timestamps:true})
 

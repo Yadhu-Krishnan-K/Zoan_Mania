@@ -19,7 +19,9 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body style="overflow-x: hidden;">
@@ -60,20 +62,14 @@
                                         
                                         <span id="totalCartQuantity" class="position-absolute top-1 start-100 translate-middle badge rounded-pill bg-warning">
                                             <%= cartcount %>
-                                            <span class="visually-hidden">unread messages</span>
                                         </span> 
                                     <%  } %>
                                     
                                 </a>
-                                <!-- <%if(name){%>
-                                    <span class="badge badge-success" style="background: greenyellow">No</span>
-                                    <%}%> -->
+                              
                             </li>
-                            <!-- <li class="nav-item">
-                                <a class="nav-link" href="/wishlist" style="color: #92bfda;">
-                                    <i class="fa fa-heart" style="color: #23a6f0;"></i> Wishlist
-                                </a>
-                            </li> -->
+                            
+
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false" style="color: #92bfda;">

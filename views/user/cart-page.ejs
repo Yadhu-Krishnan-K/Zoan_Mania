@@ -22,7 +22,7 @@
                             <th>Description</th>
                             
                             <th>Quantity</th>
-                            <th>Remove</th>
+                            <th></th>
                             <th>Price</th>
                         </tr>
                     </thead>
@@ -31,7 +31,7 @@
                         
                          <tr >
                             <td>
-                              <img style="display: inline;" src="/uploads/<%= cart.ProductId.Image[0].mainimage %>" width="80px" alt=""><h5 style="display: inline; margin-left: 10px;"><%= cart.ProductId.Name %></h5>
+                              <img style="display: inline;" src="/uploads/<%= cart.ProductId.Image[0] %>" width="80px" alt=""><h5 style="display: inline; margin-left: 10px;"><%= cart.ProductId.Name %></h5>
                             </td>
                              
                             <td class="common">
@@ -49,7 +49,7 @@
 
                             </td>
                             <td class="common">
-                                <button class="col d-flex justify-content-center align-items-center" onclick="deleteItem('<%= cart._id %>','<%= cart.ProductId.Name %>','<%= cartDetail._id %>')">Remove</button>
+                                <button class="col d-flex justify-content-center align-items-center btn btn-danger" onclick="deleteItem('<%= cart._id %>','<%= cart.ProductId.Name %>','<%= cartDetail._id %>')">Remove</button>
                                 
                               </td>
                             <td id="price<%= cart.ProductId._id %>" class="common">
@@ -143,7 +143,7 @@ function disap(productId, Stock){
         }else if(Response.Quantity >= Response.Stock){
           document.getElementById('incBtn_'+productId).disabled = true
         }
-
+        
         document.getElementById('totalPrice').innerHTML ="Total Price= ₹"+ Response.totalPrice+"/-"
 
         document.getElementById('price'+productId).innerHTML = "₹"+Response.price+"/-"

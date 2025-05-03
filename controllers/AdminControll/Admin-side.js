@@ -1,3 +1,4 @@
+
 const admin = require('../../models/admin')
 const db = require('../../models/user')
 const productModel =require('../../models/products')
@@ -8,54 +9,56 @@ const getAdminLogin = (req,res)=>{
 
 
 const getCustomer = async(req,res,next)=>{
-    req.session.logged = true
+    req.session.logged = true;
     let i = 0;
-    const userData = await db.find();
 
-    res.render('supAdmin/admin-control-user',{userData,i,title:"Customers",currentPage:"Customers"})
-    // res.send('oky')
+    // Pagination logic
+    const page = parseInt(req.query.page) || 1;
+    const options = {
+      page: page,
+      limit: 5,
+    };
+
+    const userData = await db.paginate({}, options);
+
+    res.render('supAdmin/admin-control-user', {
+      userData: userData.docs, // Array of documents for the current page
+      i,
+      title: "Customers",
+      Page: "Customers",
+      totalPages: userData.totalPages,
+      currentPage: userData.page,
+    });
 }
 
 
 const getInventory = async(req,res)=>{
     try {
         i=0
-        const products = await productModel.find({})
-        res.render('supAdmin/admin-inventory',{products,i,title:"Inventory",currentPage:"Inventory"})
+        const listCount = await productModel.find().count()
+        let page = Number(req.query.page) || 1;
+        let perPage = 3
+        let pageNums = Math.ceil(listCount/perPage)
+        let currentPage = page;
+        const products = await productModel.find().sort({_id: -1})
+        .skip((page-1)*perPage)
+        .limit(perPage)
+        res.render('supAdmin/admin-inventory',{products,i,title:"Inventory",Page:"Inventory",page,pageNums,currentPage})
     } catch (error) {
         console.log(error)
     }
-    
-    // res.send('hello')
+// res.send('hello')
 }
 
 
 const getAddProduct = async(req,res)=>{
-    const cate = await Categories.find({})
-    res.render('supAdmin/admin-addProduct',{cate,title:"Add Products",currentPage:"Inventory"})
+    const cate = await Categories.find().sort()
+    res.render('supAdmin/admin-addProduct',{cate,title:"Add Products",Page:"Inventory"})
 
     // res.send('hai')
 }
 
-const adminNpasswordCheck = async(req,res,next)=>{
-    // console.log(req.body);
-    // res.send('okx')
-    const {email,password}=req.body
-    // const logged = await admin.create({adminGmail:email,adminPassword:password})
 
-    const Demail = await admin.findOne({email})
-    // console.log(Demail.adminGmail);
-
-    const Dpassword = await admin.findOne({password})
-    // console.log(Dpassword.adminPassword);
-
-    if(req.body.email===Demail.adminGmail && req.body.password==Dpassword.adminPassword){
-        req.session.adminAuth = true;
-        res.redirect('/admin/Customers')
-    }else{
-        res.render('supAdmin/admin-login',{error:"Check your email and password"})
-    }
-}
 //================================================================================================================
 //admin-category---------------------------
 const getCategory = async(req,res)=>{
@@ -63,13 +66,13 @@ const getCategory = async(req,res)=>{
     i=0
     const datas = await Categories.find()
     // console.log(datas)
-    res.render('supAdmin/admin-category',{datas,i,title:"Categories",currentPage:"Category"})
+    res.render('supAdmin/admin-category',{datas,i,title:"Categories",Page:"Category"})
 
 }
 //===============================================================================================================
 //----const add-category
 const addCategory = (req,res)=>{
-    res.render('supAdmin/admin-category-add',{title:"Add category",currentPage:"Category"})
+    res.render('supAdmin/admin-category-add',{title:"Add category",Page:"Category"})
 }
 
 
@@ -79,7 +82,7 @@ module.exports = {
     getCustomer,
     getInventory,
     getAddProduct,
-    adminNpasswordCheck,
+    // adminNpasswordCheck,
     getCategory,
     addCategory
 }

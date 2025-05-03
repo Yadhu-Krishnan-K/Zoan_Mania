@@ -42,7 +42,7 @@
 
 
 
-    let timeInSeconds = 60;
+        let timeInSeconds = sessionStorage.getItem('otpTimer') || 60;
 
     function updateTimer(){
         const timerElement = document.querySelector('.timer');
@@ -66,9 +66,22 @@
         document.querySelector('.timer').textContent = '00:60';
         document.querySelector('.resend-otp').style.display = 'none';
         timerInterval = setInterval(updateTimer, 1000);
+        sessionStorage.setItem('otpTimer', timeInSeconds);
+
     }
 
     const timerInterval = setInterval(updateTimer, 1000);
+
+    // Clear sessionStorage when the page is loaded initially
+    window.onload = function () {
+        sessionStorage.removeItem('otpTimer');
+    };
+
+    // Clear sessionStorage when the page is closed or refreshed
+    window.onbeforeunload = function () {
+        sessionStorage.removeItem('otpTimer');
+    };
+
 </script>
 
 <%- include('f1'); -%>
