@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 
 // const { password } = require('../../util/passwordValidator')
 //c//onst products = require('../../models/products')
+const OtpModel = require('../../models/otpModel')
 const saltRounds = 10
 const Fotp = require('../../util/forgotPassword')
 const pValidator = require('../../util/passwordValidator')

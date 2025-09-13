@@ -4,7 +4,7 @@ const nocache = require("nocache")
 const morgan = require('morgan')
 require('./auth/authentication')
 const mongoSanitize = require('express-mongo-sanitize')
-
+const User = require('./models/user')
 const path = require("path")
 
 
@@ -63,6 +63,22 @@ app.use(session({
 app.use('/',user)
 app.use('/admin',admin)
 
+app.post('/test-injection', async (req, res) => {
+  try{
+    const { email } = req.body;
+    console.log('Querying with:', req.body);
+    const user = await User.find({ email });
+    if (user) {
+      // res.send('Access granted',user);
+      res.json({message:"Access granted",user})
+    } else {
+      res.send('Access denied');
+    }
+  }catch(error){
+    console.error('Query failed:', error.message);
+    res.status(400).send('Bad input');
+  }
+});
 
 
 
