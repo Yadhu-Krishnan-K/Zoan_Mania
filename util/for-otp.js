@@ -24,24 +24,24 @@ const vaotp = () => {
 // sent mail with real email account
 
 
-const otp = async (req, res) => {
+const otp = async () => {
   const test = 24
   console.log(`reached otp sending spot ${test}`)
   
   try {
     
-    const { name, email, password } = req.body || req.session.data;
-    const data = { name, email, password }
-    req.session.email = email;
-    req.session.password = password;
-    req.session.name = name;
-    const uname = await user.findOne({ name: name })
-    if (uname) {
-      // res.render('user/userSignUp',{title: "SignUp",exist:"The username already exists"})
-      req.session.exist = "The username already exists"
-      return res.redirect('/signup')
+    // const { name, email, password } = req.body || req.session.data;
+    // const data = { name, email, password }
+    // req.session.email = email;
+    // req.session.password = password;
+    // req.session.name = name;
+    // const uname = await user.findOne({ name: name })
+    // if (uname) {
+    //   // res.render('user/userSignUp',{title: "SignUp",exist:"The username already exists"})
+    //   req.session.exist = "The username already exists"
+    //   return res.redirect('/signup')
   
-    }
+    // }
   
   
     req.session.data = data
@@ -65,11 +65,12 @@ const otp = async (req, res) => {
         }
       })
       let otpValue = vaotp();
-      await OtpModel.create({
+      let savedOtp = await OtpModel.create({
         email,
         password,
         otp:otpValue,
       })
+      await savedOtp.save()
       // req.session.userRegisterOtpValue = otpValue
       let response = {
         body: {
@@ -89,15 +90,18 @@ const otp = async (req, res) => {
   
   
       transporter.sendMail(message).then(() => {
+        console.log('verified and sending otp...')
         return res.redirect('/otp')
       }).catch(error => {
-        return res.status(500)
+        console.log('error = ',error)
+        return
       })
   
   
     } else {
   
-      res.render('user/userSignUp', { title: "SignUp", exist: "The email already exists" })
+      // res.render('user/userSignUp', { title: "SignUp", exist: "The email already exists" })
+      
     }
   } catch (error) {
     console.error(`error occured when sending otp, the error is ${error}`)

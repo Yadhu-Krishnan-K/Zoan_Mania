@@ -18,25 +18,33 @@
                                 </div>
                             <% } %>
 
-                    <form id="for-password"  action="/signup" method="post" >
-                        <input type="text" class=" box p-3" name="name" id="name" placeholder="Name" required style="outline: none;"><br>
-                        <input type="email" class="mt-3 p-3 box" name="email" id="email" placeholder="Email" required style="outline: none;"><br>
-                        
+                    <form id="signup-form"  >
+
+                        <input type="text" class=" box p-3" name="name" id="name" placeholder="Name" required style="outline: none;" oninput="checkName()">
+                        <div style="color: red; display: none;" id="nameErr"></div>
+
+                        <input type="email" class="mt-3 p-3 box" name="email" id="email" placeholder="Email" required style="outline: none;" oninput="checkEmail()">
+                        <div style="color: red; display: none;" id="emailErr"></div>
+
                         <div class="d-flex align-items-center box mt-3 pe-3">
                             <input type="password" class=" box mt-1 ps-3 pe-3" name="password" id="password"
-                                placeholder="Password" style="outline: none;" required>
+                                placeholder="Password" style="outline: none;" required oninput="checkPassword('password')">
                             <span toggle="#password-field"
                                 class="fa fa-fw fa-eye field-icon toggle-password"></span>
-                        </div><br>
+                        </div>
+                        <div style="color: red; display: none;" id="passwordErr"></div>
+                        <br>
 
                         <div class="d-flex align-items-center box  pe-3">
                             <input type="password" class=" box mt-1 ps-3 pe-3" name="confirmPassword" id="confirmPassword"
-                                placeholder="confirmPassword" style="outline: none;" required>
+                                placeholder="confirmPassword" style="outline: none;" required oninput="checkPassword('confirm')">
                             <span toggle="#password-field"
                                 class="fa fa-fw fa-eye field-icon toggle-password"></span>
-                        </div><br>
+                        </div>
+                        <div style="color: red; display: none;" id="confirmPasswordErr"></div>                        
+                        <br>
                         
-                        <div style="width: 100%; display: flex; justify-content: center;"><input type="submit" class="mt-5 btn" value="Sign up" onclick="checkPass()" id="submit" ></div>
+                        <div style="width: 100%; display: flex; justify-content: center;"><button class="btn" type="submit">Sign up</button></div>
                         <!-- <div class="mt-3" style="width: 100%; display: flex; justify-content: center;"><a href="/auth/google">Login with google</a></div> -->
                     </form>
                 </div>
@@ -48,96 +56,7 @@
     </div>
 </section>
 
-<script>
-       $(document).ready(function () {
-            $(".toggle-password").click(function () {
-                $(this).toggleClass("fa-eye fa-eye-slash");
-                var input = $(this).siblings("input");
-                if (input.attr("type") == "password") {
-                    input.attr("type", "text");
-                } else {
-                    input.attr("type", "password");
-                }
-            });
-
-            var disappearElement = document.getElementById('disapear');
-            if (disappearElement) {
-                setTimeout(function () {
-                    disappearElement.style.display = "none";
-                }, 4000);
-            }
-        });
-
-        
-    function checkPass(){
-        document.getElementById("for-password").addEventListener("submit", function (event) {
-        
-        var password = document.getElementById('password').value;
-        var username = document.getElementById('name').value;
-        // var usernamePattern = /^[^\s]+$/;
-
-       
-            console.log(username)
-//-----------------------------------------------------------------------------------------------------------------
-        var confirmPassword = document.getElementById('confirmPassword').value;
-
-        if(/^[  \s]+$/.test(username)){
-            event.preventDefault()
-            document.getElementById('alertDiv').style.display = "block";
-            document.getElementById('alertDiv').innerHTML = "should not contain any spaces user name";
-        // alertDiv.style.display = "block";
-
-        // Hide the error message after 5 seconds
-        setTimeout(function () {
-            document.getElementById('alertDiv').style.display = "none";
-        }, 5000);
-        }
-        //-----------------------------------------------------------------------------------------
-        if(/\s/.test(username) || /\d/.test(username) || /[!@#$%^&*()_+{}\[\]:;<>,.?~\\\-]/.test(username)){
-            event.preventDefault()
-            document.getElementById('alertDiv').style.display = "block";
-            document.getElementById('alertDiv').innerHTML = "Check your user name";
-        // alertDiv.style.display = "block";
-
-        // Hide the error message after 5 seconds
-        setTimeout(function () {
-            document.getElementById('alertDiv').style.display = "none";
-        }, 5000);
-        }
-//------------------------------------------------------------------------------------------------------------
-        //email validation
-
-
-
-
-
-//=======================================================================================================
-        if(password===confirmPassword && password.length>=8 && /[a-zA-Z]/.test(password) && /\d/.test(password) && /[!@#$%^&*()_+{}\[\]:;<>,.?~\\\-]/.test(password) && !/\s/.test(password)){
-            
-        }else{
-            event.preventDefault()
-            document.getElementById('alertDiv').style.display = "block";
-            document.getElementById('alertDiv').innerHTML = "Password must contain at least 8 characters, including one alphabetic letter, one number, one special character, and no spaces. Passwords must also match.";
-        // alertDiv.style.display = "block";
-
-        // Hide the error message after 5 seconds
-        setTimeout(function () {
-            document.getElementById('alertDiv').style.display = "none";
-        }, 5000);
-        }
-
-    })
-//----------------------------------------------------------------------------------------------------------
-
-    }
-    setTimeout(function() {
-            var message = document.getElementById('disapear');
-            if (message) {
-                message.style.display = 'none';
-            }
-        }, 4000);
-
-</script>
+<script src="/htmlExecutable/user/signup.js"></script>
 <!-- <script>
 
 </script> -->

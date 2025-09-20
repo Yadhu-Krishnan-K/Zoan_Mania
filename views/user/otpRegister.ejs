@@ -5,7 +5,7 @@
         <h4 class="mt-5">Verification</h4>
         <p>Enter your 4-digit code that you received on your email.</p>
         <div class="otp-section">
-            <form action="/home" method="post">
+            <form action="/otp" method="post">
                <% if(erro !== "" && erro){ %>
                
                     <p class="alert alert-danger" id="disapear"><%=erro%></p>
@@ -16,7 +16,7 @@
                 <%}%>
           
                 <div class="otps">
-                    <input type="number" name="number1" id="number1" class="numb">
+                    <input type="number" name="otp" id="otp" class="numb">
                     <!-- You can add similar input fields for number2, number3, and number4 if needed -->
                 </div>
                 <div class="timer mt-1" style="text-align: center;">00:60</div> 
