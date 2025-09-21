@@ -16,6 +16,7 @@ const products = require('../../models/products')
 const cartModel = require('../../models/cartModel')
 const category = require('../../models/category')
 const controller = require('../../util/for-otp')
+const { otp } = require('../../util/mailer')
 
 
   
@@ -48,70 +49,39 @@ const signup = async(req,res)=>{
     }
     const exist = await User.findOne({ email })
     if(!exist){
-      
+      await otp({name,email,password});
+      // res.status(200).json({success:true})
+      res.redirect('/otp')
+    }else{
+      res.status(400).json({message:"This email is already registered",success:false})
     }
   } catch (error) {
     console.error('Error from signup = ',error.message)
   }
 }
-const getHome = async(req,res)=>{
-    
-    req.session.loggedIn = true;
-    const name = req.session.name
-    const loger = await User.findOne({name:name})
-    const userId = loger._id
-    console.log("userId====",userId)
-    req.session.userId = userId
-    // const Pcount = await products.find().count()
-
-    // const page = Number(req.query.page) || 1
-    // const currentPage = page
-    // const pageNums = Math.ceil(Pcount/8)
-    const productModel = await products.find().sort({Selled: -1}).limit(8)
-   
-    const cartData = await cartModel.findOne({userId:userId}).populate('userId')
-    let cartcount = 0
-    if (cartData === null || cartData.Items == (null||0)) {
-      
-      cartcount = 0
-
-    }else{
-    cartData.Items.forEach((cart)=>{
-      cartcount += cart.Quantity
-    })
-    }
-    await cartModel.updateOne({userId:userId},{$set:{totalQuantity:cartcount}})
-    // console.log("cartcount=====",cartcount)
-    // console.log("cartData====",cartData);
-    
-    res.render('user/userHome',{title:"Zoan Home",productModel,name,cartData,cartcount})
-    
-}
-
 
 const otpForm = (req,res)=>{
     // otp timer-----------------
-    req.session.vaotp = controller.vaotp() 
-    let time = new Date()
-    // let time1 = new Date(time)
-    // let diff = Math.floar((time-time1)/1000)
-    console.log("signup otp ==",req.session.vaotp)
-    const timer =  setTimeout(() => {
-        req.session.vaotp = null
-        req.session.Pw = null
-        console.log("time up")
-    }, 60000);
-    if(req.session.errorOtp){
-      var erro = req.session.errorOtp
-      setTimeout(()=>{
-        erro=""
-      },60000)
-    }
+    // req.session.vaotp = controller.vaotp() 
+    // let time = new Date()
+    // // let time1 = new Date(time)
+    // // let diff = Math.floar((time-time1)/1000)
+    // console.log("signup otp ==",req.session.vaotp)
+    // const timer =  setTimeout(() => {
+      //     req.session.vaotp = null
+    //     req.session.Pw = null
+    //     console.log("time up")
+    // }, 60000);
+    // if(req.session.errorOtp){
+    //   var erro = req.session.errorOtp
+    //   setTimeout(()=>{
+    //     erro=""
+    //   },60000)
+    // }
 
-    res.render('user/otpRegister',{title:"Register",time,erro})
+    res.render('user/otpRegister',{title:"Register"})
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//entering home--------------------
+
 const verifyOtp = async(req,res)=>{
     let userOtp=req.body.otp
     const vaotp = req.session.vaotp
@@ -151,6 +121,44 @@ const verifyOtp = async(req,res)=>{
       console.log('something went wrong....!')
 }
 }
+
+const getHome = async(req,res)=>{
+    
+    req.session.loggedIn = true;
+    const name = req.session.name
+    const loger = await User.findOne({name:name})
+    const userId = loger._id
+    console.log("userId====",userId)
+    req.session.userId = userId
+    // const Pcount = await products.find().count()
+
+    // const page = Number(req.query.page) || 1
+    // const currentPage = page
+    // const pageNums = Math.ceil(Pcount/8)
+    const productModel = await products.find().sort({Selled: -1}).limit(8)
+   
+    const cartData = await cartModel.findOne({userId:userId}).populate('userId')
+    let cartcount = 0
+    if (cartData === null || cartData.Items == (null||0)) {
+      
+      cartcount = 0
+
+    }else{
+    cartData.Items.forEach((cart)=>{
+      cartcount += cart.Quantity
+    })
+    }
+    await cartModel.updateOne({userId:userId},{$set:{totalQuantity:cartcount}})
+    // console.log("cartcount=====",cartcount)
+    // console.log("cartData====",cartData);
+    
+    res.render('user/userHome',{title:"Zoan Home",productModel,name,cartData,cartcount})
+    
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//entering home--------------------
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const userLoginBackend = async(req,res)=>{
@@ -1025,6 +1033,7 @@ const returnedItem = async(req,res)=>{
 module.exports = {
     userLogin,
     renderSignupPage,
+    signup,
     getHome,
     otpForm,
     verifyOtp,

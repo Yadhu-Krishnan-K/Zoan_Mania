@@ -45,7 +45,8 @@ router.get('/login',authGuard.userLoggedinAuthGuard,us.userLogin);
 //user signup----------------------------------------------------------------------------------
 router.route('/signup')
 .get(authGuard.userLoggedinAuthGuard,us.renderSignupPage)
-.post(controller.otp)
+.post(us.signup)
+// .post(controller.otp)
 //otp control---------------------------------------------------------
 // router.post('/otpsend',controller.otp);
 

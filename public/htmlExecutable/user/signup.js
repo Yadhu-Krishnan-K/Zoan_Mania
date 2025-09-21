@@ -7,6 +7,7 @@ const passwordError = document.getElementById('passwordErr')
 const confirmPassword = document.getElementById('confirmPassword')
 const confirmPasswordError = document.getElementById('confirmPasswordErr')
 const alertDiv = document.getElementById('alertDiv')
+const form = document.getElementById('signup-form')
 
 let errorObject = {
     nameErr: false,
@@ -45,7 +46,6 @@ function checkEmail() {
     }
 }
 
-
 function checkPassword() {
     let enteredPassword
     let passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
@@ -78,6 +78,7 @@ function checkPassword() {
     }
 
 }
+
 function checkConfirmPassword() {
     let passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     let enteredPassword = confirmPassword.value
@@ -107,8 +108,6 @@ function checkConfirmPassword() {
     }
 }
 
-
-
 $(document).ready(function () {
 
     $(".toggle-password").click(function () {
@@ -131,21 +130,45 @@ $(document).ready(function () {
 
 document.getElementById('signup-form').addEventListener('submit', async (e) => {
     e.preventDefault()
-    console.log('submiting...')
+    let formData = new FormData(form)
+    let data = Object.fromEntries(formData.entries());
     let errorIn
-    for(let key in errorObject){
-        if(errorObject[key]){
+    for (let key in errorObject) {
+        if (errorObject[key]) {
             errorIn = key
             break;
         }
     }
-    if(errorIn){
+    if (errorIn) {
         alertDiv.style.display = 'grid'
         alertDiv.innerHTML = `fill all the fields or correct the incorrect fields`
-        setTimeout(function(){
+        setTimeout(function () {
             alertDiv.style.display = 'none'
             alertDiv.innerHTML = ""
-        },4000)
+        }, 4000)
+    }
+    try {
+        const res = await fetch('/signup', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data),
+        })
+        
+        if (res.redirected) {
+            console.log('redirecting')
+            window.location.href = res.url
+        } else {
+            alertDiv.style.display = 'grid'
+            alertDiv.innerHTML = result.message
+            setTimeout(function () {
+                alertDiv.style.display = 'none'
+                alertDiv.innerHTML = ""
+            }, 4000)
+        }
+    } catch (error) {
+        console.log(error)
     }
 })
 
