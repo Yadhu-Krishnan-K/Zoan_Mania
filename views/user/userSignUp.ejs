@@ -1,7 +1,7 @@
 <%-include('header');-%>
 
 <section class="main-body">
-    <div class="left-section d-flex justify-content-center align-items-center">
+    <div class="left-section d-flex justify-content-center align-items-center ">
             <div class="login d-flex justify-content-center align-items-center">
                 <div class="inner">
                     <div class="logo">
@@ -28,7 +28,7 @@
 
                         <div class="d-flex align-items-center box mt-3 pe-3">
                             <input type="password" class=" box mt-1 ps-3 pe-3" name="password" id="password"
-                                placeholder="Password" style="outline: none;" required oninput="checkPassword('password')">
+                                placeholder="Password" style="outline: none;" required oninput="checkPassword()">
                             <span toggle="#password-field"
                                 class="fa fa-fw fa-eye field-icon toggle-password"></span>
                         </div>
@@ -37,11 +37,11 @@
 
                         <div class="d-flex align-items-center box  pe-3">
                             <input type="password" class=" box mt-1 ps-3 pe-3" name="confirmPassword" id="confirmPassword"
-                                placeholder="confirmPassword" style="outline: none;" required oninput="checkPassword('confirm')">
+                                placeholder="confirmPassword" style="outline: none;" required oninput="checkConfirmPassword()">
                             <span toggle="#password-field"
                                 class="fa fa-fw fa-eye field-icon toggle-password"></span>
                         </div>
-                        <div style="color: red; display: none;" id="confirmPasswordErr"></div>                        
+                        <div style="color: red; display: none;" id="confirmPasswordErr" ></div>                        
                         <br>
                         
                         <div style="width: 100%; display: flex; justify-content: center;"><button class="btn" type="submit">Sign up</button></div>
