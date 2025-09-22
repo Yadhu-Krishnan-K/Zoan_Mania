@@ -1,45 +1,43 @@
- setTimeout(function () {
-            document.getElementById('disapear').style.display = "none";
-        }, 4000);
+const form = document.getElementById('submit-form')
+const otpINp = document.getElementById('otp')
+const otpErr = document.getElementById('otpErr')
+const alertDiv = document.getElementById('alert')
 
-
-
-        let timeInSeconds = sessionStorage.getItem('otpTimer') || 60;
-
-    function updateTimer(){
-        const timerElement = document.querySelector('.timer');
-        timerElement.textContent = `00:${timeInSeconds.toString().padStart(2, '0')}`;
-        timeInSeconds--;
-
-        if (timeInSeconds < 0){
-            clearInterval(timerInterval);
-            displayResendButton();
+form.addEventListener('submit',async(e)=>{
+    e.preventDefault()
+    try {
+        let otp = otpINp.value;
+        if(otp.value == ""){
+            otpErr.innerHTML = "Enter otp";
+            otpErr.style.display = "grid"
+            setTimeout(()=>{
+                otpErr.innerHTML = "";
+                otpErr.style.display = ""
+            },3000)
+            return;
         }
+        let res = await fetch('/otp',{
+            method: 'POST',
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(otp)
+        })
+        let result = res.json()
+        if(result.success){
+            window.location.href = result.url
+        }else if(result.hasOwnProperty('url')){
+            window.location.href = result.url
+        }else{
+            alertDiv.innerHTML = result.message;
+            alertDiv.style.display = "grid"
+            setTimeout(()=>{
+                alertDiv.innerHTML = "";
+                alertDiv.style.display = ""
+            },3000)
+            return;
+        }
+    } catch (error) {
+        console.log(error.message)
     }
-
-    function displayResendButton() {
-        const resendButton = document.querySelector('.resend-otp');
-        resendButton.style.display = 'block';
-    }
-
-    function resendOTP() {
-  
-        timeInSeconds = 60;
-        document.querySelector('.timer').textContent = '00:60';
-        document.querySelector('.resend-otp').style.display = 'none';
-        timerInterval = setInterval(updateTimer, 1000);
-        sessionStorage.setItem('otpTimer', timeInSeconds);
-
-    }
-
-    const timerInterval = setInterval(updateTimer, 1000);
-
-    // Clear sessionStorage when the page is loaded initially
-    window.onload = function () {
-        sessionStorage.removeItem('otpTimer');
-    };
-
-    // Clear sessionStorage when the page is closed or refreshed
-    window.onbeforeunload = function () {
-        sessionStorage.removeItem('otpTimer');
-    };
+})

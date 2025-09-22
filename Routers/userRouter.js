@@ -26,6 +26,7 @@ const userAccess = require('../middlewares/userSession')
 const cartModel = require('../models/cartModel')
 const pValidator = require('../util/passwordValidator')
 const cart = require('../models/cartModel')
+const { verifyUserOnOtp } = require('../middlewares/verifyUserOnOtp')
 
 
 
@@ -53,7 +54,7 @@ router.route('/signup')
 //=----------==-----------------------=-------------------------------------=--------------------------------------------------------------------
 //otp form--------
 router.route('/otp')
-      .get(authGuard.userLoggedinAuthGuard,us.otpForm)
+      .get(authGuard.userLoggedinAuthGuard,verifyUserOnOtp,us.otpForm)
 //entering to home route --------------------===------------------=--------
       .post(us.verifyOtp)
 //--------------------------------------------------------------------------------------------------

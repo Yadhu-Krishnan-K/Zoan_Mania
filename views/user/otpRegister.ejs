@@ -5,7 +5,7 @@
         <h4 class="mt-5">Verification</h4>
         <p>Enter your 4-digit code that you received on your email.</p>
         <div class="otp-section">
-            <form action="/otp" method="post">
+            <form action="/otp" method="post" id="submit-form">
                <% if(locals.erro !== "" && locals.erro){ %>
                
                     <p class="alert alert-danger" id="disapear"><%=locals.erro%></p>
@@ -15,22 +15,20 @@
 
                 <%}%>
           
+                <div class="alert alert-danger" id="alert"></div>
+                
                 <div class="otps">
                     <input type="number" name="otp" id="otp" class="numb">
                     <!-- You can add similar input fields for number2, number3, and number4 if needed -->
+                     <div id="otpErr" style="display: none; color:red"></div>
                 </div>
-                <div class="timer mt-1" style="text-align: center;">00:60</div> 
+                <!-- <div class="timer mt-1" style="text-align: center;">00:60</div>  -->
+                 <p style="text-align: center;">You have 5 minutes</p> 
                 <div class="button d-flex justify-content-center mt-3">
                     <!-- <input type="submit" value="Verify" class="row"> -->
-                    <button value="Verify" onclick="verify()" class="row p-1">Verify</button>
+                    <button value="Verify" type="submit" class="row p-1">Verify</button>
                 </div>
             </form>
-
-            <div class="resend-otp" style="display: none; text-align: center;">
-                <a href="/resendOtp" style="text-decoration: none; display: inline-block; vertical-align: middle;">
-                    <button id="resendButton" class="row" onclick="resendOTP()" style="vertical-align: middle;">Resend OTP</button>
-                </a>
-            </div>
         </div>
     </div>
 </section>
