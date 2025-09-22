@@ -5,17 +5,9 @@
         <h4 class="mt-5">Verification</h4>
         <p>Enter your 4-digit code that you received on your email.</p>
         <div class="otp-section">
-            <form action="/otp" method="post" id="submit-form">
-               <% if(locals.erro !== "" && locals.erro){ %>
-               
-                    <p class="alert alert-danger" id="disapear"><%=locals.erro%></p>
-               
-               <% }else{ %>
-                    <p class="alert alert-danger" style="display: none;"><%=locals.erro%></p>
-
-                <%}%>
+            <form id="submit-form">
           
-                <div class="alert alert-danger" id="alert"></div>
+                <div class="alert alert-danger" style="display: none;" id="alert"></div>
                 
                 <div class="otps">
                     <input type="number" name="otp" id="otp" class="numb">

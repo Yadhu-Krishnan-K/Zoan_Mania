@@ -21,14 +21,15 @@ form.addEventListener('submit',async(e)=>{
             headers:{
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(otp)
+            body: JSON.stringify({otp})
         })
-        let result = res.json()
+        let result = await res.json()
         if(result.success){
             window.location.href = result.url
         }else if(result.hasOwnProperty('url')){
             window.location.href = result.url
         }else{
+            console.log('.................errror = ',result)
             alertDiv.innerHTML = result.message;
             alertDiv.style.display = "grid"
             setTimeout(()=>{

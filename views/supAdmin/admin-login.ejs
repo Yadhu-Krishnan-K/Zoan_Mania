@@ -11,7 +11,7 @@
         </div>
 
     <!-- <form action="/admin/check" method="post" style="width: 100%;" class="mt-5"> -->
-    <form style="width: 100%;" class="mt-5" id="sumit">
+    <form style="width: 100%;" class="mt-5" id="submit">
 
         <input type="email" name="email" class="box p-2" id="email" placeholder="Email" required><br>
         <input type="password" name="password" id="password" class="box mt-4 p-2" placeholder="password" required> <br>
@@ -22,42 +22,6 @@
     </form> 
    </div>
 </section>
-<script>
-    $(document).ready(function () {
-        $('#sumit').submit(event=>{
-            event.preventDefault()
-            let email = $('#email').val()
-            let password = $('#password').val()
-            console.log("email-",email,"password-",password)
-            fetch('/admin/check',{
-                method:'POST',
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({
-                    email,
-                    password
-                })
-            })
-            .then(res=>res.json())
-            .then((data)=>{
-                // console.log(data);
-                if(data.success){
-                    window.location.replace('/admin/Customers')
-                    console.log(data);
-                }else if(!(data.success)){
-                    let dis = $('#disapear')
-                    dis.text('wrong input');
-                    dis.show()
-                    setTimeout(function () {
-                        dis.hide()
-                    }, 4000);
-                }
-            })
-        })
-    })
-     
-
-</script>
+<script src="/htmlExecutable/admin/adiminLogin.js"></script>
 
 <%-include('footer');-%>

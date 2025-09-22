@@ -1,18 +1,28 @@
-const adminLoggedinAuthguard = (req,res,next)=>{
-    if(req.session.adminAuth) {
-        next()
-    }else{
-        res.redirect('/admin')
+const adminAuthguard = (req,res,next)=>{
+    try {
+        console.log('reached authguard...')
+        if(req.session.adminAuth) {
+            next()
+        }else{
+            console.log('test...')
+            res.redirect('/admin')
+        }
+    } catch (error) {
+        console.log(error.message)
     }
 }
 
 const adminLoginAuthguard  = (req,res,next) => {
-    if(!req.session.logged){
-        next()
-    }else{
-        res.redirect('/admin/Customers')
+    try {
+        if(!req.session.logged){
+            next()
+        }else{
+            res.redirect('/admin/Customers')
+        }
+    } catch (error) {
+        console.log(error.message)
     }
 }
 
 
-module.exports = {adminLoginAuthguard,adminLoggedinAuthguard};
+module.exports = {adminLoginAuthguard,adminAuthguard};

@@ -34,7 +34,6 @@ const signup = async (req, res) => {
     const { name, email, password } = req.body
     const uname = await User.findOne({ name: name })
     if (uname) {
-      // res.render('user/userSignUp',{title: "SignUp",exist:"The username already exists"})
       req.session.exist = "The username already exists"
       return res.redirect('/signup')
     }
@@ -53,45 +52,31 @@ const signup = async (req, res) => {
 }
 
 const otpForm = (req, res) => {
-  // otp timer-----------------
-  // req.session.vaotp = controller.vaotp() 
-  // let time = new Date()
-  // // let time1 = new Date(time)
-  // // let diff = Math.floar((time-time1)/1000)
-  // console.log("signup otp ==",req.session.vaotp)
-  // const timer =  setTimeout(() => {
-    //     req.session.vaotp = null
-  //     req.session.Pw = null
-  //     console.log("time up")
-  // }, 60000);
-  // if(req.session.errorOtp){
-  //   var erro = req.session.errorOtp
-  //   setTimeout(()=>{
-  //     erro=""
-  //   },60000)
-  // }
-
   res.render('user/otpRegister', { title: "Register" })
 }
 
+
 const verifyOtp = async (req, res) => {
+  console.log('req.body from verify otp = ',req.body)
   try {
     
     let userOtp = req.body.otp
     // const vaotp = req.session.vaotp
-    const email = req.session.email
+    const email = req.session.authEmail
+
     const userToBeSaved = await otpModel.findOne({email})
     if(!userToBeSaved){
       req.session.authEmail = null
-      return res.status(400).json({success:false,url:'/signup'})
+      return res.status(400).json({success:false, url:'/signup'})
     }
     if(userToBeSaved.otp == userOtp){
       const hashPass = await bcrypt.hash(userToBeSaved.password, saltRounds);
       const savedUser = await User.create({ name: userToBeSaved.name, email, password: hashPass });
       req.session.userAuth = true;
       req.session.userId = savedUser._id
-      return res.status(201).json({url:'/userHome',success:true})
+      return res.status(201).json({url:'/userHome', success:true})
     }else{
+      console.log('enter valid otp')
       return res.status(400).json({success:false,message:"enter a valid otp"})
     }
 

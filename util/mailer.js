@@ -4,11 +4,16 @@ const Mailgen = require('mailgen')
 const User = require('../models/user')
 const OtpModel = require('../models/otpModel')
 const {generateOtp} = require('./otpGenerator')
+const otpModel = require('../models/otpModel')
 
 const otp = async ({ name, email, password }) => {
 
     try {
+        //if otp already sent
+        let existOtp = await otpModel.findOne({email})
+        if(existOtp) return
 
+        //if not sent
         let config = {
             service: 'gmail',
             auth: {
@@ -28,6 +33,7 @@ const otp = async ({ name, email, password }) => {
         })
         let otpValue = generateOtp();
         console.log('generated otp = ',otpValue)
+        
         let savedOtp = await OtpModel.create({
             name,
             email,
