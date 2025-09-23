@@ -14,7 +14,8 @@ const adminAuthguard = (req,res,next)=>{
 
 const adminLoginAuthguard  = (req,res,next) => {
     try {
-        if(!req.session.logged){
+        if(!req.session.adminAuth){
+            
             next()
         }else{
             res.redirect('/admin/Customers')

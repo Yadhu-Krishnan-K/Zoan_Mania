@@ -15,12 +15,11 @@ $(document).ready(function () {
                     password
                 })
             })
-            console.log(res.body)
-            let result = res.json()
+            let result = await res.json()
             console.log(result)
             if (result.success) {
                 window.location.href = '/admin/Customers'
-            } else if (!(data.success)) {
+            } else {
                 let dis = $('#disapear')
                 dis.text('wrong input');
                 dis.show()
