@@ -40,8 +40,6 @@ router.get('/',authGuard.userLoggedinAuthGuard,(req,res)=>{
     res.render('user/anonymous',{productInHome})
 })
  
-//user login-------------------------------------------------------------------------
-router.get('/login',authGuard.userLoggedinAuthGuard,us.userLogin);
 
 //user signup----------------------------------------------------------------------------------
 router.route('/signup')
@@ -54,13 +52,17 @@ router.route('/signup')
 //=----------==-----------------------=-------------------------------------=--------------------------------------------------------------------
 //otp form--------
 router.route('/otp')
-      .get(authGuard.userLoggedinAuthGuard,verifyUserOnOtp,us.otpForm)
+.get(authGuard.userLoggedinAuthGuard,verifyUserOnOtp,us.otpForm)
 //entering to home route --------------------===------------------=--------
-      .post(us.verifyOtp)
+.post(us.verifyOtp)
 //--------------------------------------------------------------------------------------------------
 // router.get('/signup',authGuard.userLoggedinAuthGuard,us.userSignup)
 
 //--------------------------------------------------------------------------------------------------------------------------//
+//user login-------------------------------------------------------------------------
+router.route('/login')
+      .get(authGuard.userLoggedinAuthGuard,us.userLogin)
+      .post(us.userLoginBackend)
 //userHome
 router.get('/userHome',authGuard.userLoginAuthGuard,userAccess,us.getHome)
 
@@ -69,7 +71,6 @@ router.get('/userHome',authGuard.userLoginAuthGuard,userAccess,us.getHome)
 
 //====-----------------------------------------------------------------------------------------------------
 //userloginbackend==---------------------------------------------------------------//-----------------------------------------------------------
-router.post('/homed',us.userLoginBackend)
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------//
 //logout

@@ -54,8 +54,6 @@ const getInventory = async(req,res)=>{
 const getAddProduct = async(req,res)=>{
     const cate = await Categories.find().sort()
     res.render('supAdmin/admin-addProduct',{cate,title:"Add Products",Page:"Inventory"})
-
-    // res.send('hai')
 }
 
 

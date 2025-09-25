@@ -145,7 +145,7 @@ const userLoginBackend = async (req, res) => {
     req.session.txt = "No users found"
     res.json({
       success: false,
-      err: "No users found"
+      message: "No users found"
     })
   } else {
     let isChecked = await bcrypt.compare(password, logins.password)
@@ -165,13 +165,13 @@ const userLoginBackend = async (req, res) => {
 
       res.json({
         success: false,
-        err: "User is blocked"
+        message: "User is blocked"
       })
     } else if (isChecked === false) {
 
       res.json({
         success: false,
-        err: "Check your password"
+        message: "Check your password"
       })
     }
   }

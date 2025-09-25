@@ -21,7 +21,7 @@ $(document).ready(function () {
                 window.location.href = '/admin/Customers'
             } else {
                 let dis = $('#disapear')
-                dis.text('wrong input');
+                dis.text('wrong username or password');
                 dis.show()
                 setTimeout(function () {
                     dis.hide()
