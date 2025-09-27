@@ -27,7 +27,7 @@ router.post('/login', adminauth.adminLoginAuthguard,adminLogin)
 
 
 //dasboard
-// router.get('/dashboard',adminauth.adminAuthguard,adminControl.getDashboard)
+router.get('/Dashboard',adminauth.adminAuthguard,adminControl.getDashboard)
 
 
 //----------------------------------------------------------------------------------

@@ -61,10 +61,11 @@
       <div class="row me-5">
         <% productModel.forEach(product => {  %>
           <% console.log("Product Stock:", product.Stock); %>
+          <% console.log('product = ',product) %>
           <% if(product.Image.length !== 0){ %>
             <div class="col-md-3 p-4">
               <div class="card" style="width: 18rem;margin-left: 25px;">
-                  <a href="/productDetail/<%= product._id %>"><img class="card-img-top" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/<%= product.Image[0] %>" alt="Card image cap"></a>
+                  <a href="/productDetail/<%= product._id %>"><img class="card-img-top" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/<%=product.Image[0] %>" alt="Card image cap"></a>
                   <div class="card-body">
                       <h6 class="card-title"><%=product.Name%></h6>
                       <% if(product.Stock >= 1 && (cartData && cartData.Items.length !== 0 )){ %>

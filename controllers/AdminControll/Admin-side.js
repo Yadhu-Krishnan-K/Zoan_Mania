@@ -74,6 +74,11 @@ const addCategory = (req,res)=>{
 }
 
 
+const getDashboard = (req,res) => {
+    res.render('supAdmin/admin-Dashboards.ejs',{title:"Dashboard",Page:"Dashboard"})
+}
+
+
 
 module.exports = {
     getAdminLogin,
@@ -82,5 +87,6 @@ module.exports = {
     getAddProduct,
     // adminNpasswordCheck,
     getCategory,
-    addCategory
+    addCategory,
+    getDashboard
 }

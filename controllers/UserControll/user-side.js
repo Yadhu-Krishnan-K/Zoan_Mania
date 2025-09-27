@@ -111,7 +111,7 @@ const getHome = async (req, res) => {
   // const currentPage = page
   // const pageNums = Math.ceil(Pcount/8)
   const productModel = await products.find().sort({ Selled: -1 }).limit(8)
-
+  console.log('products = ',productModel)
   const cartData = await cartModel.findOne({ userId: userId }).populate('userId')
   let cartcount = 0
   if (cartData === null || cartData.Items == (null || 0)) {
