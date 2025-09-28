@@ -18,7 +18,7 @@ $(document).ready(function () {
             let result = await res.json()
             console.log(result)
             if (result.success) {
-                window.location.href = '/admin/Customers'
+                window.location.href = '/admin/Dashboard'
             } else {
                 let dis = $('#disapear')
                 dis.text('wrong username or password');
