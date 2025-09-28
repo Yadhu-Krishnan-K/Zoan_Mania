@@ -34,6 +34,7 @@ app.use(mongoSanitize())
 
 app.set('view engine','ejs')
 app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname,'assets')));
 
 app.use(morgan('tiny'))
 app.use(nocache())

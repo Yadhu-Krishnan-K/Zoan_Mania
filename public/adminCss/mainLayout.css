@@ -82,3 +82,48 @@ body{
     align-items: center;
     margin-left: 35px;
 }
+
+
+#sidebar {
+  width: 220px;
+  /* top: 0;
+  left: 0; */
+  /* z-index: 1050; */
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Hidden by default on mobile */
+@media (max-width: 768px) {
+  #sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    background: #fff;
+    /* box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); */
+  }
+
+  #sidebar.active {
+    transform: translateX(0);
+  }
+}
+
+.sidnavButton {
+  width: 100%;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.sidnavButton i {
+  font-size: 16px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.sidnavButton p {
+  margin: 0;
+}
