@@ -22,18 +22,11 @@
 
     <div class="container-fluid">
         <div class="row">
-            <!-- Burger Button (Only on Mobile) -->
-            <button class="btn btn-primary d-md-none m-2" id="sidebarToggle">
-                ☰ <!-- Simple hamburger icon -->
-            </button>
-            <img src="/logos/logo.png" alt="img2" id="logo">
-
             <!-- Sidebar -->
             <div class="sidebar bg-light border-end border-5 col-2 p-2" id="sidebar">
                 <div class="d-flex justify-content-between align-items-center px-2 pt-2">
-                    <img src="/logos/logo.png" class="col-12" alt="img">
+                    <img src="/logos/logo.png" id="sidebarToggle" class="col-12" alt="img">
                     <!-- Close Button (Only on Mobile) -->
-                    <button class="btn btn-sm btn-outline-secondary d-md-none" id="sidebarClose">&times;</button>
                 </div>
 
                 <hr class="mx-auto mb-3" style="width: 80%;">
@@ -97,8 +90,8 @@
                 </div>
 
 
-                <div class="signOut mt-auto p-2">
-                    <a href="/admin/logout"><img src="/icons/Frame 9.png" alt=""></a>
+                <div class="signOut mt-auto">
+                    <a href="/admin/logout"><img src="/icons/Frame 9.png" alt="" id="logout3"></a>
                 </div>
             </div>
 
