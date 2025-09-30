@@ -1,9 +1,13 @@
 <%- include('../layouts/admin/header'); %>
 
 <div class="col-12 ">
-    <h4>Dash</h4>
+    <h1>Dash</h1>
 
-    <div class="w-100"><canvas id="acquisitions"></canvas></div>
+    <div class="w-100 p-2 canvas-container">
+        <div class="bar-chart">
+            <canvas id="acquisitions"></canvas>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
