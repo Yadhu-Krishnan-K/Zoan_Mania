@@ -53,7 +53,9 @@ router.post('/add-category', catController.addCategory)
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 //get add product
 
-router.get('/inventory/addProduct', adminauth.adminAuthguard, adminControl.getAddProduct)
+router.route('/inventory/addProduct')
+      .get(adminauth.adminAuthguard, adminControl.getAddProduct)
+      .post(multi.array('images', 4), adminProductControl.addProduct)
 
 
 //users-------------------------------------------------------------------------------------------------------------------------------//
@@ -74,55 +76,14 @@ router.get('/inventory/addProduct', adminauth.adminAuthguard, adminControl.getAd
 // ------------------------------------------------------------------------------------------------------------//
 
 //insert product
-router.get('/inventory/addProduct', adminauth.adminAuthguard, adminProductControl.getAdminAddProduct)
+// router.get('/inventory/addProduct', adminauth.adminAuthguard, adminProductControl.getAdminAddProduct)
 
 
 
 
 //''''''''''''''''''''''''''''''''''''''''''''''''''''------------------------------------------------------------------------//
 //add product
-router.post('/inventory/adding-product', multi.array('images', 4), async (req, res) => {
-    // const name = req.body.name
-    //    console.log(req.body);
-    console.log("req.files====", req.files, 'files');
-
-    const images = req.files;
-    console.log("images===", images)
-
-    const imageUrls = images.map(file => file.filename)
-    let arr = []
-
-    for (i = 0; i < imageUrls.length; i++) {
-        let ar = imageUrls[i].split('.')
-        arr.push(ar[1])
-    }
-    for (i = 0; i < arr.length; i++) {
-        if (!(arr[i].includes("jpg", "jpeg", "png"))) {
-            return res.render('supAdmin/422error')
-        }
-    }
-
-    console.log("when adding product, img==", imageUrls);
-    const { Description, Pname, stock, price, category, Specification1, Specification2, Specification3, Suffix } = req.body
-    //     // try {
-    const product = await new products({
-        Description: Description,
-        Name: Pname,
-        Image: imageUrls,
-        Stock: stock,
-        Category: category,
-        Price: price,
-        Spec1: Specification1,
-        Spec2: Specification2,
-        Spec3: Specification3,
-        Suffix: Suffix
-    })
-    const newProduct = await product.save();
-    // console.log(newProduct);
-
-    res.redirect('/admin/inventory')
-
-})
+router.post('/inventory/adding-product', multi.array('images', 4), adminProductControl.addProduct)
 
 
 

@@ -27,6 +27,21 @@ const cartModel = require('../models/cartModel')
 const pValidator = require('../util/passwordValidator')
 const cart = require('../models/cartModel')
 const { verifyUserOnOtp } = require('../middlewares/verifyUserOnOtp')
+const {
+    signup,
+    userLogin,
+    userSignup,
+    otpForm,
+    verifyOtp,
+    logout,
+    userLoginBackend
+} = require("../controllers/UserControll/authControll")
+const { getHome } = require('../controllers/UserControll/homeControll')
+const { productList1, producDetail } = require('../controllers/UserControll/productControll')
+const { userAddtoCart, userGetCart, cartQuantityUpdate, cartItemDeletion } = require('../controllers/UserControll/cartController')
+const { getUserProfile, updateUserProfile } = require('../controllers/UserControll/profileControll')
+const { renderManageAddress, addAddress, updateAddress, deleteAddress } = require('../controllers/UserControll/addressControll')
+const { checkoutUser, renderPlaceOrder, renderOrderDetails, cancelOrderData, orderedProduct, returnedItem, placeOrder } = require('../controllers/UserControll/orderController')
 
 
 
@@ -34,58 +49,46 @@ const { verifyUserOnOtp } = require('../middlewares/verifyUserOnOtp')
 
 
 
-
-
+//anonymous
 router.get('/',authGuard.userLoggedinAuthGuard,(req,res)=>{
     res.render('user/anonymous',{productInHome})
 })
  
-
-//user signup----------------------------------------------------------------------------------
+//@authcontroll
+//@signup
 router.route('/signup')
-.get(authGuard.userLoggedinAuthGuard,us.renderSignupPage)
-.post(us.signup)
-// .post(controller.otp)
-//otp control---------------------------------------------------------
-// router.post('/otpsend',controller.otp);
+.get(authGuard.userLoggedinAuthGuard,userSignup)
+.post(signup)
 
-//=----------==-----------------------=-------------------------------------=--------------------------------------------------------------------
-//otp form--------
 router.route('/otp')
-.get(authGuard.userLoggedinAuthGuard,verifyUserOnOtp,us.otpForm)
-//entering to home route --------------------===------------------=--------
-.post(us.verifyOtp)
-//--------------------------------------------------------------------------------------------------
-// router.get('/signup',authGuard.userLoggedinAuthGuard,us.userSignup)
+.get(authGuard.userLoggedinAuthGuard,verifyUserOnOtp,otpForm)
+.post(verifyOtp)
+
+router.get('/signup',authGuard.userLoggedinAuthGuard,userSignup)
 
 //--------------------------------------------------------------------------------------------------------------------------//
 //user login-------------------------------------------------------------------------
 router.route('/login')
-      .get(authGuard.userLoggedinAuthGuard,us.userLogin)
-      .post(us.userLoginBackend)
-//userHome
-router.get('/userHome',authGuard.userLoginAuthGuard,userAccess,us.getHome)
-
-//-------------------------------------------------------------------------------------------------------------------------------------------
-// router.post('/home',us.postEnteringHOme)
-
-//====-----------------------------------------------------------------------------------------------------
-//userloginbackend==---------------------------------------------------------------//-----------------------------------------------------------
-
-//----------------------------------------------------------------------------------------------------------------------------------------------------//
+      .get(authGuard.userLoggedinAuthGuard,userLogin)
+      .post(userLoginBackend)
 //logout
-router.get('/logout',us.logout)
+router.get('/logout',logout)
+
+
+//userHome
+router.get('/userHome',authGuard.userLoginAuthGuard,userAccess,getHome)
+
     
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //product-list userside---------------------------------------------------------------------------------
-router.get('/Product-list',authGuard.userLoginAuthGuard, userAccess, us.productList1)
+router.get('/Product-list',authGuard.userLoginAuthGuard, userAccess, productList1)
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //============================================================================================================================================
 
 //product detail page
 router.route('/productDetail/:id',authGuard.userLoginAuthGuard,userAccess)
-.get(us.producDetail)
+.get(producDetail)
 
 //------------------------------------------------------------------------------------------------------------------------  
 //user forgot password
@@ -117,24 +120,38 @@ router.get('/resendOtp',us.pwSendOtp)
 //==================================================================================================================================
 //===========================================================================================================================
 //add to cart
-router.get('/addToCart/:id',us.userAddtoCart);
+router.get('/addToCart/:id',userAddtoCart);
 
 //============================================
 //user cart
-router.get('/cart',authGuard.userLoginAuthGuard,userAccess,us.userGetCart)
+router.get('/cart',authGuard.userLoginAuthGuard,userAccess,userGetCart)
 
 //cart quandity updation
-router.post('/updateCartValue',us.cartQuantityUpdate)
+router.post('/updateCartValue',cartQuantityUpdate)
 
 //cart item deletion
-router.put('/deleteCartItem/:cartId',us.cartItemDeletion)
+router.put('/deleteCartItem/:cartId',cartItemDeletion)
+
+
+// // Get all cart items OR Add a new item
+// router.route('/cart')
+//   .get(authGuard.userLoginAuthGuard, userAccess, getCart)   // GET /cart
+//   .post(authGuard.userLoginAuthGuard, userAccess, addToCart); // POST /cart (add new item)
+
+// // Update or Delete a specific cart item
+// router.route('/cart/:id')
+//   .patch(authGuard.userLoginAuthGuard, userAccess, updateCartItem) // PATCH /cart/:id (update quantity)
+//   .delete(authGuard.userLoginAuthGuard, userAccess, deleteCartItem); // DELETE /cart/:id (remove item)
+
+
+
 
 //=============================================================================================================
 //user profile========================================
-router.get('/profile',authGuard.userLoginAuthGuard,userAccess,us.getUserProfile)
+router.get('/profile',authGuard.userLoginAuthGuard,userAccess,getUserProfile)
 
 //user profile update=================================
-router.put('/updateInfo',us.updateUserProfile)
+router.put('/updateInfo',updateUserProfile)
 
 //=============================================================================================
 //password change
@@ -145,52 +162,44 @@ router.post('/checkPasswords',us.passwordChange2)
 
 
 //Manage  Address
-router.get('/manageAddress',authGuard.userLoginAuthGuard,userAccess,us.renderManageAddress)
+router.get('/manageAddress',authGuard.userLoginAuthGuard,userAccess,renderManageAddress)
 
 
 //user Address add
-router.post('/saveAddress',us.addAddress)
+router.post('/saveAddress',addAddress)
 
 // customer update address===============
-router.post('/updateAddress/:userId',us.updateAddress)
+router.post('/updateAddress/:userId',updateAddress)
 
 //delete address
-router.get('/deleteAddress/:userId/:addresId',us.deleteAddress)
+router.get('/deleteAddress/:userId/:addresId',deleteAddress)
 
 //=====================================================================================================================================================
 //================================================
 //user checkout
-router.get('/buyTheProducts',authGuard.userLoginAuthGuard,userAccess,us.checkoutUser)
+router.get('/buyTheProducts',authGuard.userLoginAuthGuard,userAccess,checkoutUser)
 
 
 //order confirmation page======================================================
-router.post('/placeOrder',us.placeOrder)
+router.route('/placeOrder')
+      .get(authGuard.userLoginAuthGuard,userAccess,renderPlaceOrder)
+      .post(placeOrder)
 
-router.get('/placeOrder',authGuard.userLoginAuthGuard,userAccess,us.renderPlaceOrder)
-
-
-router.get('/orderDetails',authGuard.userLoginAuthGuard,userAccess,us.renderOrderDetails)
+router.get('/orderDetails',authGuard.userLoginAuthGuard,userAccess,renderOrderDetails)
 
 
 //cancel order
-router.get('/cancelOrderData/:orderId',us.cancelOrderData)
+router.get('/cancelOrderData/:orderId',cancelOrderData)
 
 
 
 //order products view
-router.get('/orderProductView/:orderId',authGuard.userLoginAuthGuard,userAccess,us.orderedProduct)
+router.get('/orderProductView/:orderId',authGuard.userLoginAuthGuard,userAccess,orderedProduct)
 
 
 
 //order return 
-router.post('/returnedItem',us.returnedItem)
-
-
-
-
-
-
-
+router.post('/returnedItem',returnedItem)
 
 
 

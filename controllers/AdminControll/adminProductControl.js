@@ -32,10 +32,53 @@ const deleteProduct = async(req,res)=>{
 }
 
 
+const addProduct = async (req, res) => {
+    console.log('adding products...')
+    console.log("req.files====", req.files, 'files');
 
+    const images = req.files;
+    console.log("images===", images)    
 
+    const imageUrls = images.map(file => file.filename)
+    let arr = []
+    console.log('imageUrls = ',imageUrls)
 
+    for (i = 0; i < imageUrls.length; i++) {
+        let ar = imageUrls[i].split('.')
+        console.log('ar = ',ar)
+        arr.push(ar[1])
+    }
+    console.log('arr = ',arr)
+    const validExts = ["jpg", "jpeg", "png"];
+    for (i = 0; i < arr.length; i++) {
+        console.log(!validExts.some(ext => arr[i].includes(ext)))
+        if (!validExts.some(ext => arr[i].includes(ext))) {
+            console.log('found imposter',i)
+            return res.render('supAdmin/422error')
+        }
+    }
+    console.log("when adding product, img==", imageUrls);
+    const { Description, Pname, stock, price, category, Specification1, Specification2, Specification3, Suffix } = req.body
+    //     // try {
+    const product = new products({
+        Description: Description,
+        Name: Pname,
+        Image: imageUrls,
+        Stock: stock,
+        Category: category,
+        Price: price,
+        Spec1: Specification1,
+        Spec2: Specification2,
+        Spec3: Specification3,
+        Suffix: Suffix
+    })
+    const newProduct = await product.save();
+    console.log('product saved....😮😮😮😮😮😮')
+    console.log(newProduct);
 
+    res.redirect('/admin/inventory')
+
+}
 
 
 
@@ -45,5 +88,6 @@ const deleteProduct = async(req,res)=>{
 
 module.exports = {
     getAdminAddProduct,
-    deleteProduct
+    deleteProduct,
+    addProduct
 }

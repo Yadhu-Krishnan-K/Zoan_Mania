@@ -1,96 +1,85 @@
-function limNpre() {
-    const selectedFiles = document.getElementById('image1').files;
-    console.log("selectedFiles====", selectedFiles)
+function handleImageInput(index) {
+    const fileInput = document.getElementById(`image${index}`);
+    const file = fileInput.files[0];
     const allowedExtensions = ['jpg', 'jpeg', 'png'];
 
-    if (selectedFiles.length > 4) {
-        document.getElementById('doc').innerHTML = 'Maximum 4 images allowed';
-        document.getElementById('doc').style.display = 'block';
-        setTimeout(() => {
-            document.getElementById('doc').style.display = 'none';
-            const newInput = replaceFileInput();
-            newInput.addEventListener('change', limNpre);
-        }, 3000);
+    if (!file) return; // nothing selected
+
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+        showError('Invalid file type. Please upload only JPG, JPEG, or PNG.');
+        resetInput(fileInput);
         return;
     }
 
-    const imgPreviewContainer = document.querySelector('.img-preview-container');
-    imgPreviewContainer.innerHTML = '';
+    // show preview
+    const preview = document.getElementById(`image-preview-${index}`);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        preview.src = e.target.result;
+        preview.style.display = "inline-block";
+    };
+    reader.readAsDataURL(file);
 
-    for (let i = 0; i < selectedFiles.length && i < 4; i++) {
-
-        const fileExtension = selectedFiles[i].name.split('.').pop().toLowerCase();
-        console.log('file extension====', fileExtension)
-
-        if (allowedExtensions.includes(fileExtension)) {
-            const imgPreview = document.getElementById(`image-preview-${i + 1}`);
-            if (imgPreview) {
-                const reader = new FileReader();
-                reader.readAsDataURL(selectedFiles[i]);
-                reader.onload = function (e) {
-                    imgPreview.src = e.target.result;
-                };
-            }
-        } else {
-            document.getElementById('doc').innerHTML = 'Invalid file type. Please upload only images';
-            document.getElementById('doc').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('doc').style.display = 'none';
-                const newInput = replaceFileInput();
-                newInput.addEventListener('change', limNpre);
-            }, 3000);
-            return;
-        }
+    // create next input if less than 4
+    if (index < 4 && !document.getElementById(`image${index + 1}`)) {
+        const container = document.getElementById("image-inputs");
+        const newInput = document.createElement("input");
+        newInput.type = "file";
+        newInput.name = "images";
+        newInput.id = `image${index + 1}`;
+        newInput.accept = "image/*";
+        newInput.required = true;
+        newInput.classList.add("mt-2");
+        newInput.onchange = () => handleImageInput(index + 1);
+        container.appendChild(newInput);
+        container.appendChild(document.createElement("br"));
+    } else if (index === 4) {
+        showError('Maximum 4 images allowed');
     }
-
 }
 
-function replaceFileInput() {
-    const oldInput = document.getElementById('image1');
-    const newInput = document.createElement('input');
-
-    newInput.type = 'file';
-    newInput.name = oldInput.name;
-    newInput.id = oldInput.id;
-    newInput.accept = oldInput.accept;
-    newInput.multiple = oldInput.multiple;
-    newInput.required = oldInput.required;
-
-    oldInput.parentNode.replaceChild(newInput, oldInput);
-
-    return newInput;
+// show error helper
+function showError(message) {
+    const doc = document.getElementById('doc');
+    doc.innerHTML = message;
+    doc.style.display = 'block';
+    setTimeout(() => doc.style.display = 'none', 3000);
 }
 
+// reset invalid input
+function resetInput(input) {
+    const newInput = input.cloneNode(true);
+    newInput.value = '';
+    newInput.onchange = input.onchange;
+    input.parentNode.replaceChild(newInput, input);
+}
 
+// form validation
 document.getElementById('sub').addEventListener("submit", (e) => {
-    let stock = document.getElementById('stock').value;
-    let price = document.getElementById('price').value;
-    let err = document.getElementById('stocker');
-    let prerr = document.getElementById('priceErr');
-    let cat = document.getElementById('category').textContent;
-    let caterr = document.getElementById('caterr');
+    const stock = document.getElementById('stock').value;
+    const price = document.getElementById('price').value;
+    const err = document.getElementById('stocker');
+    const prerr = document.getElementById('priceErr');
+    const cat = document.getElementById('category').value;
+    const caterr = document.getElementById('caterr');
+
     if (stock < 0) {
         e.preventDefault();
         err.style.display = 'block';
-        err.innerHTML = 'stock should be greater than or equal to 0';
-        setTimeout(() => {
-            err.style.display = 'none';
-        }, 4000);
+        err.innerHTML = 'Stock should be greater than or equal to 0';
+        setTimeout(() => err.style.display = 'none', 4000);
     }
     if (price <= 0) {
         e.preventDefault();
         prerr.style.display = 'block';
-        prerr.innerHTML = 'price should be greater than 0';
-        setTimeout(() => {
-            prerr.style.display = 'none';
-        }, 4000);
+        prerr.innerHTML = 'Price should be greater than 0';
+        setTimeout(() => prerr.style.display = 'none', 4000);
     }
-    if (cat === 'Select a category') {
+    if (cat === '') {
         e.preventDefault();
         caterr.style.display = 'block';
         caterr.innerHTML = 'Select a category';
-        setTimeout(() => {
-            caterr.style.display = 'none';
-        }, 4000);
+        setTimeout(() => caterr.style.display = 'none', 4000);
     }
 });
