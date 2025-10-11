@@ -52,41 +52,6 @@ const categoryDelete = async(req,res)=>{
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 module.exports = {
     addCategory,
     editCategory,
