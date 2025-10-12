@@ -1,4 +1,9 @@
+require('dotenv').config()
+const crypto = require('crypto')
 const mongoose = require('mongoose')
+const moment = require('moment')
+const Razorpay = require('razorpay')
+const { validatePaymentVerification, validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
 
 const User = require('../../models/user')
 const products = require('../../models/products')
@@ -25,14 +30,16 @@ const checkoutUser = async (req, res) => {
 
 
 
-const renderPlaceOrder = (req, res) => {
+const orderSuccessPage = (req, res) => {
   let name = req.session.name
   let orderId = req.session.orderID
   req.session.visited++
 
   if (req.session.visited < 2) {
     res.render('user/userOrderConfirm', { name, title: "Oreder Confirmed", orderId })
-  } else { res.redirect('/userHome') }
+  } else {
+    res.redirect('/userHome')
+  }
 }
 
 
@@ -50,7 +57,6 @@ const placeOrder = async (req, res) => {
     const userData = await User.findOne({ email: email });
 
     if (!userData) {
-
       return;
     }
 
@@ -99,48 +105,91 @@ const placeOrder = async (req, res) => {
       TotalPrice: amount,
       Address: add
     });
+    // newOrder.email = email
+    
+    await cartModel.findByIdAndDelete(cartData._id);
 
-    if (paymentMethod == 'cod') {
-      console.log("inside payment method = cod and order model is creating")
-      const order = await newOrder.save();
-      req.session.orderID = order._id;
-      // console.log("Order detail", order);
-      await cartModel.findByIdAndDelete(cartData._id);
+    for (const item of newOrder.Items) {
+      const productId = item.productId;
+      const quantity = item.quantity;
+      const product = await products.findById(productId);
 
-      for (const item of order.Items) {
-        const productId = item.productId;
-        const quantity = item.quantity;
-        const product = await products.findById(productId);
-
-        if (product) {
-          const updateQuantity = product.Stock - quantity;
-          product.Selled += quantity
-          if (updateQuantity < 0) {
-            product.Stock = 0;
-            product.Status = "Out of stock";
-          } else {
-            product.Stock = updateQuantity;
-            await product.save();
-          }
+      if (product) {
+        const updateQuantity = product.Stock - quantity;
+        product.Selled += quantity
+        if (updateQuantity < 0) {
+          product.Stock = 0;
+          product.Status = "Out of stock";
+        } else {
+          product.Stock = updateQuantity;
+          await product.save();
         }
       }
-      //just redirect if code to some rout
+    }
+    const order = await newOrder.save();
+    req.session.orderID = order._id;
+    if (paymentMethod == 'cod') {
+      console.log("inside payment method = cod and order model is creating")
+      // console.log("Order detail", order);
+
       req.session.visited = 0
       console.log("order response back");
       return res.json({ success: true, message: 'Order placed successfully' });
     } else if (paymentMethod == 'online') {
-      // var options = {
-      //   amount: amount*100,  // amount in the smallest currency unit
-      //   currency: "INR",
-      //   receipt: "order_rcptid_11"
-      // };
-      // instance.orders.create(options, function(err, order) {
-      //   console.log(order);
-      // });
+      var razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET
+      })
+
+      var options = {
+        amount: amount*100,  // amount in the smallest currency unit
+        currency: "INR",
+        receipt: `order_rcptid_${new Date().getTime()}`
+      };
+      const resOrder = await razorpay.orders.create(options);
+      console.log('resOrder = ',resOrder)
+      return res.json({ success: true, message: 'Order placed successfully',razorpayId:resOrder.id,order:newOrder, email });
     }
   } catch (error) {
     console.error("An error occurred:", error);
     console.log("cart data note available 01--");
+  }
+}
+const verifyOrder = async (req, res) => {
+  console.log('inside verifyORder')
+  const {razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body
+
+  const RazorpaySecret = process.env.RAZORPAY_KEY_SECRET
+  const body = razorpay_order_id + '|' + razorpay_payment_id
+
+  try {
+    // const isValidSignature = validateWebhookSignature(body, razorpay_signature,RazorpaySecret)
+    // if(isValidSignature){
+    //   res.status(200).json({
+    //     success:true
+    //   })
+    // }
+    
+    const expectedSignature = crypto.createHmac("sha256", RazorpaySecret)
+                                    .update(body.toString())
+                                    .digest("hex");
+                
+    if (expectedSignature === razorpay_signature) {
+      const email = req.session.email
+      const userData = await User.findOne({ email: email });
+
+    // ✅ Payment verified
+    
+    await cartModel.deleteOne({ userId: userData._id});
+    console.log('verification success....')
+    return res.json({ success: true, message: "Payment verified successfully" });
+  } else {
+    await orderModel.deleteOne({UserId:userData._id})
+    console.log('error occured')
+    return res.status(400).json({ success: false, message: "Invalid signature" });
+  }
+  } catch (error) {
+    console.log('error from verifying payments = ',error.stack)
   }
 }
 
@@ -224,8 +273,9 @@ const returnedItem = async (req, res) => {
 
 module.exports = {
   checkoutUser,
-  renderPlaceOrder,
   placeOrder,
+  verifyOrder,
+  orderSuccessPage,
   renderOrderDetails,
   cancelOrderData,
   orderedProduct,

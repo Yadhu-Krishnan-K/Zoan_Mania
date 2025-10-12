@@ -1,6 +1,6 @@
 const products = require('../../models/products')
 const cartModel = require('../../models/cartModel')
-
+const category = require('../../models/category')
 
 //product list user-side==============
 const productList1 = async (req, res) => {

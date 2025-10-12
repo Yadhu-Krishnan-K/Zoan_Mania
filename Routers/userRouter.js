@@ -24,7 +24,7 @@ const { productList1, producDetail } = require('../controllers/UserControll/prod
 const { userAddtoCart, userGetCart, cartQuantityUpdate, cartItemDeletion } = require('../controllers/UserControll/cartController')
 const { getUserProfile, updateUserProfile } = require('../controllers/UserControll/profileControll')
 const { renderManageAddress, addAddress, updateAddress, deleteAddress } = require('../controllers/UserControll/addressControll')
-const { checkoutUser, renderPlaceOrder, renderOrderDetails, cancelOrderData, orderedProduct, returnedItem, placeOrder } = require('../controllers/UserControll/orderController')
+const { checkoutUser, renderPlaceOrder, renderOrderDetails, cancelOrderData, orderedProduct, returnedItem, placeOrder, orderSuccessPage, verifyOrder } = require('../controllers/UserControll/orderController')
 
 const router = express.Router()
 
@@ -104,9 +104,10 @@ router.get('/deleteAddress/:userId/:addresId', deleteAddress)
 router.get('/buyTheProducts', authGuard.userLoginAuthGuard, userAccess, checkoutUser)
 
 router.route('/placeOrder')
-  .get(authGuard.userLoginAuthGuard, userAccess, renderPlaceOrder)
+  .get(authGuard.userLoginAuthGuard, userAccess, orderSuccessPage)
   .post(placeOrder)
 
+router.post('/verify-payment', authGuard.userLoginAuthGuard, userAccess, verifyOrder)
 router.get('/orderDetails', authGuard.userLoginAuthGuard, userAccess, renderOrderDetails)
 router.get('/cancelOrderData/:orderId', cancelOrderData)
 router.get('/orderProductView/:orderId', authGuard.userLoginAuthGuard, userAccess, orderedProduct)

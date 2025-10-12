@@ -18,6 +18,7 @@ const userAddtoCart = async (req, res) => {
         userId: userId,
         Items: [{ ProductId: ProductId }]
       });
+      await cart.save()
 
     } else {
       const product = await cartModel.findOne({ userId: userId, 'Items.ProductId': ProductId })
@@ -32,7 +33,7 @@ const userAddtoCart = async (req, res) => {
 
       } else {
 
-        await cartModel.findByIdAndUpdate({ userId: userId, 'Items.ProductId': ProductId }, { $inc: { 'Items.Quantity': 1 } })
+        await cartModel.findOneAndUpdate({ userId: userId, 'Items.ProductId': ProductId }, { $inc: { 'Items.Quantity': 1 } })
           .then(() => { console.log('success') })
           .catch((err) => { console.log(err) })
       }

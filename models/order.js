@@ -32,7 +32,7 @@ const OrdersSchema = new Schema({
   OrderDate: { type: String },
   ExpectedDeliveryDate:{type: String},
   TotalPrice: { type: Number },
-  PaymentStatus: {type: String, default: "Pending"},
+  PaymentStatus: {type: String, default: "Pending"},// pending/paid/failed/
   CouponId: { type: Schema.Types.ObjectId },
   Address: { type: ShippedAddressSchema },
 });
