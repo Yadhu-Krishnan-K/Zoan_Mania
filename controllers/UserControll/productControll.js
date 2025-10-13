@@ -58,9 +58,7 @@ const producDetail = async (req, res) => {
     })
   }
 
-
   res.render('user/product-page', { P_detail, name, cartcount, title: 'Product Page' })
-
 }
 
 module.exports = {
