@@ -9,6 +9,7 @@ const User = require('../../models/user')
 const products = require('../../models/products')
 const cartModel = require('../../models/cartModel')
 const orderModel = require("../../models/order")
+const { createOrder, expectedSignature } = require('../../backendHelpers/razorpay')
 
 
 //userCheckout
@@ -136,17 +137,8 @@ const placeOrder = async (req, res) => {
       console.log("order response back");
       return res.json({ success: true, message: 'Order placed successfully' });
     } else if (paymentMethod == 'online') {
-      var razorpay = new Razorpay({
-        key_id: process.env.RAZORPAY_KEY_ID,
-        key_secret: process.env.RAZORPAY_KEY_SECRET
-      })
 
-      var options = {
-        amount: amount*100,  // amount in the smallest currency unit
-        currency: "INR",
-        receipt: `order_rcptid_${new Date().getTime()}`
-      };
-      const resOrder = await razorpay.orders.create(options);
+      const resOrder = await createOrder(amount)
       console.log('resOrder = ',resOrder)
       return res.json({ success: true, message: 'Order placed successfully',razorpayId:resOrder.id,order:newOrder, email });
     }
@@ -155,18 +147,16 @@ const placeOrder = async (req, res) => {
     console.log("cart data note available 01--");
   }
 }
+
+
+
 const verifyOrder = async (req, res) => {
   console.log('inside verifyORder')
   const {razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body
 
-  const RazorpaySecret = process.env.RAZORPAY_KEY_SECRET
-  const body = razorpay_order_id + '|' + razorpay_payment_id
-
   try {
     
-    const expectedSignature = crypto.createHmac("sha256", RazorpaySecret)
-                                    .update(body.toString())
-                                    .digest("hex");
+    const expectedSignature = await expectedSignature(razorpay_order_id, razorpay_payment_id)
                 
     if (expectedSignature === razorpay_signature) {
       const email = req.session.email
@@ -186,6 +176,8 @@ const verifyOrder = async (req, res) => {
     console.log('error from verifying payments = ',error.stack)
   }
 }
+
+
 
 const renderOrderDetails = async (req, res) => {
   try {
