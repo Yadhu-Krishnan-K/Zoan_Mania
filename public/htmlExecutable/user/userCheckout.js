@@ -46,6 +46,7 @@ confirmOrderButton.addEventListener('click', async () => {
                     currency: 'INR',
                     name: 'Zoan_Mania',
                     description: 'thank you for purchasing',
+                    
                     order_id: data.razorpayId, // This is the order_id created in the backend
                     prefill: {
                         name: data.order.Address.Name,
@@ -71,6 +72,7 @@ confirmOrderButton.addEventListener('click', async () => {
                         .then(data => {
                             console.log('data after completing backend verification',data)
                             if(data.success){
+                                console.log('🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀')
                                 window.location.href = "/placeOrder"
                             }else{
                                 alert('Payment verification failed')

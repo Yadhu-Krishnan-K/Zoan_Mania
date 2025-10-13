@@ -36,7 +36,7 @@ const orderSuccessPage = (req, res) => {
   req.session.visited++
 
   if (req.session.visited < 2) {
-    res.render('user/userOrderConfirm', { name, title: "Oreder Confirmed", orderId })
+    res.render('user/orderSuccess', { name, title: "Oreder Confirmed", orderId })
   } else {
     res.redirect('/userHome')
   }
@@ -128,11 +128,11 @@ const placeOrder = async (req, res) => {
     }
     const order = await newOrder.save();
     req.session.orderID = order._id;
+    req.session.visited = 0
     if (paymentMethod == 'cod') {
       console.log("inside payment method = cod and order model is creating")
       // console.log("Order detail", order);
 
-      req.session.visited = 0
       console.log("order response back");
       return res.json({ success: true, message: 'Order placed successfully' });
     } else if (paymentMethod == 'online') {
@@ -163,12 +163,6 @@ const verifyOrder = async (req, res) => {
   const body = razorpay_order_id + '|' + razorpay_payment_id
 
   try {
-    // const isValidSignature = validateWebhookSignature(body, razorpay_signature,RazorpaySecret)
-    // if(isValidSignature){
-    //   res.status(200).json({
-    //     success:true
-    //   })
-    // }
     
     const expectedSignature = crypto.createHmac("sha256", RazorpaySecret)
                                     .update(body.toString())
