@@ -42,7 +42,7 @@
                             </div>  
                             <% }else{ %>
                               <div class="Options mt-5 d-flex">
-                                <button href="" class="ms-3 btn btn-success" onclick="buyProduct('<%= P_detail._id %>')">Buy Now</button>
+                                <a href="/buyTheProduct/<%= P_detail._id %>" class="ms-3 btn btn-success" onclick="buyProduct('<%= P_detail._id %>')">Buy Now</a>
                                 <!-- <a href="" class="ms-3"><img src="/icons/like.png" alt=""></a> -->
                                 <a href="/addToCart/<%= P_detail._id %>" class="ms-3"><img src="/icons/basket.png" alt=""></a>
                               </div>  
@@ -74,8 +74,11 @@
     new ImageZoom(document.getElementById("img-container"), options);
 
     async function buyProduct(product_id){
-      // console.log('product+Id === ',product_id) it worked
-      let res = fetch(`/butTheProduct/${product_id}`)
+      console.log('product+Id === ',product_id)
+      console.log('productId type = ',typeof product_id)
+      let res = await fetch(`/buyTheProduct/${product_id}`)
+      const data = res.json()
+      console.log('data = ',data)
     }
     
   </script>

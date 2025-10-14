@@ -101,7 +101,7 @@ router.get('/deleteAddress/:userId/:addresId', deleteAddress)
 
 
 // =================== Orders ===================
-router.post('/butTheProduct:productId')
+router.get('/buyTheProduct/:productId', authGuard.userLoginAuthGuard, userAccess, checkoutUser)
 router.get('/buyTheProducts', authGuard.userLoginAuthGuard, userAccess, checkoutUser)
 
 router.route('/placeOrder')

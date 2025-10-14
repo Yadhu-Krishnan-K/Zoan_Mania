@@ -1,9 +1,6 @@
 require('dotenv').config()
-const crypto = require('crypto')
 const mongoose = require('mongoose')
 const moment = require('moment')
-const Razorpay = require('razorpay')
-const { validatePaymentVerification, validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
 
 const User = require('../../models/user')
 const products = require('../../models/products')
@@ -14,32 +11,46 @@ const { createOrder, expectedSignature } = require('../../backendHelpers/razorpa
 
 //userCheckout
 const checkoutUser = async (req, res) => {
-  const name = req.session.name
-  const userId = req.session.userId
-  const userData = await User.findOne({ name: name })
-  const cartData = await cartModel.findOne({ userId: userId })
-  if (cartData) {
+  try {
+    const name = req.session.name
+    const userId = req.session.userId
+    const productId = req.params.productId || null
+    console.log('product id from params = ',req.params)
+    console.log('if validId = ',mongoose.Types.ObjectId.isValid(productId))
+    const userData = await User.findOne({ name: name })
+    const cartData = await cartModel.findOne({ userId: userId }) || null
     var cartcount = 0
-    cartData.Items.forEach((cart) => {
-      cartcount += cart.Quantity
-    })
-    res.render('user/userCheckout', { title: "Zoan | Checkout", userData, name, cartcount })
-  } else {
-    res.redirect('/userHome')
+    if (cartData) {
+      cartData.Items.forEach((cart) => {
+        cartcount += cart.Quantity
+      })
+        res.render('user/userCheckout', { title: "Zoan | Checkout", userData, name, cartcount })
+    } else if(productId){
+      res.render ('user/userCheckout', { title: "Zoan | Checkout", userData, name, cartcount })
+    }else{
+      res.redirect('/userHome')
+    }
+  } catch (error) {
+    console.log('Error: ',error.message)
   }
 }
 
 
 
 const orderSuccessPage = (req, res) => {
-  let name = req.session.name
-  let orderId = req.session.orderID
-  req.session.visited++
-
-  if (req.session.visited < 2) {
-    res.render('user/orderSuccess', { name, title: "Oreder Confirmed", orderId })
-  } else {
-    res.redirect('/userHome')
+  try {
+    
+    let name = req.session.name
+    let orderId = req.session.orderID
+    req.session.visited++
+  
+    if (req.session.visited < 2) {
+      res.render('user/orderSuccess', { name, title: "Oreder Confirmed", orderId })
+    } else {
+      res.redirect('/userHome')
+    }
+  } catch (error) {
+        console.log('Error: ',error.message)
   }
 }
 
@@ -156,9 +167,9 @@ const verifyOrder = async (req, res) => {
 
   try {
     
-    const expectedSignature = await expectedSignature(razorpay_order_id, razorpay_payment_id)
+    const expSig = await expectedSignature(razorpay_order_id, razorpay_payment_id)
                 
-    if (expectedSignature === razorpay_signature) {
+    if (expSig === razorpay_signature) {
       const email = req.session.email
       const userData = await User.findOne({ email: email });
 
@@ -223,38 +234,47 @@ const cancelOrderData = async (req, res) => {
 
 
 const orderedProduct = async (req, res) => {
-  const orderId = req.params.orderId
-  const userId = req.session.userId
-  const orders = await orderModel.findById({ _id: orderId }).populate('Items.productId')
-  const cartData = await cartModel.findOne({ userId: userId })
-  let cartcount = 0
-  if (cartData === null || cartData.Items == (null || 0)) {
-
-    cartcount = 0
-
-  } else {
-    cartData.Items.forEach((cart) => {
-      cartcount += cart.Quantity
-    })
+  try {
+    const orderId = req.params.orderId
+    const userId = req.session.userId
+    const orders = await orderModel.findById({ _id: orderId }).populate('Items.productId')
+    const cartData = await cartModel.findOne({ userId: userId })
+    let cartcount = 0
+    if (cartData === null || cartData.Items == (null || 0)) {
+  
+      cartcount = 0
+  
+    } else {
+      cartData.Items.forEach((cart) => {
+        cartcount += cart.Quantity
+      })
+    }
+    const name = req.session.name;
+    res.render('user/order-ProductDetails', { title: "Ordered Items", name, orders, cartcount })
+  } catch (error) {
+      console.log('Error: ',error.message)
   }
-  const name = req.session.name;
-  res.render('user/order-ProductDetails', { title: "Ordered Items", name, orders, cartcount })
 }
 
 
 const returnedItem = async (req, res) => {
-  const productId = new mongoose.Types.ObjectId(req.body.P_id);
-  const P_qty = req.body.P_qty;
-  const O_id = new mongoose.Types.ObjectId(req.body.O_id);
-  console.log("reached post route", productId)
-  console.log(`data====P_id==${productId},P-qty=${P_qty},O_id = ${O_id}`);
-  const updatedOrder = await orderModel.findOneAndUpdate(
-    { _id: O_id, 'Items.productId': productId },
-    { $set: { 'Items.$.removed': true } },
-    { new: true }
-  );
-  const updateProduct = await products.findByIdAndUpdate({ _id: productId }, { $inc: { Stock: P_qty } })
-  res.json({ success: true })
+  try {
+    
+    const productId = new mongoose.Types.ObjectId(req.body.P_id);
+    const P_qty = req.body.P_qty;
+    const O_id = new mongoose.Types.ObjectId(req.body.O_id);
+    console.log("reached post route", productId)
+    console.log(`data====P_id==${productId},P-qty=${P_qty},O_id = ${O_id}`);
+    const updatedOrder = await orderModel.findOneAndUpdate(
+      { _id: O_id, 'Items.productId': productId },
+      { $set: { 'Items.$.removed': true } },
+      { new: true }
+    );
+    const updateProduct = await products.findByIdAndUpdate({ _id: productId }, { $inc: { Stock: P_qty } })
+    res.json({ success: true })
+  } catch (error) {
+      console.log('Error: ',error.message)
+  }
 }
 
 module.exports = {

@@ -1,0 +1,78 @@
+<%- include('../layouts/user/header'); -%>
+       
+
+<div class=" container-fluid" style="height: 100vh; width: 100%; ">
+   <div class="row">
+    <div class="col-md-12 d-flex flex-column align-items-center">
+
+        <!-- <h2 class="mt-2 mb-3">My Shopping Cart</h2> -->
+       
+        <main class="border rounded d-flex flex-column align-items-center" style="width: 85%; height: 80vh; background: #fff; overflow-y: scroll;   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+          
+
+              <div class="ta" style="width: 95%; ">
+                <table class="table  mt-4 mb-4">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            
+                            <th>Quantity</th>
+                            <th></th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                         <tr >
+                            <td>
+                              <img style="display: inline;" src="/uploads/<%= product %>" width="80px" alt=""><h5 style="display: inline; margin-left: 10px;"><%= cart.ProductId.Name %></h5>
+                            </td>
+                             
+                            <td class="common" style="height: auto; width: auto;">
+
+                                <div class="d-flex " style="height: 30px; width: 90px;">
+
+                                 
+                                    <button style="border: 0;"  id="decBtn_<%= product._id %>" onclick="disap('<%= product._id %>','<%= stock %>');updateQuandity('<%= product._id %>',-1,'<%= product.stock %>')"><div class="col d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">-</div></button>
+                                  <div class="col d-flex justify-content-center align-items-center " style="width: 30px; height: 30px; border: 1px black solid;" id="quantity_<%= product._id %>"><%= product.stock %></div>
+                                    <button style="border: 0;" id="incBtn_<%= cart.ProductId._id%>" onclick="disap('<%= cart.ProductId._id %>','<%= product.Stock %>');updateQuandity('<%= product._id %>',1,'<%= product.Stock %>')"><div class="col d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;  background: #f1efef;">+</div></button>
+                                  
+                               
+                                
+                                  </div>
+
+                            </td>
+                            <td class="common">
+                                <button class="col d-flex justify-content-center align-items-center btn btn-danger" onclick="deleteItem('<%= cart._id %>','<%= cart.ProductId.Name %>','<%= cartDetail._id %>')">Remove</button>
+                                
+                              </td>
+                            <td id="price<%= cart.ProductId._id %>" class="common">
+                                ₹<%= cart.Quantity * cart.ProductId.Price %>/-
+                            </td>
+                        </tr>
+                    
+
+                    </tbody>
+                </table>    
+              <form style="width: 100%;" action="/buyTheProducts">
+
+                <div class="row d-flex justify-content-end border">
+                    
+                    <div id="totalPrice" class="col-md-3 d-flex justify-content-center align-items-center border" style="height: 80px;"><div style="height: 90%; width: 90%; display: flex; justify-content: center; align-items: center;">Total Price=₹<%= sum %>/-</div></div>
+                </div>
+               <div class="d-flex justify-content-end align-items-center mt-4 mb-3">
+               
+                <button class="btn btn-success" type="submit" style="height: 50px; width: 200px;">Buy now</button>
+               </div> 
+            </form>
+        </div>
+        </main>
+    </div>
+
+   </div>
+</div>
+
+<script src="/htmlExecutable/user/buyTheProduct.js"></script>
+
+
+<%- include('../layouts/user/footer'); -%>
