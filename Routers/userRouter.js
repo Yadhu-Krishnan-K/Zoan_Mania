@@ -20,7 +20,7 @@ const {
 
 
 const { getHome } = require('../controllers/UserControll/homeControll')
-const { productList1, producDetail } = require('../controllers/UserControll/productControll')
+const { productList1, producDetail, searchProducts } = require('../controllers/UserControll/productControll')
 const { userAddtoCart, userGetCart, cartQuantityUpdate, cartItemDeletion } = require('../controllers/UserControll/cartController')
 const { getUserProfile, updateUserProfile } = require('../controllers/UserControll/profileControll')
 const { renderManageAddress, addAddress, updateAddress, deleteAddress } = require('../controllers/UserControll/addressControll')
@@ -29,9 +29,11 @@ const { checkoutUser, renderPlaceOrder, renderOrderDetails, cancelOrderData, ord
 const router = express.Router()
 
 // =================== Anonymous ===================
-router.get('/', authGuard.userLoggedinAuthGuard, (req, res) => {
-  res.render('user/anonymous', { productInHome })
-})
+// router.get('/', authGuard.userLoggedinAuthGuard, (req, res) => {
+//   res.render('user/anonymous', { productInHome })
+// })
+router.get('/', getHome)
+
 
 
 // =================== Authentication ===================
@@ -55,9 +57,9 @@ router.get('/userHome', authGuard.userLoginAuthGuard, userAccess, getHome)
 
 
 // =================== Product ===================
-router.get('/Product-list', authGuard.userLoginAuthGuard, userAccess, productList1)
-router.get('/productDetail/:id', authGuard.userLoginAuthGuard, userAccess, producDetail)
-
+router.get('/Product-list', productList1)
+router.get('/productDetail/:id', producDetail)
+router.get('/search', searchProducts)
 
 // =================== Forgot Password ===================
 router.route('/forgotPassword')

@@ -1,55 +1,52 @@
 <%- include('../layouts/user/header') -%>
 
-            <!-- Carousel -->
-            <div id="demo" class="carousel slide" data-bs-ride="carousel">
+  <div class="container-fluid">
+    <!-- Carousel -->
+    <div id="demo" class="carousel slide" data-bs-ride="carousel">
 
-              <!-- Indicators/dots -->
-              <div class="carousel-indicators">
-                <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
-              </div>
- 
-              <!-- The slideshow/carousel -->
-              <div class="carousel-inner">
-                <div class="carousel-item active">
-                  <img src="pics/Group 1.png" alt="Los Angeles" class="d-block w-100">
-                  <div class="carousel-caption pos ">
-                    <p>SUMMER 2024</p>
-                    <h1 class="text-justify">Multicoloured
-                      Tie-dye Sweater</h1>
-                    <p>We had such a great time in LA!</p>
-                  <a href="#">
-                    <button class="text-light" style="background-color: transparent; border: white solid 1px; padding: 10px 10px;">SHOP NOW</button>
-                  </a>
-                  </div>
-                </div>
-                <div class="carousel-item">
-                  <img src=" pics/Group 1.png" alt="Chicago" class="d-block w-100">
-                  <div class="carousel-caption">
-                    <h3>Los Angeles</h3>
-                    <p>We had such a great time in LA!</p>
-                  </div>
-                </div>
-                
-              </div>
+      <!-- Indicators/dots -->
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
+      </div>
 
-              <!-- Left and right controls/icons -->
-              <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-              </button>
-            </div>
-            
-             
-            
+      <!-- The slideshow/carousel -->
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="pics/Group 1.png" alt="Los Angeles" class="d-block w-100">
+          <div class="carousel-caption pos ">
+            <p>SUMMER 2024</p>
+            <h1 class="text-justify">Multicoloured
+              Tie-dye Sweater</h1>
+            <p>We had such a great time in LA!</p>
+            <a href="#">
+              <button class="text-light"
+                style="background-color: transparent; border: white solid 1px; padding: 10px 10px;">SHOP NOW</button>
+            </a>
+          </div>
         </div>
-       
-    </div> 
+        <div class="carousel-item">
+          <img src=" pics/Group 1.png" alt="Chicago" class="d-block w-100">
+          <div class="carousel-caption">
+            <h3>Los Angeles</h3>
+            <p>We had such a great time in LA!</p>
+          </div>
+        </div>
 
-    
+      </div>
+
+      <!-- Left and right controls/icons -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+
+
+
     <div class="row">
       <div class="col-12 d-flex flex-column align-items-center">
         <P class="mt-5">Featured Products</P>
@@ -57,109 +54,73 @@
       </div>
     </div>
 
-    <div class="container-fluid">
-      <div class="row me-5">
-        <% productModel.forEach(product => {  %>
-          <% console.log("Product Stock:", product.Stock); %>
-          <% console.log('product = ',product) %>
-          <% if(product.Image.length !== 0){ %>
-            <div class="col-md-3 p-4">
-              <div class="card" style="width: 18rem;margin-left: 25px;">
-                  <a href="/productDetail/<%= product._id %>"><img class="card-img-top" style="height: 290px; width: 250px; padding: 20px; margin-left: 20px;" src="/uploads/<%=product.Image[0] %>" alt="Card image cap"></a>
-                  <div class="card-body">
-                      <h6 class="card-title"><%=product.Name%></h6>
-                      <% if(product.Stock >= 1 && (cartData && cartData.Items.length !== 0 )){ %>
-                        <p class="card-text" style="font-weight: 700;">₹<%=product.Price%>/-</p>   
-                        <% console.log("checking product id form cart from userHOme.ejs =======",cartData.Items[0].ProductId._id) %>
-                        <% console.log("chcking if product Id from cart is equal to product id in userHOme.ejs",JSON.stringify(product._id) == JSON.stringify(cartData.Items[0].ProductId._id)) %>
-                        <% let isInCart = false %>
-                        <% for (let index = 0; index < cartData.Items.length; index++) { %>
-                          <% if(JSON.stringify(product._id) == JSON.stringify(cartData.Items[index].ProductId._id)){ %>
-                            <% isInCart = true %>
-                              <% break %>
-                            <% } %>
-                       <% } %>
-                       <% if(isInCart){ %>
-                        <a href="/cart" class="btn btn-warning">Go To Cart</a>
-                      <% }else{ %>
-                        <!-- <a href="/addToCart/" class="btn btn-warning">Add To Cart</a> -->
-                        <button class="btn btn-warning" id="buton<%= product._id %>" onclick="addToCart('<%= product._id %>')">Add To Cart</button>
+    <div class="row">
+      <% productModel.forEach(product=> { %>
+        <% if (product.Image.length !==0) { %>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100 shadow-sm p-2">
+              <a href="/productDetail/<%= product._id %>">
+                <img class="card-img-top img-fluid" src="/uploads/<%= product.Image[0] %>" style=" height: 220px; object-fit: contain; border-radius: 0.5rem;" alt="<%= product.Name %>">
+              </a>
+              <div class="card-body text-center d-flex flex-column justify-content-between">
+                <div>
+                  <h6 class="card-title">
+                    <%= product.Name %>
+                  </h6>
+                  <% if (product.Stock>= 1) { %>
+                    <p class="card-text fw-bold">₹<%= product.Price %>/-</p>
+                    <% } else { %>
+                      <p class="card-text fw-bold text-danger">Out of stock</p>
                       <% } %>
-
-                      <% }else if(product.Stock < 1){ %>
-                        
-                        <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out of stock</p>
-                        <a href="" class="btn btn-warning" style="pointer-events: none">Add To Cart</a>
-
-
-                      <% }else {%>
-                        <!-- <a href="/addToCart/" class="btn btn-warning">Add To Cart</a> -->
-                        <button class="btn btn-warning" onclick="addToCart('<%= product._id %>')">Add To Cart</button>
-
-                        <% } %>  
-                      
-                      <a href="/productDetail/<%= product._id %>" class="btn btn-primary">view Details</a>
-
-                  </div>
-              </div>     
-            </div>
-        <% } %>
-        <% }) %>
-      </div>
-    </div>
-    
-    <footer class="container-fluid mt-5" style="width: 100%; height: 300px;background: #000;">
-            <div class="row">
-              <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
-                <h4 class="footer-head ">Get In Touch</h4>
-                <p class="tefo">Life is too short to wear boring clothes</p>
-                <div class="social-media">
-                  <a href=""><img src="/icons/facebook.png" alt=""></a>
-                  <a href=""><img src="/icons/instagram.png" alt=""></a>
-                  <a href=""><img src="/icons/twitter.png" alt=""></a>
                 </div>
 
-              </div>
+                <div>
+                  <% let isInCart=false; %>
+                    <% if (locals.cartData && cartData.Items.length> 0) { %>
+                      <% for (let index=0; index < cartData.Items.length; index++) { %>
+                        <% if (String(product._id)===String(cartData.Items[index].ProductId._id)) { %>
+                          <% isInCart=true; break; %>
+                        <% } %>
+                      <% } %>
+                    <% }else{ %>
+                        
+                    <% } %>
 
-              <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
-                <h4 class="footer-head">Company info</h4>
-                <p><a href=""class="tefo">About us</a></p>
-                <p><a href="" class="tefo">Carrier</a></p>
-                <p><a href=""class="tefo">We are hiring</a></p>
-                <p><a href=""class="tefo">Blog</a></p>
-              </div>
-
-              <div class="col-md-4 mt-5 p-2 d-flex flex-column align-items-center">
-                <h4 class="footer-head">Features</h4>
-                <p><a href=""class="tefo">Business Marketing</a></p>
-                <p><a href=""class="tefo">User Analystic</a></p>
-                <p><a href=""class="tefo">Live Chat</a></p>
-                
+                    <% if (product.Stock < 1) { %>
+                        <button class="btn btn-warning" disabled>Out of Stock</button>
+                    <% } else if (isInCart) { %>
+                        <a href="/cart" class="btn btn-warning">Go To Cart</a>
+                    <% } else { %>
+                        <button class="btn btn-warning" id="button<%= product._id %>"
+                          onclick="addToCart('<%= product._id %>')">
+                          Add To Cart
+                        </button>
+                    <% } %>
+                </div>
               </div>
             </div>
-    </footer>
-    
-    <script>
-      
-      function addToCart(P_id){
-        $(document).ready(function(){
-          fetch(`/addToCart/${P_id}`)
-          .then(res=>res.json())
-          .then((data)=>{
-            console.log("dat======",data)
-            if(data.success){
+          </div>
+          <% } %>
+            <% }) %>
+    </div>
+
+  </div>
+  <script>
+
+    function addToCart(P_id) {
+      $(document).ready(function () {
+        fetch(`/addToCart/${P_id}`)
+          .then(res => res.json())
+          .then((data) => {
+            console.log("dat======", data)
+            if (data.success) {
               //add sweet alert
               location.reload()
               alert('one item add to cart')
             }
           })
-        })
-      }
+      })
+    }
 
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-</body>
-</html>
-
-
-
+  </script>
+  <%- include('../layouts/user/footer') -%>

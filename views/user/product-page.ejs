@@ -1,12 +1,7 @@
 <%- include('../layouts/user/header') -%>
 
-
-
-
-                          
-                          
                         
-            <div class="col-12">
+            <div class="container-fluid">
 
                 <div class="row">
                     <div class="col-md-5 d-flex flex-column align-items-center">
@@ -42,9 +37,9 @@
                             </div>  
                             <% }else{ %>
                               <div class="Options mt-5 d-flex">
-                                <a href="/buyTheProduct/<%= P_detail._id %>" class="ms-3 btn btn-success" onclick="buyProduct('<%= P_detail._id %>')">Buy Now</a>
+                                <a href="/addToCart/<%= P_detail._id %>" class="ms-3 btn btn-success">Add to cart</a>
                                 <!-- <a href="" class="ms-3"><img src="/icons/like.png" alt=""></a> -->
-                                <a href="/addToCart/<%= P_detail._id %>" class="ms-3"><img src="/icons/basket.png" alt=""></a>
+                                <!-- <a href="/addToCart/<%= P_detail._id %>" class="ms-3"><img src="/icons/basket.png" alt=""></a> -->
                               </div>  
                             <% } %>
                             <hr>
@@ -61,8 +56,8 @@
 
                     </div>
                 </div>
+            </div>
                 
-
   <script>
 
     // Your code here

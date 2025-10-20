@@ -46,17 +46,22 @@
                                
                                 
                                   </div>
+                               
 
                             </td>
-                            <td class="common">
+                            <td class="common">                               
+
                                 <button class="col d-flex justify-content-center align-items-center btn btn-danger" onclick="deleteItem('<%= cart._id %>','<%= cart.ProductId.Name %>','<%= cartDetail._id %>')">Remove</button>
                                 
                               </td>
-                            <td id="price<%= cart.ProductId._id %>" class="common">
+                            <td id="price<%= cart.ProductId                               
+._id %>" class="common">
                                 ₹<%= cart.Quantity * cart.ProductId.Price %>/-
-                            </td>
+                            </td>                               
+
                         </tr>
-                    
+                                                   
+
                       <% }) %>
 
                     </tbody>

@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+}
+
+/* Container for autocomplete */
+.autocomplete-search-box {
+  width: 40%;
+  margin-left: 20%;
+  position: relative; /* important for absolute dropdown */
+}
+
+/* Search input */
+.autocomplete-search-box .search-box {
+  width: 100%;
+  height: 40px;
+  padding: 10px 15px; /* adjusted padding */
+  outline: none;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+/* Dropdown list */
+.autocomplete-search-box .search-result {
+  position: absolute; /* dropdown floats */
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0 0 10px 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1050;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Each item in dropdown */
+.autocomplete-search-box .search-result li {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* Hover effect */
+.autocomplete-search-box .search-result li:hover {
+  background: #3498db;
+  color: #fff;
+}
+
+/* Product image in item */
+.autocomplete-search-box .search-result li img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 10px;
+}
+
+/* No result text */
+.autocomplete-search-box .search-result li.no-result {
+  justify-content: center;
+  color: #999;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .autocomplete-search-box {
+    width: 80%;
+    margin-left: 10%;
+  }
+  
+  .autocomplete-search-box .search-box {
+    font-size: 14px;
+  }
+
+  .autocomplete-search-box .search-result li img {
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+  }
+}

@@ -2,155 +2,122 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%=title%>
-    </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%=title%>
+  </title>
 
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="userCss/userstyle.css">
-    <link rel="stylesheet" href="userCss/home.css">
-    <link rel="stylesheet" href="userCss/orderTracker.css">
-    <link rel="stylesheet" href="userCss/progressBar.css">
-    <link rel="stylesheet" href="userCss/profile.css">
-    <!-- <link rel="stylesheet" href="userCss/carousal.css"> -->
-    <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="userCss/userstyle.css">
+  <link rel="stylesheet" href="userCss/home.css">
+  <link rel="stylesheet" href="userCss/orderTracker.css">
+  <link rel="stylesheet" href="userCss/progressBar.css">
+  <link rel="stylesheet" href="userCss/profile.css">
+  <link rel="stylesheet" href="userCss/search.css">
+  <!-- <link rel="stylesheet" href="userCss/carousal.css"> -->
+  <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"
-        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
 <body style="overflow-x: hidden;">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top w-100" style="background-color: #fff;">
-  <div class="container-fluid">
-    
-    <!-- Brand / Logo -->
-    <a class="navbar-brand d-flex align-items-center" href="/userHome">
-      <img src="/logos/logo.png" alt="Zoan_Mania" height="50" class="main-logo">
-    </a>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top w-100" style="background-color: #fff;">
+    <div class="container-fluid">
 
-    <!-- Toggler for Mobile -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-      aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <!-- Brand / Logo -->
+      <a class="navbar-brand d-flex align-items-center" href="/userHome">
+        <img src="/logos/logo.png" alt="Zoan_Mania" height="50" class="main-logo">
+      </a>
 
-    <!-- Collapsible Menu -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      
-      <!-- Search Bar -->
-      <form class="d-flex mx-auto my-2" role="search" action="/search" method="post" style="max-width: 500px; width: 100%;">
-        <div class="input-group">
-          <input name="value" type="search" placeholder="Search product" class="form-control" />
+      <!-- Toggler for Mobile -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Collapsible Menu -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <!-- Search Bar -->
+        <!-- <form class="d-flex mx-auto my-2" role="search" action="/search" method="post" style="max-width: 500px; width: 100%;"> -->
+        <!-- <div class="input-group d-flex mx-auto my-2" style="max-width: 500px; width: 100%;">
+          <input name="value" type="search" placeholder="Search product" class="form-control" id="search" />
           <button class="btn bg-white border" type="submit">
             <i class="fa fa-search"></i>
           </button>
+        </div> -->
+        <div class="autocomplete-search-box">
+          <input type="search" class="search-box" placeholder="Search products" id="search" />
+          <ul class="search-result" data-products></ul>
         </div>
-      </form>
+        <!-- </form> -->
 
-      <!-- Right Side Links -->
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
-        <li class="nav-item">
-          <a class="nav-link" href="/userHome" style="color: #92bfda;">
-            <i class="fa-solid fa-house-chimney" style="color: #23a6f0;"></i> Home
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/Product-list" style="color: #92bfda;">
-            <iconify-icon icon="mdi:shopping" style="color: #23a6f0;"></iconify-icon> Shop
-          </a>
-        </li>
-
-        <!-- Cart -->
-        <li class="nav-item position-relative">
-          <a class="nav-link" href="/cart" style="color: #92bfda;">
-            <i class="fa fa-shopping-cart" style="color: #23a6f0;"></i> Cart
-            <% if (cartcount > 0) { %>
-              <span id="totalCartQuantity"
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
-                <%= cartcount %>
-              </span>
-            <% } %>
-          </a>
-        </li>
-
-        <!-- User Dropdown -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-            data-bs-toggle="dropdown" aria-expanded="false" style="color: #92bfda;">
-            <i class="fa fa-user" style="color: #23a6f0;"></i> <%= name %>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-            <li>
-              <a class="dropdown-item" href="/profile" style="color: #92bfda;">
-                <i class="fa fa-user" style="color: #23a6f0;"></i> Profile
+        <!-- Right Side Links -->
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+          <li class="nav-item">
+            <a class="nav-link" href="/" style="color: #92bfda;">
+              <i class="fa-solid fa-house-chimney" style="color: #23a6f0;"></i> Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/Product-list" style="color: #92bfda;">
+              <iconify-icon icon="mdi:shopping" style="color: #23a6f0;"></iconify-icon> Shop
+            </a>
+          </li>
+          <% if(locals.name){ %>
+            <!-- Cart -->
+            <li class="nav-item position-relative">
+              <a class="nav-link" href="/cart" style="color: #92bfda;">
+                <i class="fa fa-shopping-cart" style="color: #23a6f0;"></i> Cart
+                <% if (cartcount> 0) { %>
+                  <span id="totalCartQuantity"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
+                    <%= cartcount %>
+                  </span>
+                  <% } %>
               </a>
             </li>
-            <li>
-              <a class="dropdown-item" href="/logout" style="color: #92bfda;">
-                <i class="fa fa-sign-out" style="color: #23a6f0;"></i> Logout
+
+            <!-- User Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false" style="color: #92bfda;">
+                <i class="fa fa-user" style="color: #23a6f0;"></i>
+                <%= name %>
               </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li>
+                  <a class="dropdown-item" href="/profile" style="color: #92bfda;">
+                    <i class="fa fa-user" style="color: #23a6f0;"></i> Profile
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/logout" style="color: #92bfda;">
+                    <i class="fa fa-sign-out" style="color: #23a6f0;"></i> Logout
+                  </a>
+                </li>
+              </ul>
             </li>
-          </ul>
-        </li>
-      </ul>
+          <% }else{ %>
+            <li class="nav-item">
+              <a class="nav-link" href="/login" >
+                <button type="button" class="btn btn-primary">SIGN IN / SIGN UP </button>
+              </a>
+           </li>
+          <% } %>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
-
-
-
-
-    <!-- <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                    </li>
-                </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
-        </div>
-    </nav> -->
+  </nav>
