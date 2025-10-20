@@ -30,10 +30,12 @@ const router = express.Router()
 
 // =================== Anonymous ===================
 // router.get('/', authGuard.userLoggedinAuthGuard, (req, res) => {
-//   res.render('user/anonymous', { productInHome })
-// })
-router.get('/', getHome)
+  //   res.render('user/anonymous', { productInHome })
+  // })
 
+
+// =================== Home ===================
+router.get('/', getHome)
 
 
 // =================== Authentication ===================
@@ -52,8 +54,7 @@ router.route('/login')
 router.get('/logout', logout)
 
 
-// =================== Home ===================
-router.get('/userHome', authGuard.userLoginAuthGuard, userAccess, getHome)
+// router.get('/userHome', authGuard.userLoginAuthGuard, userAccess, getHome)
 
 
 // =================== Product ===================
@@ -84,22 +85,22 @@ router.post('/checkPasswords', us.passwordChange2)
 
 
 // =================== Cart ===================
-router.get('/addToCart/:id', userAddtoCart)
+router.get('/addToCart/:id', authGuard.userLoginAuthGuard, userAccess, userAddtoCart)
 router.get('/cart', authGuard.userLoginAuthGuard, userAccess, userGetCart)
-router.post('/updateCartValue', cartQuantityUpdate)
-router.put('/deleteCartItem/:cartId', cartItemDeletion)
+router.post('/updateCartValue', authGuard.userLoginAuthGuard, userAccess, cartQuantityUpdate)
+router.put('/deleteCartItem/:cartId', authGuard.userLoginAuthGuard, userAccess, cartItemDeletion)
 
 
 // =================== Profile ===================
 router.get('/profile', authGuard.userLoginAuthGuard, userAccess, getUserProfile)
-router.put('/updateInfo', updateUserProfile)
+router.put('/updateInfo', authGuard.userLoginAuthGuard, userAccess, updateUserProfile)
 
 
 // =================== Address ===================
 router.get('/manageAddress', authGuard.userLoginAuthGuard, userAccess, renderManageAddress)
-router.post('/saveAddress', addAddress)
-router.post('/updateAddress/:userId', updateAddress)
-router.get('/deleteAddress/:userId/:addresId', deleteAddress)
+router.post('/saveAddress', authGuard.userLoginAuthGuard, userAccess, addAddress)
+router.post('/updateAddress/:userId', authGuard.userLoginAuthGuard, userAccess, updateAddress)
+router.get('/deleteAddress/:userId/:addresId', authGuard.userLoginAuthGuard, userAccess, deleteAddress)
 
 
 // =================== Orders ===================
@@ -108,13 +109,13 @@ router.get('/buyTheProducts', authGuard.userLoginAuthGuard, userAccess, checkout
 
 router.route('/placeOrder')
   .get(authGuard.userLoginAuthGuard, userAccess, orderSuccessPage)
-  .post(placeOrder)
+  .post( authGuard.userLoginAuthGuard, userAccess,placeOrder)
 
 router.post('/verify-payment', authGuard.userLoginAuthGuard, userAccess, verifyOrder)
 router.get('/orderDetails', authGuard.userLoginAuthGuard, userAccess, renderOrderDetails)
-router.get('/cancelOrderData/:orderId', cancelOrderData)
+router.get('/cancelOrderData/:orderId', authGuard.userLoginAuthGuard, userAccess, cancelOrderData)
 router.get('/orderProductView/:orderId', authGuard.userLoginAuthGuard, userAccess, orderedProduct)
-router.post('/returnedItem', returnedItem)
+router.post('/returnedItem', authGuard.userLoginAuthGuard, userAccess, returnedItem)
 
 
 module.exports = router
