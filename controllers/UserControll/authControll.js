@@ -52,7 +52,7 @@ const verifyOtp = async (req, res) => {
       const savedUser = await User.create({ name: userToBeSaved.name, email, password: hashPass });
       req.session.userAuth = true;
       req.session.userId = savedUser._id
-      return res.status(201).json({url:'/userHome', success:true})
+      return res.status(201).json({url:'/', success:true})
     }else{
       console.log('enter valid otp')
       return res.status(400).json({success:false,message:"enter a valid otp"})

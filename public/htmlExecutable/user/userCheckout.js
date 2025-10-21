@@ -3,6 +3,8 @@ const addressRadios = document.querySelectorAll('.address-radio');
 const paymentRadios = document.querySelectorAll('.payment-radio');
 const confirmOrderButton = document.getElementById('confirmOrderButton');
 const orderForm = document.getElementById('orderForm');
+const addressCards = document.querySelectorAll('.address-card');
+
 
 
 confirmOrderButton.addEventListener('click', async () => {

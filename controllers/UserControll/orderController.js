@@ -28,7 +28,7 @@ const checkoutUser = async (req, res) => {
     } else if(productId){
       res.render ('user/userCheckout', { title: "Zoan | Checkout", userData, name, cartcount })
     }else{
-      res.redirect('/userHome')
+      res.redirect('/')
     }
   } catch (error) {
     console.log('Error: ',error.message)
@@ -47,7 +47,7 @@ const orderSuccessPage = (req, res) => {
     if (req.session.visited < 2) {
       res.render('user/orderSuccess', { name, title: "Oreder Confirmed", orderId })
     } else {
-      res.redirect('/userHome')
+      res.redirect('/')
     }
   } catch (error) {
         console.log('Error: ',error.message)
