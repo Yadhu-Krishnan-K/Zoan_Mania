@@ -73,7 +73,11 @@ function updateQuandity(productId, number, Stock) {
 
 
 function deleteItem(cartId, name, ParentId) {
-    alert('Do yo want to remove this item')
+    // alert('Do yo want to remove this item')
+    Swal.fire({
+        title: "Do yo want to remove this item?",
+        icon: "question"
+    });
     $.ajax({
         url: `/deleteCartItem/${cartId}`,
         method: 'PUT',

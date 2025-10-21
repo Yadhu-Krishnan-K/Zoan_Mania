@@ -50,26 +50,27 @@
     
                   <% if(product.Stock>= 1 && (cartData && cartData.Items.length !== 0 )){ %>
                     <% let isInCart = false %>
-                      <% if(cartData !==null){ %>
-                        <% for (let index=0; index < cartData.Items.length; index++) { %>
-                          <% if(JSON.stringify(product._id)==JSON.stringify(cartData.Items[index].ProductId._id)){ %>
-                            <% isInCart=true %>
-                              <% break %>
-                                <% } %>
-                                  <% } %>
-                                    <% }else{isInCart=false} %>
-                                      <% if(isInCart){ %>
-                                        <a href="/cart" class="btn btn-warning">Go To Cart</a>
-                                        <% }else{ %>
-                                          <button class="btn btn-warning" id="buton<%= product._id %>" onclick="addToCart('<%= product._id %>')">Add To Cart</button>
-                                          <% } %>
-                                            <% }else{ %>
-                                              <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out
-                                                Of Stock</p>
-                                              <a href="" class="btn btn-warning" style="pointer-events: none">Add To
-                                                Cart</a>
-    
-                                              <% } %>
+                    <% if(cartData !==null){ %>
+                      <% for (let index=0; index < cartData.Items.length; index++) { %>
+                        <% if(JSON.stringify(product._id)==JSON.stringify(cartData.Items[index].ProductId._id)){ %>
+                          <% isInCart=true %>
+                          <% break %>
+                        <% } %>
+                      <% } %>
+                    <% }else{isInCart=false} %>
+                      <% if(isInCart){ %>
+                        <a href="/cart" class="btn btn-warning">Go To Cart</a>
+                      <% }else if(){ %>
+                                          
+                      <% }else{ %>
+                        <button class="btn btn-warning" id="buton<%= product._id %>" onclick="addToCart('<%= product._id %>')">Add To Cart</button>
+                      <% } %>
+                  <% }else{ %>
+                    <p class="card-text" style="font-weight: 800; color: rgb(238, 101, 101);">Out
+                      Of Stock</p>
+                    <a href="" class="btn btn-warning" style="pointer-events: none">Add To
+                      Cart</a>
+                  <% } %>
                 </div>
               </div>
             </div>
@@ -111,8 +112,14 @@
             console.log("dat======",data)
             if(data.success){
               //add sweet alert
+              Swal.fire({
+                position: "top",
+                icon: "success",
+                title: "one item add to cart",
+                showConfirmButton: false,
+                timer: 1500
+              });
               location.reload()
-              alert('one item add to cart')
             }
           })
         })

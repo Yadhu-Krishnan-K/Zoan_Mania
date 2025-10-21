@@ -40,9 +40,7 @@ const userAddtoCart = async (req, res) => {
     }
 
     // res.redirect('/Product-list');
-    res.json({
-      success: true
-    })
+    res.json({success:true})
   } catch (error) {
     console.error("error=", error);
   }

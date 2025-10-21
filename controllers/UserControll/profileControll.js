@@ -5,6 +5,7 @@ const cartModel = require('../../models/cartModel')
 //get user profile
 
 const getUserProfile = async (req, res) => {
+  console.log('in profile')
   const name = req.session.name
   const userId = req.session.userId
   // req.session.save()

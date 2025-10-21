@@ -60,7 +60,8 @@
           <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card h-100 shadow-sm p-2">
               <a href="/productDetail/<%= product._id %>">
-                <img class="card-img-top img-fluid" src="/uploads/<%= product.Image[0] %>" style=" height: 220px; object-fit: contain; border-radius: 0.5rem;" alt="<%= product.Name %>">
+                <img class="card-img-top img-fluid" src="/uploads/<%= product.Image[0] %>"
+                  style=" height: 220px; object-fit: contain; border-radius: 0.5rem;" alt="<%= product.Name %>">
               </a>
               <div class="card-body text-center d-flex flex-column justify-content-between">
                 <div>
@@ -76,26 +77,27 @@
 
                 <div>
                   <% let isInCart=false; %>
-                    <% if (locals.cartData && cartData.Items.length> 0) { %>
-                      <% for (let index=0; index < cartData.Items.length; index++) { %>
-                        <% if (String(product._id)===String(cartData.Items[index].ProductId._id)) { %>
-                          <% isInCart=true; break; %>
-                        <% } %>
+                  <% if (locals.cartData && cartData.Items.length> 0) { %>
+                    <% for (let index=0; index < cartData.Items.length; index++) { %>
+                      <% if (String(product._id)===String(cartData.Items[index].ProductId._id)) { %>
+                        <% isInCart=true; break; %>
                       <% } %>
-                    <% }else{ %>
-                        
                     <% } %>
+                  <% } %>
 
-                    <% if (product.Stock < 1) { %>
-                        <button class="btn btn-warning" disabled>Out of Stock</button>
-                    <% } else if (isInCart) { %>
-                        <a href="/cart" class="btn btn-warning">Go To Cart</a>
-                    <% } else { %>
-                        <button class="btn btn-warning" id="button<%= product._id %>"
-                          onclick="addToCart('<%= product._id %>')">
-                          Add To Cart
-                        </button>
-                    <% } %>
+                  <% if (product.Stock < 1) { %>
+                    <button class="btn btn-warning" disabled>Out of Stock</button>
+                  <% } else if (isInCart) { %>
+                    <a href="/cart" class="btn btn-warning">Go To Cart</a>
+                  <% } else if(!locals.name){ %>
+                    <a class="btn btn-success" href="/login">
+                        Add To Cart
+                    </a>
+                  <% }else { %>
+                    <button class="btn btn-success" onclick="addToCart('<%= product._id %>')">
+                        Add To Cart
+                    </button>
+                  <% } %>
                 </div>
               </div>
             </div>
@@ -115,8 +117,14 @@
             console.log("dat======", data)
             if (data.success) {
               //add sweet alert
+              Swal.fire({
+                position: "top",
+                icon: "success",
+                title: "one item add to cart",
+                showConfirmButton: false,
+                timer: 1500
+              });
               location.reload()
-              alert('one item add to cart')
             }
           })
       })

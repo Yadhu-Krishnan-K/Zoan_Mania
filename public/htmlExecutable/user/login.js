@@ -29,7 +29,7 @@ $(document).ready(function () {
         let result = await res.json()
         console.log('result = ',result)
         if (result.success) {
-            window.location.href = '/userHome'
+            window.location.href = '/'
         } else {
             // $('#disapear').html(data.err)
             $('#disapear').css('display', 'block')

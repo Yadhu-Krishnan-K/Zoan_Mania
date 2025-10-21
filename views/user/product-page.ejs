@@ -2,7 +2,14 @@
 
                         
             <div class="container-fluid">
-
+                <% let isInCart=false; %>
+                  <% if (locals.cartData && cartData.Items.length> 0) { %>
+                    <% for (let index=0; index < cartData.Items.length; index++) { %>
+                      <% if (String(product._id)===String(cartData.Items[index].ProductId._id)) { %>
+                        <% isInCart=true; break; %>
+                      <% } %>
+                    <% } %>
+                  <% } %>
                 <div class="row">
                     <div class="col-md-5 d-flex flex-column align-items-center">
                         <div class="mt-4" style=" width: 350px; z-index: 1;" id="img-container"><img src="/uploads/<%=P_detail.Image[0]%>" class="img-fluid rounded-top" alt=""  height="300px"></div>
@@ -35,11 +42,13 @@
                               <a href="" class="ms-3"><img src="/icons/like.png" alt=""></a>
                               <a href="" class="ms-3"><img src="/icons/basket.png" alt=""></a>
                             </div>  
+                            <% } else if(isInCart){ %>
+                              <div class="Options mt-5 d-flex">
+                                <a href="/cart" class="ms-3 btn btn-warning">Go to cart</a>
+                              </div>
                             <% }else{ %>
                               <div class="Options mt-5 d-flex">
-                                <a href="/addToCart/<%= P_detail._id %>" class="ms-3 btn btn-success">Add to cart</a>
-                                <!-- <a href="" class="ms-3"><img src="/icons/like.png" alt=""></a> -->
-                                <!-- <a href="/addToCart/<%= P_detail._id %>" class="ms-3"><img src="/icons/basket.png" alt=""></a> -->
+                                <button onclick="addToCart('<%= P_detail._id %>')" class="ms-3 btn btn-success">Add to cart</button>
                               </div>  
                             <% } %>
                             <hr>
@@ -74,6 +83,26 @@
       let res = await fetch(`/buyTheProduct/${product_id}`)
       const data = res.json()
       console.log('data = ',data)
+    }
+    function addToCart(P_id) {
+      $(document).ready(function () {
+        fetch(`/addToCart/${P_id}`)
+          .then(res => res.json())
+          .then((data) => {
+            console.log("dat======", data)
+            if (data.success) {
+              //add sweet alert
+              Swal.fire({
+                position: "top",
+                icon: "success",
+                title: "one item add to cart",
+                showConfirmButton: false,
+                timer: 1500
+              });
+              location.reload()
+            }
+          })
+      })
     }
     
   </script>
