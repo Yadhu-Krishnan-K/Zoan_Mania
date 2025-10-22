@@ -1,2 +1,5 @@
 .env
 ./node_modules
+test.css
+test.html
+test.js

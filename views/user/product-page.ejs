@@ -1,109 +1,170 @@
 <%- include('../layouts/user/header') -%>
 
-                        
-            <div class="container-fluid">
-                <% let isInCart=false; %>
-                  <% if (locals.cartData && cartData.Items.length> 0) { %>
-                    <% for (let index=0; index < cartData.Items.length; index++) { %>
-                      <% if (String(product._id)===String(cartData.Items[index].ProductId._id)) { %>
-                        <% isInCart=true; break; %>
-                      <% } %>
-                    <% } %>
-                  <% } %>
-                <div class="row">
-                    <div class="col-md-5 d-flex flex-column align-items-center">
-                        <div class="mt-4" style=" width: 350px; z-index: 1;" id="img-container"><img src="/uploads/<%=P_detail.Image[0]%>" class="img-fluid rounded-top" alt=""  height="300px"></div>
-                        <div class="mt-5 d-flex justify-content-evenly" style="width: 100%; flex-wrap: wrap;">
-                          <% for(i=0;i<P_detail.Image.length;i++){ %>
-                            <div style="height: 100px; width: 100px; border: 0;"><img src="/uploads/<%=P_detail.Image[i]%>" height="100px" width="100px" style=" border-radius: 12px;" alt=""></div>
-                          <% } %>
-                           
-                        </div>
-                    </div>
-                    <div class="col-md-7 Description">
-                        <div class="rightinn ms-5 mt-4">
-                            <h4><%= P_detail.Name %></h4>
-                            <p style="font-weight: 100;"><span><%= P_detail.Suffix %></span></p>
-                            <div class="rating" style="height: 30px; width: 100px; ; "><p>Rating</p></div>
-                            <hr>
-                            <h3 style="font-weight: 300;">₹  <%= P_detail.Price %>/-</h3>
-                            <p class="text-success-emphasis">inclusive of all taxes</p>
-                            <p>Select Size</p>
-                            <div class="size d-flex">
-                            <a href="" style="text-decoration: none; color: #000;"><div class=" ms-3 rounded-circle bg-light d-flex justify-content-evenly align-items-center" style="height: 60px; width: 60px; ">Sm</div></a>
-                            <a href="" style="text-decoration: none; color: #000;"><div class="ms-3 rounded-circle bg-light d-flex justify-content-evenly align-items-center" style="height: 60px; width: 60px;">L</div></a>
-                            <a href="" style="text-decoration: none; color: #000;"><div class="ms-3 rounded-circle bg-light d-flex justify-content-evenly align-items-center" style="height: 60px; width: 60px;">XL</div></a>
-                            </div>
-                            <% if( P_detail.Stock < 1 ){ %>
-                              <h4 class="text-danger mt-4">Out Of Stock!!!</h4>
-                            
-                            <div class="Options mt-5 d-flex">
-                              <a class="ms-3 btn btn-primary"><button class="btn btn-primary" style="height: 40px; width: 200px; border-radius: 20px;" disabled>Buy Now</button></a>
-                              <a href="" class="ms-3"><img src="/icons/like.png" alt=""></a>
-                              <a href="" class="ms-3"><img src="/icons/basket.png" alt=""></a>
-                            </div>  
-                            <% } else if(isInCart){ %>
-                              <div class="Options mt-5 d-flex">
-                                <a href="/cart" class="ms-3 btn btn-warning">Go to cart</a>
-                              </div>
-                            <% }else{ %>
-                              <div class="Options mt-5 d-flex">
-                                <button onclick="addToCart('<%= P_detail._id %>')" class="ms-3 btn btn-success">Add to cart</button>
-                              </div>  
-                            <% } %>
-                            <hr>
-                            <h4 style="font-weight: 300;"><u>Details</u></h4>
-                            <ul>
-                              <li> <%= P_detail.Spec1 %> </li>
-                              <li> <%= P_detail.Spec2 %> </li>
-                              <li> <%= P_detail.Spec3 %> </li>
-                            </ul>
-                            <h4 style="font-weight: 300;"><u>Description</u></h4>
-                            <p><%= P_detail.Description %></p>
-                            
-                        </div>
+<div class="container my-4 product-page">
+  <% let isInCart = false; %>
+  <% if (locals.cartData && cartData.Items.length > 0) { %>
+    <% for (let index = 0; index < cartData.Items.length; index++) { %>
+      <% if (String(product._id) === String(cartData.Items[index].ProductId._id)) { %>
+        <% isInCart = true; break; %>
+      <% } %>
+    <% } %>
+  <% } %>
 
-                    </div>
-                </div>
-            </div>
-                
-  <script>
+  <div class="row g-4 align-items-start">
+    <!-- Product Images -->
+    <div class="col-12 col-md-6 d-flex flex-column align-items-center">
+      <div class="main-image-wrapper d-flex justify-content-center mb-3" id="img-container">
+        <img src="/uploads/<%= P_detail.Image[0] %>" class="img-fluid main-image rounded shadow-sm" alt="">
+      </div>
 
-    // Your code here
-    var options = {
-        width: 300,
-        zoomWidth: 200,
-        offset: { vertical: 0, horizontal: 10 }
-    };
-    new ImageZoom(document.getElementById("img-container"), options);
+      <div class="d-flex flex-wrap justify-content-center gap-2 thumbnail-row">
+        <% for (let i = 0; i < P_detail.Image.length; i++) { %>
+          <img src="/uploads/<%= P_detail.Image[i] %>" class="img-thumbnail rounded thumb-image" alt="">
+        <% } %>
+      </div>
+    </div>
 
-    async function buyProduct(product_id){
-      console.log('product+Id === ',product_id)
-      console.log('productId type = ',typeof product_id)
-      let res = await fetch(`/buyTheProduct/${product_id}`)
-      const data = res.json()
-      console.log('data = ',data)
+    <!-- Product Details -->
+    <div class="col-12 col-md-6">
+      <div class="product-info">
+        <h4 class="fw-bold"><%= P_detail.Name %></h4>
+        <p class="text-muted mb-2"><%= P_detail.Suffix %></p>
+
+        <div class="d-flex align-items-center mb-3">
+          <span class="me-2 fw-semibold text-warning">★ ★ ★ ★ ☆</span>
+          <small class="text-secondary">Rating</small>
+        </div>
+
+        <hr>
+
+        <h3 class="fw-semibold text-success">₹ <%= P_detail.Price %> /-</h3>
+        <p class="text-muted small">Inclusive of all taxes</p>
+
+        <!-- Size Options -->
+        <p class="fw-semibold mt-3">Select Size</p>
+        <div class="d-flex flex-wrap gap-2">
+          <% ["S", "M", "L", "XL"].forEach(size => { %>
+            <button class="btn btn-outline-secondary rounded-circle size-btn"><%= size %></button>
+          <% }) %>
+        </div>
+
+        <!-- Stock / Cart Options -->
+        <% if (P_detail.Stock < 1) { %>
+          <h5 class="text-danger mt-4">Out Of Stock!!!</h5>
+          <div class="d-flex align-items-center mt-4 gap-3 flex-wrap">
+            <button class="btn btn-primary rounded-pill px-4" disabled>Add To Cart</button>
+            <!-- <button class="btn btn-outline-secondary rounded-circle p-2" disabled><img src="/icons/like.png" width="25"></button> -->
+            <!-- <button class="btn btn-outline-secondary rounded-circle p-2" disabled><img src="/icons/basket.png" width="25"></button> -->
+          </div>
+        <% } else if(!locals.name) { %>
+          <div class="mt-4">
+            <a href="/login" class="btn btn-success w-100 py-2 rounded-pill fw-semibold">Add To Cart</a>
+          </div>
+        <% } else if (isInCart) { %>
+          <div class="mt-4">
+            <a href="/cart" class="btn btn-warning w-100 py-2 rounded-pill fw-semibold">Go to Cart</a>
+          </div>
+        <% } else { %>
+          <div class="mt-4">
+            <button onclick="addToCart('<%= P_detail._id %>')" class="btn btn-success w-100 py-2 rounded-pill fw-semibold">Add To Cart</button>
+          </div>
+        <% } %>
+
+        <hr class="mt-4">
+
+        <h5 class="fw-semibold"><u>Details</u></h5>
+        <ul>
+          <li><%= P_detail.Spec1 %></li>
+          <li><%= P_detail.Spec2 %></li>
+          <li><%= P_detail.Spec3 %></li>
+        </ul>
+
+        <h5 class="fw-semibold"><u>Description</u></h5>
+        <p class="text-secondary"><%= P_detail.Description %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var options = {
+    width: 300,
+    zoomWidth: 200,
+    offset: { vertical: 0, horizontal: 10 }
+  };
+  new ImageZoom(document.getElementById("img-container"), options);
+
+  async function addToCart(P_id) {
+    try {
+      const res = await fetch(`/addToCart/${P_id}`);
+      const data = await res.json();
+      if (data.success) {
+        Swal.fire({
+          position: "top",
+          icon: "success",
+          title: "Item added to cart!",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        location.reload();
+      }
+    } catch (err) {
+      console.error("Error adding to cart:", err);
     }
-    function addToCart(P_id) {
-      $(document).ready(function () {
-        fetch(`/addToCart/${P_id}`)
-          .then(res => res.json())
-          .then((data) => {
-            console.log("dat======", data)
-            if (data.success) {
-              //add sweet alert
-              Swal.fire({
-                position: "top",
-                icon: "success",
-                title: "one item add to cart",
-                showConfirmButton: false,
-                timer: 1500
-              });
-              location.reload()
-            }
-          })
-      })
+  }
+</script>
+
+<style>
+  .product-page {
+    max-width: 1100px;
+  }
+
+  .main-image-wrapper {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .main-image {
+    object-fit: contain;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+
+  .thumbnail-row img.thumb-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .thumb-image:hover {
+    transform: scale(1.05);
+    border: 2px solid #198754;
+  }
+
+  .size-btn {
+    width: 50px;
+    height: 50px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .main-image-wrapper {
+      max-width: 100%;
     }
-    
-  </script>
+
+    .product-info {
+      padding: 10px;
+    }
+
+    .size-btn {
+      width: 45px;
+      height: 45px;
+      font-size: 14px;
+    }
+  }
+</style>
+
 <%- include('../layouts/user/footer') -%>
