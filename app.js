@@ -103,8 +103,14 @@ app.get('/auth/google/callback',
 
 
 
-app.use((req, res) => {
-  res.status(404).render('errorPage404/404');
+// Catch-all for admin (only hits when no admin route matched)
+app.use('/admin/*', (req, res) => {
+  res.status(404).render('errorPage404/404',{route:'/admin/Dashboard'}); // or sendFile if HTML
+});
+
+// Catch-all for user side (must come last)
+app.use('/*', (req, res) => {
+  res.status(404).render('errorPage404/404',{route:'/'});
 });
 
 
