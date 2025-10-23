@@ -74,6 +74,8 @@ const userLogin = (req, res) => {
         res.render('user/userLogin', { title: 'login' });
     }
 }
+
+
 const userLoginBackend = async (req, res) => {
   const { email, password } = req.body;
   console.log('email===', email, "    passord===", password);
@@ -119,12 +121,14 @@ const userLoginBackend = async (req, res) => {
 
 
 const logout = (req, res) => {
-
+  console.log('req.session = ',req.session)
   req.session.userAuth = false
   req.session.loggedIn = false
+  req.session.name = null
+  req.session.userId = null
+  req.session.email = null
 
   res.redirect('/')
-
 }
 
 module.exports = {
