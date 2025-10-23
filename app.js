@@ -103,6 +103,12 @@ app.get('/auth/google/callback',
 
 
 
+app.use((req, res) => {
+  res.status(404).render('errorPage404/404');
+});
+
+
+
 
 const port = process.env.port || 8080
 
