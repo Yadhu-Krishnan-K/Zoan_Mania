@@ -2,6 +2,8 @@ require('dotenv').config()
 const mongoose = require('mongoose')
 const moment = require('moment')
 
+const {io} = require('../../backendHelpers/socketIO')
+
 const User = require('../../models/user')
 const products = require('../../models/products')
 const cartModel = require('../../models/cartModel')
@@ -185,6 +187,8 @@ const verifyOrder = async (req, res) => {
   }
   } catch (error) {
     console.log('error from verifying payments = ',error.stack)
+  }finally{
+    io.emit('order placed')
   }
 }
 

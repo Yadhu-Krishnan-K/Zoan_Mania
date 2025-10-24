@@ -1,4 +1,7 @@
+const socket = io()
+
 function updateOrderStatus(orderId, newStatus) {
+  console.log('sending request...')
   fetch(`/admin/orders/updateStatus/${orderId}`, {
     method: 'PUT',
     headers: {
@@ -42,3 +45,7 @@ function updateOrderStatus(orderId, newStatus) {
       console.error('Error updating status:', error);
     });
 }
+
+socket.on('order placed',()=>{
+    window.location.reload()
+})

@@ -1,4 +1,5 @@
 require('dotenv').config()
+const {app, httpServer} = require('./backendHelpers/socketIO')
 const express = require("express")
 const nocache = require("nocache")
 const morgan = require('morgan')
@@ -11,7 +12,7 @@ const path = require("path")
 const user = require('./Routers/userRouter')
 const admin = require('./Routers/supAdminRoute')
 const mongoose = require('mongoose')
-const app = express()
+// const app = express()
 const session = require('express-session')
 const {v4:uuidv4} = require('uuid')
 const passport = require('passport')
@@ -119,7 +120,7 @@ app.use('/*', (req, res) => {
 const port = process.env.port || 8080
 
 mongoose.connect(process.env.DB_URI).then(()=>{
-    app.listen(port, () => {
+    httpServer.listen(port, () => {
         console.log(`http://localhost:${port}`)
     })
 }).catch((error)=>{

@@ -18,6 +18,7 @@ const adminProductControl = require('../controllers/AdminControll/adminProductCo
 const orderModel = require('../models/order');
 const { default: mongoose } = require('mongoose');
 const { adminLogin } = require('../controllers/AdminControll/authControll');
+const { io } = require('../backendHelpers/socketIO');
 
 
 router.get('/', adminauth.adminLoginAuthguard, adminControl.getAdminLogin)
@@ -250,9 +251,19 @@ router.get('/Orders', adminauth.adminAuthguard, async (req, res) => {
 
 //admin order update
 router.put('/orders/updateStatus/:orderId', async (req, res) => {
-    const orderId = req.params.orderId
-    const newStatus = req.body.newStatus
-    await orderModel.findByIdAndUpdate(orderId, { Status: newStatus })
+    try {
+        console.log('hit on target')
+        console.log('orderId = ',req.params.orderId)
+        const orderId = req.params.orderId
+        const newStatus = req.body.newStatus
+        await orderModel.findByIdAndUpdate(orderId, { Status: newStatus })
+        res.status(201).json({success:true})
+    } catch (error) {
+        console.log('Error: ',error.message)
+    }finally{
+        io.to().emit()
+    }
+
 })
 
 

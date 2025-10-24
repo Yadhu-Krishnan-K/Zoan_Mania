@@ -1,6 +1,11 @@
 <%- include('../layouts/admin/header'); -%>
 
 <!-- <h1>Orders</h1> -->
+ <style>
+  td:nth-child(odd) {
+    background: rgb(226, 217, 217);
+  }
+ </style>
   <div class="d-flex justify-content-center align-items-center mt-5">
     <table class="table align-middle mb-0 bg-white" style="width: 90%;">
       <thead class="bg-light">
@@ -83,7 +88,7 @@
           <% } %>
       </ul>
     </nav>
-
+  <script src="/socket.io/socket.io.js"></script>
   <script src="/htmlExecutable/admin/admin-order.js"></script>
 
 
