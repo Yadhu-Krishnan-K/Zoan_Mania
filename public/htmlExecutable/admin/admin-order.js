@@ -1,4 +1,4 @@
-const socket = io()
+
 
 function updateOrderStatus(orderId, newStatus) {
   console.log('sending request...')

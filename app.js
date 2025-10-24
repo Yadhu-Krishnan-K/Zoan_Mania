@@ -68,7 +68,7 @@ app.use('/admin',admin)
 app.post('/test-injection', async (req, res) => {
   try{
     const { email } = req.body;
-    console.log('Querying with:', req.body);
+    // console.log('Querying with:', req.body);
     const user = await User.find({ email });
     if (user) {
       // res.send('Access granted',user);

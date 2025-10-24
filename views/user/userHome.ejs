@@ -107,7 +107,21 @@
     </div>
 
   </div>
+  <script src="/socket.io/socket.io.js"></script>
   <script>
+    
+    window.onload = function(){
+      const userId = "<%= userId %>";
+  
+      if(!userId){
+        return
+      }
+      console.log('userId present, userId = ',userId)
+  
+      const socket = io();
+      socket.emit('register user',userId)
+    }
+
 
     function addToCart(P_id) {
       $(document).ready(function () {

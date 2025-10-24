@@ -3,7 +3,7 @@ const Admin = require('../../models/admin')
 const adminLogin =  async (req, res) => {
     try {
         let { email, password } = req.body;
-        console.log('email,password = ', email, password)
+        // console.log('email,password = ', email, password)
 
         // Hash the password and then query the database
         let adminL = await Admin.findOne({ adminGmail: email, adminPassword: password });
@@ -13,7 +13,7 @@ const adminLogin =  async (req, res) => {
                 success: false
             });
         } else {
-            console.log("Success");
+            // console.log("Success");
             req.session.adminAuth = true;
             res.json({
                 success: true

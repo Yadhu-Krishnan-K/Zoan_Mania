@@ -18,7 +18,7 @@ const adminProductControl = require('../controllers/AdminControll/adminProductCo
 const orderModel = require('../models/order');
 const { default: mongoose } = require('mongoose');
 const { adminLogin } = require('../controllers/AdminControll/authControll');
-const { io } = require('../backendHelpers/socketIO');
+const { io, getReceiverSocketId } = require('../backendHelpers/socketIO');
 
 
 router.get('/', adminauth.adminLoginAuthguard, adminControl.getAdminLogin)
@@ -261,7 +261,11 @@ router.put('/orders/updateStatus/:orderId', async (req, res) => {
     } catch (error) {
         console.log('Error: ',error.message)
     }finally{
-        io.to().emit()
+        console.log('working with order update on socket.io')
+        const userId = req.session.userId
+        const socketId = getReceiverSocketId(userId)
+        console.log('updating... socketId = ',socketId)
+        io.to(socketId).emit('order update')
     }
 
 })

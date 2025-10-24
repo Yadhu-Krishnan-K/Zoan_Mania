@@ -1,3 +1,5 @@
+const socket = io()
+
 function cancelOrder(orderId) {
     Swal.fire({
         title: "Are you sure?",
@@ -29,3 +31,7 @@ function cancelOrder(orderId) {
         }
     });
 }
+
+socket.on('order update',()=>{
+    window.location.reload()
+})

@@ -78,7 +78,7 @@ const userLogin = (req, res) => {
 
 const userLoginBackend = async (req, res) => {
   const { email, password } = req.body;
-  console.log('email===', email, "    passord===", password);
+  // console.log('email===', email, "    passord===", password);
   const logins = await User.findOne({ email: email })
 
   if (!logins) {
@@ -97,7 +97,7 @@ const userLoginBackend = async (req, res) => {
       req.session.email = email
       req.session.userId = logins._id
       req.session.save()
-      console.log('userId=' + req.session.userId)
+      // console.log('userId=' + req.session.userId)
       res.json({
         success: true
       })
