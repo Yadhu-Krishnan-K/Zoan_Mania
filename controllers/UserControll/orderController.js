@@ -2,7 +2,7 @@ require('dotenv').config()
 const mongoose = require('mongoose')
 const moment = require('moment')
 
-const {io} = require('../../backendHelpers/socketIO')
+const { io } = require('../../backendHelpers/socketIO')
 
 const User = require('../../models/user')
 const products = require('../../models/products')
@@ -17,8 +17,8 @@ const checkoutUser = async (req, res) => {
     const name = req.session.name
     const userId = req.session.userId
     const productId = req.params.productId || null
-    console.log('product id from params = ',req.params)
-    console.log('if validId = ',mongoose.Types.ObjectId.isValid(productId))
+    console.log('product id from params = ', req.params)
+    console.log('if validId = ', mongoose.Types.ObjectId.isValid(productId))
     const userData = await User.findOne({ name: name })
     const cartData = await cartModel.findOne({ userId: userId }) || null
     var cartcount = 0
@@ -26,14 +26,14 @@ const checkoutUser = async (req, res) => {
       cartData.Items.forEach((cart) => {
         cartcount += cart.Quantity
       })
-        res.render('user/userCheckout', { title: "Zoan | Checkout", userData, name, cartcount })
-    } else if(productId){
-      res.render ('user/userCheckout', { title: "Zoan | Checkout", userData, name, cartcount })
-    }else{
+      res.render('user/userCheckout', { title: "Zoan | Checkout", userData, name, cartcount })
+    } else if (productId) {
+      res.render('user/userCheckout', { title: "Zoan | Checkout", userData, name, cartcount })
+    } else {
       res.redirect('/')
     }
   } catch (error) {
-    console.log('Error: ',error.message)
+    console.log('Error: ', error.message)
   }
 }
 
@@ -41,18 +41,18 @@ const checkoutUser = async (req, res) => {
 
 const orderSuccessPage = (req, res) => {
   try {
-    
+
     let name = req.session.name
     let orderId = req.session.orderID
     req.session.visited++
-  
+
     if (req.session.visited < 2) {
       res.render('user/orderSuccess', { name, title: "Oreder Confirmed", orderId })
     } else {
       res.redirect('/')
     }
   } catch (error) {
-        console.log('Error: ',error.message)
+    console.log('Error: ', error.message)
   }
 }
 
@@ -120,7 +120,7 @@ const placeOrder = async (req, res) => {
       Address: add
     });
     // newOrder.email = email
-    
+
     await cartModel.findByIdAndDelete(cartData._id);
 
     for (const item of newOrder.Items) {
@@ -148,12 +148,15 @@ const placeOrder = async (req, res) => {
       // console.log("Order detail", order);
 
       console.log("order response back");
+
+      io.emit('order placed');
+      
       return res.json({ success: true, message: 'Order placed successfully' });
     } else if (paymentMethod == 'online') {
 
       const resOrder = await createOrder(amount)
-      console.log('resOrder = ',resOrder)
-      return res.json({ success: true, message: 'Order placed successfully',razorpayId:resOrder.id,order:newOrder, email });
+      console.log('resOrder = ', resOrder)
+      return res.json({ success: true, message: 'Order placed successfully', razorpayId: resOrder.id, order: newOrder, email });
     }
   } catch (error) {
     console.error("An error occurred:", error);
@@ -165,29 +168,33 @@ const placeOrder = async (req, res) => {
 
 const verifyOrder = async (req, res) => {
   console.log('inside verifyORder')
-  const {razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body
 
   try {
-    
+
     const expSig = await expectedSignature(razorpay_order_id, razorpay_payment_id)
-                
+
     if (expSig === razorpay_signature) {
       const email = req.session.email
       const userData = await User.findOne({ email: email });
 
-    // ✅ Payment verified
-    
-    await cartModel.deleteOne({ userId: userData._id});
-    console.log('verification success....')
-    return res.json({ success: true, message: "Payment verified successfully" });
-  } else {
-    await orderModel.deleteOne({UserId:userData._id})
-    console.log('error occured')
-    return res.status(400).json({ success: false, message: "Invalid signature" });
-  }
+      // ✅ Payment verified
+      await Orders.updateOne(
+        { _id: orderId },
+        { $set: { PaymentStatus: "Paid" } }
+      );
+      await cartModel.deleteOne({ userId: userData._id });
+      console.log('verification success....')
+      return res.json({ success: true, message: "Payment verified successfully" });
+    } else {
+      await orderModel.deleteOne({ UserId: userData._id })
+      console.log('error occured')
+      return res.status(400).json({ success: false, message: "Invalid signature" });
+    }
   } catch (error) {
-    console.log('error from verifying payments = ',error.stack)
-  }finally{
+    console.log('error from verifying payments = ', error.stack)
+  } finally {
+    console.log('emiting order placed event from io')
     io.emit('order placed')
   }
 }
@@ -245,9 +252,9 @@ const orderedProduct = async (req, res) => {
     const cartData = await cartModel.findOne({ userId: userId })
     let cartcount = 0
     if (cartData === null || cartData.Items == (null || 0)) {
-  
+
       cartcount = 0
-  
+
     } else {
       cartData.Items.forEach((cart) => {
         cartcount += cart.Quantity
@@ -256,14 +263,14 @@ const orderedProduct = async (req, res) => {
     const name = req.session.name;
     res.render('user/order-ProductDetails', { title: "Ordered Items", name, orders, cartcount })
   } catch (error) {
-      console.log('Error: ',error.message)
+    console.log('Error: ', error.message)
   }
 }
 
 
 const returnedItem = async (req, res) => {
   try {
-    
+
     const productId = new mongoose.Types.ObjectId(req.body.P_id);
     const P_qty = req.body.P_qty;
     const O_id = new mongoose.Types.ObjectId(req.body.O_id);
@@ -277,7 +284,7 @@ const returnedItem = async (req, res) => {
     const updateProduct = await products.findByIdAndUpdate({ _id: productId }, { $inc: { Stock: P_qty } })
     res.json({ success: true })
   } catch (error) {
-      console.log('Error: ',error.message)
+    console.log('Error: ', error.message)
   }
 }
 

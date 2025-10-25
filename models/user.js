@@ -33,8 +33,11 @@ const sch = mongoose.Schema({
             State: { type: String },
             Mobile: { type: Number },
         }
-        ],
-        
+    ],
+    Wallet:{
+        type: Number,
+        default: 0
+    },    
     MobileNumber:{type:Number},
     access:{
         type:Boolean, 

@@ -9,7 +9,8 @@ const schema = new Schema({
         // name: "Simsong Mobile",
         // price: 1000,
         Quantity:{type:Number,default:1},
-        Price: {type: Number}
+        Price: {type: Number},
+        discounted: {type: Number}
     }],
     totalAmount:{type:Number}, 
     totalQuantity:{type: Number, default: 0}

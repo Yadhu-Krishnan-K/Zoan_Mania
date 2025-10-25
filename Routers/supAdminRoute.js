@@ -19,6 +19,7 @@ const orderModel = require('../models/order');
 const { default: mongoose } = require('mongoose');
 const { adminLogin } = require('../controllers/AdminControll/authControll');
 const { io, getReceiverSocketId } = require('../backendHelpers/socketIO');
+const { getBanner } = require('../controllers/AdminControll/bannerControll');
 
 
 router.get('/', adminauth.adminLoginAuthguard, adminControl.getAdminLogin)
@@ -58,6 +59,13 @@ router.route('/inventory/addProduct')
       .get(adminauth.adminAuthguard, adminControl.getAddProduct)
       .post(multi.array('images', 4), adminProductControl.addProduct)
 
+
+
+
+
+//banner
+router.route('/Banner')
+      .get(adminauth.adminAuthguard, getBanner)
 
 //users-------------------------------------------------------------------------------------------------------------------------------//
 // router.get('/admin/Customers',(req,res)=>{
@@ -265,7 +273,7 @@ router.put('/orders/updateStatus/:orderId', async (req, res) => {
         const userId = req.session.userId
         const socketId = getReceiverSocketId(userId)
         console.log('updating... socketId = ',socketId)
-        io.to(socketId).emit('order update')
+        io.emit('order update')
     }
 
 })

@@ -1,0 +1,36 @@
+<%- include('../layouts/admin/header'); %>
+
+<div class="col-md-12 p-3">
+    <!-- <div class="row d-flex justify-content-center">
+        <div class="col-md-11 bg-secondary p-4">
+            <form id="banners" enctype="multipart/form-data">
+                <span id="error" class="text-danger" style="display: none;"></span>
+                <div class="mb-3 d-flex justify-content-center">
+                    <input type="file" name="images" class="form-control" id="imageInput" onchange="checkImages()" accept="image/*" multiple>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="button" id="btn" type="button" style="display:none;" class="btn btn-success" onclick="uploadBanner()">Add Banner</button>
+                    <button type="button" id="cbtn" class="btn btn-danger" style="display: none;">Cancel</button>
+                </div>
+            </form>
+            <% if(ban && ban.images.length>0){ %>
+            <div class="row">
+                <h4>MAIN IMAGE</h4>
+                <div class="col-md-12 d-flex justify-content-center">
+                        <img src="/croppedBanner/<%= ban.mainImage %>" height="400" width="800" alt="img">
+                </div>
+                <h4 class="mt-5">IMAGES</h4>
+                    <% ban.images.forEach(img => { %>
+                        <div class="col-md-4 d-flex justify-content-center">
+                            <img src="/croppedBanner/<%= img %>" height="30" width="60" alt="img">
+                        </div>
+                    <% }); %>
+            </div>
+            <% } %>
+        </div>
+    </div> -->
+
+    
+</div>
+
+<%- include('../layouts/admin/footer') %> 

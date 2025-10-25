@@ -18,23 +18,66 @@ const ShippedAddressSchema = new Schema({
 });
 
 const OrdersSchema = new Schema({
-  UserId: { type: Schema.Types.ObjectId },
-  Status: { type: String, default:"Pending"},
+  UserId: { type: Schema.Types.ObjectId, ref: "user"},
+  Status: { type: String, default: "Pending"},
+  //status=pending, orderplaced, shiped, delivered, rejected
   Items: [{
      productId: { type: Schema.Types.ObjectId , ref: "products" },
      quantity: { type: Number },
-     removed: {
+     returnMessage:{
+      type:Array 
+     },
+     needToRemoved: {
       type:Boolean,
       default:false
-     }
+     },
+     returnStatus:{
+      type: String,
+      default:''
+     },
+     discounted:{
+      type:Number
+     },
+     RealPrice:{
+      type:Number
+     },
   }],
   PaymentMethod: {type: String},
   OrderDate: { type: String },
+  
   ExpectedDeliveryDate:{type: String},
+  // updatedStatus:{type: Date},
+
+
   TotalPrice: { type: Number },
-  PaymentStatus: {type: String, default: "Pending"},// pending/paid/failed/
-  CouponId: { type: Schema.Types.ObjectId },
+  Returned: {type: Number},
+
+  PaymentStatus: {type: String, default: "Pending"},
+  // CouponId: { type: Schema.Types.ObjectId },
+  couponAmount: {
+    coupnId: { type: Schema.Types.ObjectId, ref: "coupon"},
+    amount: {
+      type:Number,
+      default: 0
+    }
+  },
   Address: { type: ShippedAddressSchema },
+  Cancel:{
+    requested:{
+      type:Boolean,
+      default:false
+    },
+    msg:{
+      type:String,
+      default:''
+    },
+    AdminReply:{
+      type:String,
+      default:''
+      //Accepted/Denied
+    }
+  },
+  
 });
 
 OrdersSchema.plugin(mongoosePaginate)
