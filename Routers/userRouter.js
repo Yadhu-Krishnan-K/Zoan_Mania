@@ -25,6 +25,7 @@ const { userAddtoCart, userGetCart, cartQuantityUpdate, cartItemDeletion } = req
 const { getUserProfile, updateUserProfile } = require('../controllers/UserControll/profileControll')
 const { renderManageAddress, addAddress, updateAddress, deleteAddress } = require('../controllers/UserControll/addressControll')
 const { checkoutUser, renderPlaceOrder, renderOrderDetails, cancelOrderData, orderedProduct, returnedItem, placeOrder, orderSuccessPage, verifyOrder } = require('../controllers/UserControll/orderController')
+const { getCoupons } = require('../controllers/UserControll/couponController')
 
 const router = express.Router()
 
@@ -102,6 +103,11 @@ router.post('/saveAddress', authGuard.userLoginAuthGuard, userAccess, addAddress
 router.post('/updateAddress/:userId', authGuard.userLoginAuthGuard, userAccess, updateAddress)
 router.get('/deleteAddress/:userId/:addresId', authGuard.userLoginAuthGuard, userAccess, deleteAddress)
 
+
+//====================Coupon======================
+
+router.route('/coupons')
+    .get(getCoupons)
 
 // =================== Orders ===================
 router.get('/buyTheProduct/:productId', authGuard.userLoginAuthGuard, userAccess, checkoutUser)

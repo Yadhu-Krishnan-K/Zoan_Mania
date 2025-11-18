@@ -1,0 +1,79 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+.coupon-container {
+    width: 100%;
+    padding: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-top: 40px;
+    margin-left: 60px;
+}
+.coupon-header{
+    width: 100%;
+    height: auto;
+    background: rgb(113, 233, 113);
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.addButton{
+    margin-top: 40px;
+    background: rgb(113, 233, 113);
+    border: none;
+    width: 200px;
+    height: 55px;
+    text-align: center;
+    font-size: large;
+    font-weight: 700;
+    color: white;
+    border-radius: 12px;
+}
+
+.coupon-list{
+    margin-top: 40px;
+    width: 100%;
+    height: auto;
+    padding: 4px;
+}
+
+.coupon-list>table {
+    width: 100%;
+    height: auto;
+    border-collapse: collapse; /* Essential for border-top spacing to work effectively */
+    border-spacing: 20px;
+}
+th,td{
+    text-align: center;
+}
+th{
+    color: rgb(54, 165, 240);
+}
+tbody{
+    border-top: 1em solid transparent;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;   /* Aligns icons horizontally centered (like the ACTIONS header) */
+    align-items: center;       /* Vertically aligns them with table text */
+    gap: 12px;                 /* Adds space between edit and delete icons */
+}
+
+.action-buttons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    transition: transform 0.2s ease;
+}
+
+.action-buttons button:hover {
+    transform: scale(1.1);     /* Optional: adds a subtle hover effect */
+}

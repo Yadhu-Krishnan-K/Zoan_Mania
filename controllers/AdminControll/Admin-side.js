@@ -88,5 +88,4 @@ module.exports = {
     // adminNpasswordCheck,
     getCategory,
     addCategory,
-    getDashboard
 }

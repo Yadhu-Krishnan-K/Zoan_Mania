@@ -80,6 +80,69 @@ const addProduct = async (req, res) => {
 
 }
 
+const editProduct = async (req, res) => {
+    const id = req.params.id
+    const P_detail = await products.findOne({ _id: id })
+    const cate = await category.find()
+    console.log("efef", cate);
+    console.log(P_detail.Image);
+    res.render('supAdmin/admin-edit-product', { P_detail, cate, title: "Edit Product", Page: "Inventory" });
+}
+
+const updateProduct = async (req, res) => {
+
+    const P_id = req.params.P_id
+    const productData = await products.findOne({ _id: P_id })
+    const image1 = req.files && req.files.image1 ? req.files.image1[0].filename : (productData.Image[0] ? productData.Image[0] : '0');
+    const image2 = req.files && req.files.image2 ? req.files.image2[0].filename : (productData.Image[1] ? productData.Image[1] : '0');
+    const image3 = req.files && req.files.image3 ? req.files.image3[0].filename : (productData.Image[2] ? productData.Image[2] : '0');
+    const image4 = req.files && req.files.image4 ? req.files.image4[0].filename : (productData.Image[3] ? productData.Image[3] : '0');
+
+    console.log("image.filename===", image1)
+    const imageUrls = [
+        image1,
+        image2,
+        image3,
+        image4
+    ];
+    const images = imageUrls.filter(img => img !== '0')
+    console.log("/update-product=======", images)
+
+
+    // const {Description,ProductName,Category,Stock,Price} = req.body
+
+    const data = {
+        Name: req.body.ProductName,
+        Description: req.body.Description,
+        Category: req.body.Category,
+        Stock: req.body.Stock,
+        Price: req.body.Price,
+        Image: images,
+        Spec1: req.body.Spec1,
+        Spec2: req.body.Spec2,
+        Spec3: req.body.Spec3
+
+    }
+    const updatedProduct = await products.findByIdAndUpdate(P_id, data);
+    if (!updatedProduct) {
+        return res.status(404).send('Product not found');
+    }
+    res.redirect('/admin/inventory');
+
+}
+
+const deleteImage = async (req, res) => {
+    const P_id = new mongoose.Types.ObjectId(req.params.P_id)
+    const num = req.body.num
+
+    const productDetail = await products.findOneAndUpdate({ _id: P_id }, {})
+    let removed = productDetail.Image.splice(num, 1)
+    console.log("productDetail after deleting an image from an array")
+    console.log(removed)
+    await productDetail.save()
+    res.json({ success: true })
+
+}
 
 
 
@@ -89,5 +152,8 @@ const addProduct = async (req, res) => {
 module.exports = {
     getAdminAddProduct,
     deleteProduct,
-    addProduct
+    addProduct,
+    editProduct,
+    updateProduct,
+    deleteImage
 }

@@ -6,6 +6,10 @@ const bannerSchema = new mongoose.Schema({
     type: Date,
     
   },
+  seleced:{
+    type:Boolean,
+    default:false
+  }
 });
 
 const Banner = mongoose.model('Banner', bannerSchema);

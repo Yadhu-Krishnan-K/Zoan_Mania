@@ -1,0 +1,150 @@
+<%- include('../layouts/admin/header'); %>
+    
+    <div class="coupon-container">
+        <div class="coupon-header">
+            <h1>Coupons</h1>
+            <p>Manage, add, and update coupons</p>
+        </div>
+        <button type="button" class="addButton" id="addButton" data-bs-toggle="modal" data-bs-target="#coupon-modal">+
+            New Coupon</button>
+        <div class="coupon-list">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>CODE</th>
+                        <th>MIN ORDER AMOUNT</th>
+                        <th>DISCOUNT</th>
+                        <th>EXPIRY</th>
+                        <th>status</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (coupons.length) { %>
+
+                        <% coupons.forEach((data)=>{ %>
+                            <tr>
+                                <td style="color: rgb(86, 243, 86);">
+                                    <%= data.code %>
+                                </td>
+                                <td>
+                                    <!-- min order amount -->
+                                </td>
+                                <td>
+                                    <% if (data.discountType==='percentage') { %>
+                                        <%= data.discountValue %> %
+                                    <% } else { %> 
+                                        ₹ <%= data.discountValue %>
+                                    <% } %>
+                                     
+                                </td>
+                                <td>
+                                    <%= data.expiry %>
+                                </td>
+                                <td>
+                                    <!-- status -->
+                                </td>
+                                <td class="action-buttons">
+                                    <button class="editBtn"
+                                            data-id="<%= data._id %>" 
+                                            data-code="<%= data.code %>"
+                                            data-minOrderAmount="<%= data.minOrderAmount %>"
+                                            data-discount="<%= data.discountValue %>" 
+                                            data-type="<%= data.discountType %>"
+                                            data-expiry="<%= data.expiry %>" 
+                                            data-active="<%= data.active %>"
+                                            style="border: none;">
+                                        <i class="fa-regular fa-pen-to-square"
+                                            style="color: rgb(81, 212, 245);" data-bs-toggle="modal"
+                                            data-bs-target="#coupon-modal">
+                                        </i>
+                                    </button>
+                                    <button style="border: none;"
+                                        data-id="<%= data._id %>"
+                                        class="deleteBtn"
+                                    >
+                                        <i class="fa-solid fa-trash"
+                                            style="color: rgb(245, 46, 46);">
+                                        </i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <% }) %>
+                                <% } %>
+                </tbody>
+            </table>
+            <% if (coupons.length==0) { %>
+                <p style="text-align: center; margin-top: 50px;">Add Coupons to see...</p>
+                <% } %>
+        </div>
+    </div>
+
+    <div class="modal fade" id="coupon-modal" tabindex="-1" aria-labelledby="coupon-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Add New Coupon</h1>
+                </div>
+                <div class="modal-body">
+                    <form id="form">
+                        <label for="coupon" class="">Coupon Code</label>
+                        <input type="text" name="" placeholder="SUMMER20" id="coupon" required>
+                        <span style="display: none; color: red;" id="couponError"></span>
+
+                        <label for="minOrderAmount" class="">Minimum Order Amount</label>
+                        <input type="number" name="" placeholder="eg.5000" id="minOrderAmount" required>
+                        <span style="display: none; color: red;" id="minOrderAmountError"></span>
+
+                        <div class="d-flex justify-content-between">
+                            <div class="">
+                                <label for="discountType" class="block text-text-light font-medium mb-2">Type</label>
+                                <select id="discountType" required
+                                    class="bg-secondary-dark border border-slate-700 rounded cursor-pointer"
+                                    style="height: 40px; width: 200px;">
+                                    <option value="percentage">Percentage (%)</option>
+                                    <option value="fixed">Fixed Amount ($)</option>
+                                </select>
+                                <span style="display: none; color: red;" id="discountTypeError"></span>
+                            </div>
+                            <div class="">
+                                <label for="value" class="block text-text-light font-medium mb-2">Value</label>
+                                <input type="number" id="value" required min="1" step="0.01"
+                                    class="bg-secondary-dark border border-slate-700 rounded p-3"
+                                    style="height: 40px; width: 200px;" placeholder="e.g., 20 or 15.00">
+                                <span style="display: none; color: red;" id="valueError"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="expiryDate" class="block text-text-light font-medium mb-2">Expiry Date</label>
+                            <input type="date" id="expiryDate" required
+                                class="w-full p-3 bg-secondary-dark border border-slate-700 rounded focus:ring-accent-lime focus:border-accent-lime transition cursor-pointer">
+                            <span style="display: none; color: red;" id="expiryDateError"></span>
+                        </div>
+
+
+                        <div
+                            class=" d-flex justify-content-between align-items-center border border-slate-700 border-secondary rounded">
+                            <label for="isActive" class="fw-medium">Coupon Active</label>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isActive" checked>
+                            </div>
+                        </div>
+
+
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn" style="background: #1e293b; color: #fff;"
+                                data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn" style="background: rgb(113, 233, 113); color: #fff;">Save
+                                Coupon</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/htmlExecutable/admin/coupon.js"></script>
+    <%- include('../layouts/admin/footer') %>

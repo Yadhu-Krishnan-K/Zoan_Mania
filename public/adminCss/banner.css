@@ -1,0 +1,168 @@
+/* Variables & Reset */
+:root {
+    --primary: #4a90e2;
+    --success: #50e3c2;
+    --danger: #d0021b;
+    --secondary: #9b9b9b;
+    --text-color: #333;
+    --bg-light: #f5f7fa;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-light);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--primary);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+main {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+.admin-section {
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+
+/* Form Styles */
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+input[type="text"], textarea, input[type="color"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea { resize: vertical; }
+
+.editor-form-container {
+    background-color: #e6f7ff; /* Light blue background for editor */
+    border-color: #b3e0ff;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Button Styles */
+.action-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.primary { background-color: var(--primary); color: white; }
+.success { background-color: var(--success); color: var(--text-color); }
+.danger { background-color: var(--danger); color: white; }
+.secondary { background-color: var(--secondary); color: white; }
+
+.action-button:hover:not(:disabled) { opacity: 0.8; }
+.action-button:disabled { cursor: not-allowed; opacity: 0.5; }
+
+/* Slide List Styling */
+.slides-list-container {
+    margin-bottom: 20px;
+}
+
+.slide-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-left: 5px solid var(--primary);
+    border-radius: 4px;
+}
+
+.slide-item-actions button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 0.9em;
+}
+
+/* Carousel Preview Styles (Simplified) */
+.carousel-preview-container {
+    width: 100%;
+    height: 250px; /* Fixed height for admin view */
+    background-color: #eee;
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    text-align: center;
+    line-height: 250px;
+    font-size: 1.2em;
+    font-style: italic;
+    color: var(--secondary);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+.placeholder-text {
+    line-height: normal;
+    padding-top: 100px;
+}
+
+.preview-slide {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.preview-slide.active {
+    opacity: 1;
+}
+
+.preview-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-caption {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #ddd;
+    margin: 30px 0;
+}

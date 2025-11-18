@@ -1,0 +1,77 @@
+<%- include('../layouts/user/header') -%>
+
+    <div class="container-fluid p-2">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center mt-3 mb-4">
+                <h3>Coupons Available</h3>
+            </div>
+            <div class="col-md-12">
+                <div class="row d-flex justify-content-around">
+
+                    <% if(coupons.length>0){ %>
+                        <% coupons.forEach(element => { %>
+                            
+                        
+                    <div class="col-md-4">
+                        <div class="p-2 border rounded">
+                            <ul style="list-style: none;">
+                                <li class="couponName">
+                                    <%= element.code %>
+                                </li>
+                                <li class="couponCode">
+                                    <% if(!(element.expired)){ %>
+                                        <h4 id="Ccode<%= element.id %>"><%= element.code %></h4>
+                                    <% }else{ %>
+                                        <h4 class="text-danger">Coupon Expired</h4>
+                                    <% } %>
+                                </li>
+                                <li class="PAmountAbove">
+                                    <h6>apply for purchase above: ₹<%= element.minOrderAmount %>/-</h6>
+                                </li>
+                                <li class="expiryDate">
+                                    <%= new Date(element.expiry).toString().split(" ").slice(0,4).join(" ") %>
+                                </li>
+                                <li class="">
+                                    <% if (element.discountType=='percentage') { %>
+                                        <h6>Coupon Discount: <%= element.discountValue %>%</h6>
+                                    <% } else { %> 
+                                        <h6>Coupon Discount: ₹ <%= element.discountValue %></h6>
+                                    <% } %>
+                                </li>
+                            </ul>
+                            <% if(element.expired){ %>
+                                <button class="btn btn-warning" disabled>copy coupon</button>
+                                <% }else{ %>
+                                    <button class="btn btn-warning" onclick="copy('<%= element._id %>')" >copy coupon</button>
+                            <% } %>
+                            <span class="text-success" style="display: none;" id="copied<%= element._id %>">coupon copied<iconify-icon icon="mdi:tick" style="color: green;"></iconify-icon></span>
+                        </div>
+                    </div>
+                        <% }); %>
+                    <% }else{ %>
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <h2>No Coupons Available</h2>
+                    </div>      
+                    <% } %>
+ 
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        
+            function copy(elementId){
+                console.log("copied id==",elementId)
+                let couponCode = $('#Ccode'+elementId).text();
+                var temp = $('<input>');
+                $('body').append(temp)
+                temp.val(couponCode).select()
+                document.execCommand('copy')
+                temp.remove()
+                $('#copied'+elementId).show()
+                setTimeout(()=>{$('#copied'+elementId).hide()},3000)
+            }
+        // $(document).ready(()=>{
+        // })
+    </script>
+<%- include('../layouts/user/footer') -%>

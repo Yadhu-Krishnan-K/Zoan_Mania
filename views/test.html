@@ -1,19 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
-	<link rel="stylesheet" href="./test.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel Banner Admin Panel</title>
+    <link rel="stylesheet" href="./test.css">
 </head>
 <body>
-	<div class="div1">
-		div1
-		<div class="div2">
-			div2
-		</div>
-	</div>
-	
-	<script src="./test.js"></script>
+
+    <header>
+        <h1>Carousel Banner Management 📸⚙️</h1>
+    </header>
+
+    <main>
+        
+        <section class="admin-section">
+            <h2>Live Carousel Preview (Simulated)</h2>
+            <div id="live-carousel-preview" class="carousel-preview-container">
+                <p class="placeholder-text">Add banners below to see the preview.</p>
+            </div>
+        </section>
+
+        <hr>
+
+        <section class="admin-section">
+            <h2>Current Banner Slides</h2>
+            <div id="slides-list" class="slides-list-container">
+                <p class="placeholder-text">No slides have been added yet.</p>
+            </div>
+            
+            <button id="add-new-slide-btn" class="action-button primary">➕ Add New Banner Slide</button>
+        </section>
+
+        <hr>
+
+        <section id="slide-editor" class="admin-section editor-form-container hidden">
+            <h2 id="editor-title">Create New Slide</h2>
+            <form id="slide-form">
+                
+                <label for="slide-id-field" style="display: none;">Slide ID:</label>
+                <input type="hidden" id="slide-id-field" value="">
+
+                <label for="image-url">Image URL:</label>
+                <input type="text" id="image-url" placeholder="e.g., https://example.com/image.jpg" required>
+
+                <label for="caption-text">Caption Text:</label>
+                <textarea id="caption-text" rows="2" placeholder="Enter a promotional message..."></textarea>
+                
+                <label for="caption-color">Caption Background Color:</label>
+                <input type="color" id="caption-color" value="#000000">
+
+                <div class="form-actions">
+                    <button type="submit" id="save-slide-btn" class="action-button success">Save Slide</button>
+                    <button type="button" id="cancel-edit-btn" class="action-button secondary">Cancel / Close</button>
+                </div>
+            </form>
+        </section>
+        
+        <hr>
+        
+        <section class="admin-section">
+            <h2>Publish Changes</h2>
+            <p>Once you are happy with the preview, you would click "Publish" to update the live website.</p>
+            <button id="publish-btn" class="action-button danger" disabled>Simulate Publish to Live Site (Requires Backend)</button>
+        </section>
+    </main>
+
+    <script src="./test.js"></script>
 </body>
 </html>

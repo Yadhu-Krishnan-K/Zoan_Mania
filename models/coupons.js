@@ -1,12 +1,33 @@
 const mongoose = require('mongoose')
     
 const schema = new mongoose.Schema({
-    name: String,
-    code: String,
-    discount: Number,
-    forPuchace: Number,
-    Expiry: Date,
-    usedBy:{type: Array},
+    code: {
+        type:String,
+        required:true
+    },
+    minOrderAmount:{
+        type: String,
+        required: true
+    },
+    discountType: {
+        type: String,
+        required: true
+    },
+    discountValue:{
+        type: Number,
+        required:true
+    },
+    expiry: {
+        type:Date,
+        required: true
+    },
+    usedBy:{
+        type: Array,
+    },
+    active:{
+        type: Boolean,
+        required:true
+    },
     expired:{
         type:Boolean,
         default:false
