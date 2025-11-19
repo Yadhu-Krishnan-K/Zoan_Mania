@@ -19,7 +19,7 @@ const orderModel = require('../models/order');
 const { default: mongoose } = require('mongoose');
 const { adminLogin } = require('../controllers/AdminControll/authControll');
 const { io, getReceiverSocketId } = require('../backendHelpers/socketIO');
-const { getBanner } = require('../controllers/AdminControll/bannerControll');
+const { getBanner, getSlides, addBanner, deleteBanner } = require('../controllers/AdminControll/bannerControll');
 const { getCoupons, createCoupon, editCoupon, deleteCoupon } = require('../controllers/AdminControll/coupons');
 const { getDashboard, getChart } = require('../controllers/AdminControll/Dashboard');
 const { downloadCSV, downloadPdf } = require('../controllers/AdminControll/graphRequirements');
@@ -62,7 +62,10 @@ router.post('/add-category', catController.addCategory)
 
 router.route('/inventory/addProduct')
       .get(adminauth.adminAuthguard, adminControl.getAddProduct)
-      .post(multi.array('images', 4), adminProductControl.addProduct)
+      .post((req,res,next)=>{
+        req.uploadType='products';
+        next();
+      },multi.array('images', 4), adminProductControl.addProduct)
 
 
 
@@ -71,8 +74,12 @@ router.route('/inventory/addProduct')
 //banner
 router.route('/Banner')
       .get(adminauth.adminAuthguard, getBanner)
-router.get('/getSlides')
-
+      .post((req,res,next)=>{
+        req.uploadType = 'banner'
+        next()
+      },multi.single('image'),addBanner)
+router.get('/getSlides', getSlides)
+router.delete('/deleteSlide/:id',deleteBanner)
 //Coupons-------------------------------------------------------------------------------------------------------------------------------------------
 router.route('/Coupons')
       .get(adminauth.adminAuthguard, getCoupons)
@@ -105,7 +112,10 @@ router.delete('/Coupons/:id',deleteCoupon)
 
 //''''''''''''''''''''''''''''''''''''''''''''''''''''------------------------------------------------------------------------//
 //add product
-router.post('/inventory/adding-product', multi.array('images', 4), adminProductControl.addProduct)
+router.post('/inventory/adding-product', (req,res,next)=>{
+    req.uploadType = 'products'
+    next();
+}, multi.array('images', 4), adminProductControl.addProduct)
 
 
 
@@ -162,7 +172,10 @@ router.get('/edit-product/:id', adminauth.adminAuthguard, adminProductControl.ed
 
 
 //updating product
-router.post('/update-productPage/:P_id', multi.fields([
+router.post('/update-productPage/:P_id', (req,res,next)=>{
+    req.uploadType = 'products';
+    next();
+}, multi.fields([
     { name: 'image1', maxCount: 1 },
     { name: 'image2', maxCount: 1 },
     { name: 'image3', maxCount: 1 },

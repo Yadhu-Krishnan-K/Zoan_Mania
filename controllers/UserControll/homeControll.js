@@ -1,6 +1,7 @@
 const User = require('../../models/user')
 const products = require('../../models/products')
 const cartModel = require('../../models/cartModel')
+const banners = require('../../models/banner')
 
 
 const getHome = async (req, res) => {
@@ -15,9 +16,9 @@ const getHome = async (req, res) => {
 
   const productModel = await products.find().sort({ Selled: -1 }).limit(8)
   // console.log('products = ',productModel)
-  
+  const bannerList = await banners.find()
   if(!name){
-    return res.render('user/userHome', { title: "Zoan Home", productModel, userId})
+    return res.render('user/userHome', { title: "Zoan Home", productModel, userId,bannerList})
   }
   const cartData = await cartModel.findOne({ userId: userId }).populate('userId')
   let cartcount = 0
@@ -35,7 +36,7 @@ const getHome = async (req, res) => {
   // console.log("cartData====",cartData);
   
   req.session.loggedIn = true;
-  res.render('user/userHome', { title: "Zoan Home", productModel, userId, name, cartData, cartcount })
+  res.render('user/userHome', { title: "Zoan Home", productModel, userId, name, cartData, cartcount,bannerList })
 
 }
 

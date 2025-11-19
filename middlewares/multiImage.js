@@ -3,8 +3,14 @@ const path = require('path')
 
 const storage = multer.diskStorage({
     destination: (req,file,cb) => {
+        let folder ;
+        if(req.uploadType == "banner"){
+            folder = './public/banners';
+        }else if(req.uploadType == "products"){
+            folder = './public/uploads';
+        }
         // return cb(null,'./public/uploads');
-        return cb(null, './public/uploads')
+        return cb(null, folder)
     },
     filename: (req,file,cb) => {
      

@@ -14,7 +14,6 @@
         <section class="admin-section">
             <h2>Current Banner Slides</h2>
             <div id="slides-list" class="slides-list-container">
-                <p class="placeholder-text">No slides have been added yet.</p>
             </div>
             
             <button id="add-new-slide-btn" class="action-button primary">➕ Add New Banner Slide</button>
@@ -26,8 +25,11 @@
             <form id="slide-form">
                 
                 <label for="slide-id-field" style="display: none">Slide ID:</label>
-                <input type="file" id="slide-id-field" value="">
-
+                <input type="file" id="slide-id-field" name="image" value="" accept=".jpg,.jpeg,.png">
+                <div style="margin-top: 15px;">
+                    <img id="slide-preview"  src="http://via.placeholder.com/380x200" name="image"
+                        style="width: 300px; height: 100px; border-radius: 8px;" alt="banner image">
+                </div>
                 <div class="form-actions">
                     <button type="submit" id="save-slide-btn" class="action-button success">Save Slide</button>
                     <button type="button" id="cancel-edit-btn" class="action-button secondary">Cancel / Close</button>
@@ -35,9 +37,9 @@
             </form>
         </section>
                 
-        <section class="admin-section" style="display: flex; justify-content: end; border: none;">
+        <!-- <section class="admin-section" style="display: flex; justify-content: end; border: none;">
             <button id="publish-btn" class="action-button danger" disabled>Publish</button>
-        </section>
+        </section> -->
     </main>
 
     <script src="/htmlExecutable/admin/banner.js"></script>
